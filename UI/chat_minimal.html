@@ -1031,37 +1031,51 @@ body {
 .sess-model--fast  { background: rgba(132,191,214,.12); color: var(--kb); border: 1px solid rgba(132,191,214,.3); }
 .sess-model--heavy { background: var(--accent-soft); color: var(--accent-2); border: 1px solid rgba(132,132,214,.35); }
 
-/* compact play/pause button */
-.play-pause {
-  width: 100%;
-  display: flex; align-items: center; gap: 8px;
-  padding: 7px 10px;
-  margin-bottom: 10px;
-  background: var(--bg-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text);
-  cursor: pointer;
-  transition: all .15s;
-  font-family: inherit;
-  font-size: 12px; font-weight: 500;
-  text-align: left;
+/* compact play/pause button удалён — заменён на per-row кнопку с shimmer при загрузке */
+
+/* shimmer на кнопке во время загрузки сессии */
+@keyframes shimmer {
+  0%   { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
 }
-.play-pause:hover { background: var(--bg-3); border-color: var(--border-2); }
-.play-pause__icon {
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--bg);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: all .15s;
+.sess-act.is-loading {
+  background: linear-gradient(90deg, transparent 0%, rgba(132,132,214,.4) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+  color: var(--accent-2) !important;
 }
-.play-pause__icon svg { width: 10px; height: 10px; }
-.play-pause__text { display: flex; flex-direction: column; line-height: 1.2; }
-.play-pause__title { font-size: 12px; font-weight: 600; color: var(--text); }
-.play-pause__sub { font-size: 10px; color: var(--muted); font-family: 'Geist Mono', monospace; margin-top: 1px; }
-.play-pause[data-status="live"] .play-pause__icon { background: var(--live); box-shadow: 0 0 8px rgba(148,208,122,.35); }
+
+/* глобальный прогресс-бар загрузки сессии — висит внизу экрана */
+.load-progress {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: var(--bg-3);
+  z-index: 100;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.load-progress.is-on { opacity: 1; }
+.load-progress__bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--solo));
+  transition: width .2s ease;
+}
+.load-progress__label {
+  position: absolute;
+  right: 16px; top: 6px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  color: var(--accent-2);
+  background: var(--bg-1);
+  padding: 2px 8px;
+  border: 1px solid rgba(132,132,214,.3);
+  border-radius: 4px;
+  display: none;
+}
+.load-progress.is-on .load-progress__label { display: inline-block; }
 
 /* screen capture buttons */
 .cap-region {
@@ -1454,16 +1468,6 @@ body {
         New session
       </button>
 
-      <button class="play-pause" id="playPause" data-status="live" title="Start / stop">
-        <span class="play-pause__icon" id="ppIcon">
-          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
-        </span>
-        <span class="play-pause__text">
-          <span class="play-pause__title" id="ppTitle">Pause session</span>
-          <span class="play-pause__sub" id="ppSub">stops audio capture &amp; hints</span>
-        </span>
-      </button>
-
       <div class="sess-list" id="sessList">
 
         <div class="sess-item is-active" data-id="coding" data-name="Coding Helper" data-model="Heavy" data-status="live" data-context="N=10">
@@ -1482,7 +1486,7 @@ body {
             <button class="sess-act" title="Freeze" onclick="event.stopPropagation()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="4.93" y1="19.07" x2="19.07" y2="4.93"/></svg>
             </button>
-            <button class="sess-act sess-act--danger" title="End" onclick="event.stopPropagation()">
+            <button class="sess-act sess-act--danger" title="Archive" onclick="event.stopPropagation()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>
             </button>
           </div>
@@ -1504,7 +1508,7 @@ body {
             <button class="sess-act" title="Resume" onclick="event.stopPropagation()">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
-            <button class="sess-act sess-act--danger" title="End" onclick="event.stopPropagation()">
+            <button class="sess-act sess-act--danger" title="Archive" onclick="event.stopPropagation()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>
             </button>
           </div>
@@ -1526,7 +1530,7 @@ body {
             <button class="sess-act" title="Resume" onclick="event.stopPropagation()">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
-            <button class="sess-act sess-act--danger" title="End" onclick="event.stopPropagation()">
+            <button class="sess-act sess-act--danger" title="Archive" onclick="event.stopPropagation()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>
             </button>
           </div>
@@ -1548,7 +1552,7 @@ body {
             <button class="sess-act" title="Resume" onclick="event.stopPropagation()">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
-            <button class="sess-act sess-act--danger" title="End" onclick="event.stopPropagation()">
+            <button class="sess-act sess-act--danger" title="Archive" onclick="event.stopPropagation()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>
             </button>
           </div>
