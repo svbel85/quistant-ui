@@ -799,11 +799,11 @@ body {
 .sess-model--fast  { background: rgba(132,191,214,.12); color: var(--kb); border: 1px solid rgba(132,191,214,.3); }
 .sess-model--heavy { background: var(--accent-soft); color: var(--accent-2); border: 1px solid rgba(132,132,214,.35); }
 
-/* big play/pause button — самое видное место */
+/* compact play/pause button */
 .play-pause {
   width: 100%;
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px;
   margin-bottom: 10px;
   background: var(--bg-2);
   border: 1px solid var(--border);
@@ -812,12 +812,12 @@ body {
   cursor: pointer;
   transition: all .15s;
   font-family: inherit;
-  font-size: 13px; font-weight: 500;
+  font-size: 12px; font-weight: 500;
   text-align: left;
 }
 .play-pause:hover { background: var(--bg-3); border-color: var(--border-2); }
 .play-pause__icon {
-  width: 32px; height: 32px;
+  width: 22px; height: 22px;
   border-radius: 50%;
   background: var(--accent);
   color: var(--bg);
@@ -825,11 +825,11 @@ body {
   flex-shrink: 0;
   transition: all .15s;
 }
-.play-pause__icon svg { width: 14px; height: 14px; }
+.play-pause__icon svg { width: 10px; height: 10px; }
 .play-pause__text { display: flex; flex-direction: column; line-height: 1.2; }
-.play-pause__title { font-size: 13px; font-weight: 600; color: var(--text); }
-.play-pause__sub { font-size: 11px; color: var(--muted); font-family: 'Geist Mono', monospace; margin-top: 2px; }
-.play-pause[data-status="live"] .play-pause__icon { background: var(--live); box-shadow: 0 0 12px rgba(148,208,122,.4); }
+.play-pause__title { font-size: 12px; font-weight: 600; color: var(--text); }
+.play-pause__sub { font-size: 10px; color: var(--muted); font-family: 'Geist Mono', monospace; margin-top: 1px; }
+.play-pause[data-status="live"] .play-pause__icon { background: var(--live); box-shadow: 0 0 8px rgba(148,208,122,.35); }
 
 /* screen capture buttons */
 .cap-region {
