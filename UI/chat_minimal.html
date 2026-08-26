@@ -106,6 +106,32 @@ body {
   box-shadow: 0 6px 20px rgba(132,132,214,.35), 0 0 0 1px rgba(132,132,214,.2);
   transition: all .15s;
 }
+
+/* микрофоны висят слева от FAB, минималистично */
+.fab-meters {
+  position: fixed;
+  bottom: 92px;
+  right: 92px;
+  z-index: 54;
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.4);
+}
+.fab-meters .meter {
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+.fab-meters .meter__icon { width: 11px; height: 11px; }
+.fab-meters .meter__bars { height: 10px; gap: 1px; }
+.fab-meters .meter__bar { width: 1.5px; }
+.fab-meters .meter--in  .meter__icon { color: var(--kb); }
+.fab-meters .meter--out .meter__icon { color: var(--live); }
+.fab-meters .meter__db { display: none; }
+.app.is-bottom-open .fab-meters { bottom: 182px; }
 .fab-play:hover {
   background: var(--accent-2);
   transform: scale(1.05);
@@ -557,24 +583,7 @@ body {
   border-left: 1px solid var(--border);
 }
 
-/* hide audio meters via toggle */
-.header.meters-hidden .meter { display: none; }
-.header.meters-hidden .meter-toggle svg { transform: rotate(180deg); }
-.header:not(.meters-hidden) .meter-toggle .icon-show { display: none; }
-.header.meters-hidden .meter-toggle .icon-hide { display: none; }
-
-.meter-toggle {
-  width: 24px; height: 24px;
-  display: flex; align-items: center; justify-content: center;
-  background: transparent; border: none;
-  color: var(--muted);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all .15s;
-  flex-shrink: 0;
-}
-.meter-toggle:hover { background: var(--bg-3); color: var(--text); }
-.meter-toggle svg { transition: transform .2s; }
+/* (legacy .meter-toggle удалён — микрофоны теперь висят у FAB) */
 .win-btn {
   width: 34px; height: 34px;
   display: flex; align-items: center; justify-content: center;
@@ -1211,23 +1220,6 @@ body {
 
       <div class="header__divider"></div>
 
-      <div class="meter meter--in" title="Incoming audio">
-        <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <div class="meter__bars" id="meterIn"></div>
-        <span class="meter__db" id="dbIn">−∞ dB</span>
-      </div>
-
-      <div class="meter meter--out" title="Outgoing audio">
-        <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
-        <div class="meter__bars" id="meterOut"></div>
-        <span class="meter__db" id="dbOut">−∞ dB</span>
-      </div>
-
-      <button class="meter-toggle" id="meterToggle" title="Скрыть / показать микрофоны">
-        <svg class="icon-hide" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
-        <svg class="icon-show" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m18 15-6-6-6 6"/></svg>
-      </button>
-
       <!-- centered: current session title (editable) -->
       <div class="header__center" id="headerCenter">
         <span class="header__center-dot is-live" id="sessDot"></span>
@@ -1702,6 +1694,18 @@ body {
   <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
 </button>
 
+<!-- Микрофоны висят слева от FAB play/pause -->
+<div class="fab-meters" id="fabMeters">
+  <div class="meter meter--in" title="Incoming audio">
+    <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <div class="meter__bars" id="meterIn"></div>
+  </div>
+  <div class="meter meter--out" title="Outgoing audio">
+    <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
+    <div class="meter__bars" id="meterOut"></div>
+  </div>
+</div>
+
 <script>
   // ─── panel toggle ───
   function togglePanel(side) {
@@ -1860,11 +1864,6 @@ body {
       }
     });
   }
-
-  // ─── meters toggle ───
-  document.getElementById('meterToggle').addEventListener('click', () => {
-    document.querySelector('.header').classList.toggle('meters-hidden');
-  });
 
   // ─── FAB play/pause ───
   const fabPlay = document.getElementById('fabPlay');
