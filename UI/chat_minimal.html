@@ -64,8 +64,13 @@ body {
 .app.is-capture-open.is-sessions-open,
 .app.is-sources-open.is-windows-open,
 .app.is-capture-open.is-windows-open { grid-template-columns: 260px 1fr 320px; }
-/* bottom panel: row 2 появляется */
+/* bottom panel: row 2 — закрыта (26 = только таб), открыта (140 = таб + контент) */
+.app { grid-template-rows: 1fr 26px; }
 .app.is-bottom-open { grid-template-rows: 1fr 140px; }
+
+/* в закрытом состоянии тело панели скрыто, виден только таб */
+.panel--bottom .panel__body { display: none; }
+.app.is-bottom-open .panel--bottom .panel__body { display: flex; }
 
 /* ════════════ PANEL TOGGLES (плавающие, на гранях) ════════════ */
 .panel-toggle {
@@ -170,13 +175,13 @@ body {
   border-left: none;
   border-top: 1px solid var(--border);
   background: var(--bg-1);
-  display: none;
+  display: flex;
   flex-direction: column;
 }
-.app.is-bottom-open .panel--bottom { display: flex; }
 .panel--bottom .panel__head {
   flex-shrink: 0;
-  padding: 8px 16px;
+  padding: 0;
+  border-bottom: none;
 }
 .panel--bottom .panel__body {
   flex: 1;
@@ -189,31 +194,30 @@ body {
   font-size: 12.5px;
 }
 
-/* bottom edge toggle (горизонтальная пилюля по центру снизу) */
-.panel-toggle--bottom {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 60;
-  width: 80px; height: 25px;
+/* bottom-tab: кнопка-переключатель как часть панели */
+.bottom-tab {
+  width: 100%;
+  height: 26px;
   display: flex; align-items: center; justify-content: center;
+  gap: 8px;
   background: var(--bg-2);
-  border: 1px solid var(--border);
-  border-bottom: none;
   color: var(--muted);
   cursor: pointer;
-  transition: all .2s;
-  border-radius: 10px 10px 0 0;
+  border: none;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  transition: all .15s;
 }
-.panel-toggle--bottom:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); }
-.panel-toggle--bottom svg { width: 13px; height: 13px; }
-.app.is-bottom-open .panel-toggle--bottom {
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, 10px);
+.bottom-tab:hover { background: var(--bg-3); color: var(--accent-2); }
+.bottom-tab svg { width: 13px; height: 13px; transition: transform .2s; }
+.app.is-bottom-open .bottom-tab {
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  border-bottom: 1px solid rgba(132,132,214,.3);
 }
-.app:not(.is-bottom-open) .panel-toggle--bottom { transform: translateX(-50%); }
+.app.is-bottom-open .bottom-tab svg { transform: rotate(180deg); }
 /* явное размещение в grid */
 .panel--sources   { grid-column: 1; grid-row: 1; }
 .panel--capture   { grid-column: 1; grid-row: 1; }
@@ -1446,12 +1450,12 @@ body {
     </div>
   </aside>
 
-  <!-- BOTTOM PANEL (узкая) -->
+  <!-- BOTTOM PANEL (узкая полоска) -->
   <aside class="panel panel--bottom" id="bottomPanel">
     <div class="panel__head">
-      <span>Bottom panel</span>
-      <button class="panel__close" onclick="togglePanel('bottom')" title="Скрыть">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 6 6 6 6-6"/></svg>
+      <button class="bottom-tab" onclick="togglePanel('bottom')" title="Открыть / закрыть">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 15 6-6 6 6"/></svg>
+        <span id="bottomTabLabel">Bottom panel · open</span>
       </button>
     </div>
     <div class="panel__body">
@@ -1495,10 +1499,7 @@ body {
   </svg>
 </button>
 
-<!-- Нижняя: горизонтальная пилюля по центру (Bottom panel) -->
-<button class="panel-toggle panel-toggle--bottom" onclick="togglePanel('bottom')" data-tip="Bottom panel">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 15 6-6 6 6"/></svg>
-</button>
+<!-- Нижняя плавающая кнопка больше не нужна — её заменил .bottom-tab внутри панели -->
 
 <script>
   // ─── panel toggle ───
@@ -1512,7 +1513,13 @@ body {
       if (!wasOpen) app.classList.add('is-' + side + '-open');
       return;
     }
-    if (side === 'bottom') app.classList.toggle('is-bottom-open');
+    if (side === 'bottom') {
+      app.classList.toggle('is-bottom-open');
+      const lab = document.getElementById('bottomTabLabel');
+      if (lab) lab.textContent = app.classList.contains('is-bottom-open')
+        ? 'Bottom panel · close'
+        : 'Bottom panel · open';
+    }
   }
 
   // ─── audio meters ───
