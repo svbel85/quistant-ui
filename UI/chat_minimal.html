@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Quistan — Чат</title>
+<title>Quistan — Chat</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1134,7 +1134,7 @@ body {
   <aside class="panel panel--left panel--sources" id="sourcesPanel">
     <div class="panel__head">
       <span>Knowledge sources</span>
-      <button class="panel__close" onclick="togglePanel('sources')" title="Скрыть">
+      <button class="panel__close" onclick="togglePanel('sources')" title="Hide">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
       </button>
     </div>
@@ -1236,13 +1236,13 @@ body {
       </button>
 
       <div class="window-ctl">
-        <button class="win-btn" title="Свернуть">
+        <button class="win-btn" title="Minimize">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
-        <button class="win-btn" title="Развернуть">
+        <button class="win-btn" title="Maximize">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
         </button>
-        <button class="win-btn win-btn--close" title="Закрыть">
+        <button class="win-btn win-btn--close" title="Close">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
         </button>
       </div>
@@ -1257,7 +1257,7 @@ body {
       </div>
 
       <div class="msg">
-        <div class="avatar-sm avatar-sm--other">И</div>
+        <div class="avatar-sm avatar-sm--other">I</div>
         <div class="msg__col">
           <div class="msg__meta"><b>Interviewer</b> · 13:55:12 · Google Meet</div>
           <div class="bubble bubble--other">Tell me, how would you design an event processing system for a Twitter-like service?</div>
@@ -1299,11 +1299,11 @@ body {
           </div>
           <div class="bubble bubble--user">I'd start by separating <code>write-path</code> and <code>read-path</code>. For writes — Kafka with partitioning by user_id, for reads — pre-computed timelines in Cassandra.</div>
         </div>
-        <div class="avatar-sm avatar-sm--user">Я</div>
+        <div class="avatar-sm avatar-sm--user">U</div>
       </div>
 
       <div class="msg">
-        <div class="avatar-sm avatar-sm--other">И</div>
+        <div class="avatar-sm avatar-sm--other">I</div>
         <div class="msg__col">
           <div class="msg__meta"><b>Interviewer</b> · 13:56:04</div>
           <div class="bubble bubble--other">Good. What about fan-out — push or pull?</div>
@@ -1318,7 +1318,7 @@ body {
           </div>
           <div class="bubble bubble--user-kb">What to answer about consistency?</div>
         </div>
-        <div class="avatar-sm avatar-sm--user">Я</div>
+        <div class="avatar-sm avatar-sm--user">U</div>
       </div>
 
       <div class="msg">
@@ -1354,11 +1354,11 @@ body {
           </div>
           <div class="bubble bubble--user">I'd go hybrid: push for regular users, pull for celebrities. Consistency — eventual for feeds, strong only for likes and follows.</div>
         </div>
-        <div class="avatar-sm avatar-sm--user">Я</div>
+        <div class="avatar-sm avatar-sm--user">U</div>
       </div>
 
       <div class="msg">
-        <div class="avatar-sm avatar-sm--other">И</div>
+        <div class="avatar-sm avatar-sm--other">I</div>
         <div class="msg__col">
           <div class="msg__meta"><b>Interviewer</b> · 13:57:24</div>
           <div class="bubble bubble--other">Ok, last question. How will you count metrics and monitor latencies?</div>
@@ -1379,7 +1379,7 @@ body {
     <!-- COMPOSER -->
     <footer class="composer">
       <div class="composer__box">
-        <button class="attach-btn" title="Прикрепить файл">
+        <button class="attach-btn" title="Attach file">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m21.4 11-8.8 8.8a5 5 0 0 1-7-7l8.8-8.8a3.5 3.5 0 1 1 5 5l-8.8 8.8a2 2 0 1 1-2.8-2.8l8.5-8.5"/></svg>
         </button>
         <textarea class="composer__input" rows="1" placeholder="Write to Quistan…"></textarea>
@@ -1395,7 +1395,7 @@ body {
   <aside class="panel panel--left panel--capture" id="capturePanel">
     <div class="panel__head">
       <span>Screen capture</span>
-      <button class="panel__close" onclick="togglePanel('capture')" title="Скрыть">
+      <button class="panel__close" onclick="togglePanel('capture')" title="Hide">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
       </button>
     </div>
@@ -1403,7 +1403,7 @@ body {
 
       <div class="src-list__head"><span>Region</span></div>
 
-      <button class="cap-region" id="capRegion" title="Выделить область экрана">
+      <button class="cap-region" id="capRegion" title="Select screen region">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 8V6a2 2 0 0 1 2-2h2"/>
           <path d="M20 8V6a2 2 0 0 0-2-2h-2"/>
@@ -1443,18 +1443,18 @@ body {
   <aside class="panel panel--right panel--sessions" id="sessionsPanel">
     <div class="panel__head">
       <span>Sessions</span>
-      <button class="panel__close" onclick="togglePanel('sessions')" title="Скрыть">
+      <button class="panel__close" onclick="togglePanel('sessions')" title="Hide">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
       </button>
     </div>
     <div class="panel__body">
 
-      <button class="new-sess-btn" title="Создать новую сессию">
+      <button class="new-sess-btn" title="Create new session">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         New session
       </button>
 
-      <button class="play-pause" id="playPause" data-status="live" title="Запустить / остановить">
+      <button class="play-pause" id="playPause" data-status="live" title="Start / stop">
         <span class="play-pause__icon" id="ppIcon">
           <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
         </span>
@@ -1562,7 +1562,7 @@ body {
   <aside class="panel panel--right panel--windows" id="windowsPanel">
     <div class="panel__head">
       <span>Floating windows</span>
-      <button class="panel__close" onclick="togglePanel('windows')" title="Скрыть">
+      <button class="panel__close" onclick="togglePanel('windows')" title="Hide">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
       </button>
     </div>
@@ -1617,7 +1617,7 @@ body {
     <div class="panel__body">
 
       <div class="profile-card">
-        <div class="profile-card__avatar">К</div>
+        <div class="profile-card__avatar">K</div>
         <div class="profile-card__info">
           <div class="profile-card__name">quistant_user</div>
           <div class="profile-card__email">svbel85@gmail.com</div>
@@ -1689,7 +1689,7 @@ body {
 </button>
 
 <!-- Плавающая круглая FAB play/pause (правый-нижний угол) -->
-<button class="fab-play" id="fabPlay" data-state="live" title="Запустить / остановить">
+<button class="fab-play" id="fabPlay" data-state="live" title="Start / stop">
   <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
 </button>
 
