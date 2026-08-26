@@ -168,23 +168,23 @@ body {
 .bottom-toggle:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); border-left-color: var(--bg-3); }
 .bottom-toggle svg { width: 11px; height: 11px; transition: transform .2s; }
 .app.is-bottom-open .bottom-toggle {
-  background: var(--accent-soft);
-  color: var(--accent-2);
+  background: var(--accent);
+  color: var(--bg);
   border-color: var(--accent);
   border-left-color: var(--accent);
-  width: 22px;
-  box-shadow: -2px 0 12px rgba(132,132,214,.4), 0 0 0 1px var(--accent) inset;
+  width: 26px;
+  box-shadow: -4px 0 18px rgba(132,132,214,.65), 0 0 0 1px var(--accent-2) inset;
 }
 .app.is-bottom-open .bottom-toggle::before {
   content: '';
   position: absolute;
-  left: 4px; top: 50%; transform: translateY(-50%);
-  width: 3px; height: 14px;
-  background: var(--accent);
+  left: 5px; top: 50%; transform: translateY(-50%);
+  width: 4px; height: 18px;
+  background: #fff;
   border-radius: 2px;
-  box-shadow: 0 0 8px rgba(132,132,214,.7);
+  box-shadow: 0 0 10px rgba(255,255,255,.9);
 }
-.app.is-bottom-open .bottom-toggle svg { transform: rotate(180deg); }
+.app.is-bottom-open .bottom-toggle svg { transform: rotate(180deg); color: var(--bg); }
 
 /* ════════════ PANEL TOGGLES (плавающие, на гранях) ════════════ */
 .panel-toggle {
@@ -216,26 +216,27 @@ body {
 .app.is-sources-open .panel-toggle--left[data-side="sources"],
 .app.is-capture-open .panel-toggle--left[data-side="capture"] {
   left: 260px;
-  background: var(--accent-soft);
-  color: var(--accent-2);
+  background: var(--accent);
+  color: var(--bg);
   border-color: var(--accent);
-  box-shadow: -2px 0 12px rgba(132,132,214,.4), 0 0 0 1px var(--accent) inset;
-  width: 22px;
+  box-shadow: -4px 0 18px rgba(132,132,214,.65), 0 0 0 1px var(--accent-2) inset;
+  width: 26px;
 }
 .app.is-sources-open .panel-toggle--left[data-side="sources"]::before,
 .app.is-capture-open .panel-toggle--left[data-side="capture"]::before {
   content: '';
   position: absolute;
-  left: 4px; top: 50%; transform: translateY(-50%);
-  width: 3px; height: 14px;
-  background: var(--accent);
+  left: 5px; top: 50%; transform: translateY(-50%);
+  width: 4px; height: 18px;
+  background: #fff;
   border-radius: 2px;
-  box-shadow: 0 0 8px rgba(132,132,214,.7);
+  box-shadow: 0 0 10px rgba(255,255,255,.9);
 }
 .panel-toggle--left svg { transform: scaleX(-1); }
 .app.is-sources-open .panel-toggle--left[data-side="sources"] svg,
 .app.is-capture-open .panel-toggle--left[data-side="capture"] svg {
   transform: scaleX(1);
+  color: var(--bg);
 }
 
 /* два левых тоггла стекаются вертикально */
@@ -253,21 +254,25 @@ body {
 .app.is-sessions-open .panel-toggle--right[data-side="sessions"],
 .app.is-windows-open .panel-toggle--right[data-side="windows"] {
   right: 320px;
-  background: var(--accent-soft);
-  color: var(--accent-2);
+  background: var(--accent);
+  color: var(--bg);
   border-color: var(--accent);
-  box-shadow: 2px 0 12px rgba(132,132,214,.4), 0 0 0 1px var(--accent) inset;
-  width: 22px;
+  box-shadow: 4px 0 18px rgba(132,132,214,.65), 0 0 0 1px var(--accent-2) inset;
+  width: 26px;
 }
 .app.is-sessions-open .panel-toggle--right[data-side="sessions"]::before,
 .app.is-windows-open .panel-toggle--right[data-side="windows"]::before {
   content: '';
   position: absolute;
-  right: 4px; top: 50%; transform: translateY(-50%);
-  width: 3px; height: 14px;
-  background: var(--accent);
+  right: 5px; top: 50%; transform: translateY(-50%);
+  width: 4px; height: 18px;
+  background: #fff;
   border-radius: 2px;
-  box-shadow: 0 0 8px rgba(132,132,214,.7);
+  box-shadow: 0 0 10px rgba(255,255,255,.9);
+}
+.app.is-sessions-open .panel-toggle--right[data-side="sessions"] svg,
+.app.is-windows-open .panel-toggle--right[data-side="windows"] svg {
+  color: var(--bg);
 }
 /* два правых стекаются по вертикали (зеркально левым) */
 .panel-toggle--right[data-side="sessions"] { top: calc(50% - 32px); }
