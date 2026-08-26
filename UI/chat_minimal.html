@@ -90,10 +90,10 @@ body {
   border-radius: 0 8px 8px 0;
 }
 
-/* круглый FAB play/pause в правом-нижнем углу, над composer'ом */
+/* круглый FAB play/pause — над composer'ом, не перекрывает чат */
 .fab-play {
-  position: fixed;
-  bottom: 86px;
+  position: absolute;
+  bottom: 78px;
   right: 28px;
   z-index: 55;
   width: 52px; height: 52px;
@@ -107,10 +107,10 @@ body {
   transition: all .15s;
 }
 
-/* микрофоны висят слева от FAB, минималистично */
+/* микрофоны висят слева от FAB, на той же высоте */
 .fab-meters {
-  position: fixed;
-  bottom: 92px;
+  position: absolute;
+  bottom: 86px;
   right: 92px;
   z-index: 54;
   display: flex; align-items: center; gap: 8px;
@@ -131,7 +131,9 @@ body {
 .fab-meters .meter--in  .meter__icon { color: var(--kb); }
 .fab-meters .meter--out .meter__icon { color: var(--live); }
 .fab-meters .meter__db { display: none; }
-.app.is-bottom-open .fab-meters { bottom: 182px; }
+
+/* .window — родитель для абсолютного позиционирования FAB */
+.window { position: relative; }
 .fab-play:hover {
   background: var(--accent-2);
   transform: scale(1.05);
@@ -679,7 +681,7 @@ body {
 .feed {
   flex: 1;
   overflow-y: auto;
-  padding: 24px 28px;
+  padding: 24px 28px 96px; /* bottom отступ чтобы последние пузыри не лезли под FAB */
 }
 .feed::-webkit-scrollbar { width: 8px; }
 .feed::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
