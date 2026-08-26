@@ -90,35 +90,41 @@ body {
   border-radius: 0 8px 8px 0;
 }
 
-/* круглый FAB play/pause — над composer'ом, не перекрывает чат */
+/* FAB play/pause — внутри composer__box, растёт вместе с composer'ом */
 .fab-play {
-  position: absolute;
-  bottom: 78px;
-  right: 28px;
-  z-index: 55;
-  width: 52px; height: 52px;
+  flex-shrink: 0;
+  width: 34px; height: 34px;
   border-radius: 50%;
   background: var(--accent);
   color: var(--bg);
   border: none;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 20px rgba(132,132,214,.35), 0 0 0 1px rgba(132,132,214,.2);
+  box-shadow: 0 4px 14px rgba(132,132,214,.3), 0 0 0 1px rgba(132,132,214,.2);
   transition: all .15s;
+  align-self: flex-end;
+  margin-bottom: 1px;
 }
+.fab-play:hover {
+  background: var(--accent-2);
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(132,132,214,.45), 0 0 0 1px var(--accent);
+}
+.fab-play:active { transform: scale(.97); }
+.fab-play svg { width: 12px; height: 12px; transition: transform .2s; }
+.fab-play[data-state="live"] { background: var(--live); box-shadow: 0 4px 14px rgba(148,208,122,.35), 0 0 0 1px rgba(148,208,122,.2); }
+.fab-play[data-state="live"]:hover { background: #84c46b; box-shadow: 0 6px 18px rgba(148,208,122,.5), 0 0 0 1px var(--live); }
 
-/* микрофоны висят слева от FAB, на той же высоте */
+/* микрофоны — внутри composer__box, тоже растут с ним */
 .fab-meters {
-  position: absolute;
-  bottom: 86px;
-  right: 92px;
-  z-index: 54;
-  display: flex; align-items: center; gap: 8px;
-  padding: 6px 10px;
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 8px;
   background: var(--bg-1);
   border: 1px solid var(--border);
   border-radius: 999px;
-  box-shadow: 0 4px 16px rgba(0,0,0,.4);
+  align-self: flex-end;
+  margin-bottom: 1px;
 }
 .fab-meters .meter {
   padding: 0;
@@ -126,28 +132,17 @@ body {
   border: none;
 }
 .fab-meters .meter__icon { width: 11px; height: 11px; }
-.fab-meters .meter__bars { height: 10px; gap: 1px; }
+.fab-meters .meter__bars { height: 9px; gap: 1px; }
 .fab-meters .meter__bar { width: 1.5px; }
 .fab-meters .meter--in  .meter__icon { color: var(--kb); }
 .fab-meters .meter--out .meter__icon { color: var(--live); }
 .fab-meters .meter__db { display: none; }
 
-/* .window — родитель для абсолютного позиционирования FAB */
+/* .window — родитель (больше не нужен, но не вредит) */
 .window { position: relative; }
-.fab-play:hover {
-  background: var(--accent-2);
-  transform: scale(1.05);
-  box-shadow: 0 8px 24px rgba(132,132,214,.45), 0 0 0 1px var(--accent);
-}
-.fab-play:active { transform: scale(.97); }
-.fab-play svg { width: 18px; height: 18px; transition: transform .2s; }
-.fab-play[data-state="live"] { background: var(--live); box-shadow: 0 6px 20px rgba(148,208,122,.35), 0 0 0 1px rgba(148,208,122,.2); }
-.fab-play[data-state="live"]:hover { background: #84c46b; box-shadow: 0 8px 24px rgba(148,208,122,.5), 0 0 0 1px var(--live); }
-/* при открытой нижней панели — поднимаемся над ней */
-.app.is-bottom-open .fab-play { bottom: 176px; }
 
 /* когда сессия на паузе: метры замирают, счётчик замирает, иконки тусклые */
-.app.is-paused .meter { opacity: .35; filter: grayscale(.7); }
+.app.is-paused .fab-meters .meter { opacity: .35; filter: grayscale(.7); }
 .app.is-paused .meter__bar.is-on { background: var(--muted-2) !important; box-shadow: none !important; }
 .app.is-paused .profile-usage__bar span { animation-play-state: paused; }
 .profile-usage__bar span { animation: pulse-soft 2.5s ease-in-out infinite; }
@@ -1477,13 +1472,31 @@ body {
       </div>
     </main>
 
-    <!-- COMPOSER -->
+    <!-- COMPOSER (внутри: attach + textarea + meters + FAB play + send) -->
     <footer class="composer">
       <div class="composer__box">
         <button class="attach-btn" title="Attach file">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m21.4 11-8.8 8.8a5 5 0 0 1-7-7l8.8-8.8a3.5 3.5 0 1 1 5 5l-8.8 8.8a2 2 0 1 1-2.8-2.8l8.5-8.5"/></svg>
         </button>
         <textarea class="composer__input" rows="1" placeholder="Write to Quistan…"></textarea>
+
+        <!-- микрофоны внутри composer (растут вместе с ним) -->
+        <div class="fab-meters" id="fabMeters">
+          <div class="meter meter--in" title="Incoming audio">
+            <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <div class="meter__bars" id="meterIn"></div>
+          </div>
+          <div class="meter meter--out" title="Outgoing audio">
+            <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
+            <div class="meter__bars" id="meterOut"></div>
+          </div>
+        </div>
+
+        <!-- FAB play/pause внутри composer -->
+        <button class="fab-play fab-play--inline" id="fabPlay" data-state="live" title="Start / stop">
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+        </button>
+
         <button class="composer__send" title="Send">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
         </button>
@@ -1772,26 +1785,10 @@ body {
 </button>
 
 <!-- Плавающая круглая FAB play/pause (правый-нижний угол) -->
-<button class="fab-play" id="fabPlay" data-state="live" title="Start / stop">
-  <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
-</button>
-
 <!-- Глобальный прогресс-бар загрузки сессии (висит внизу экрана) -->
 <div class="load-progress" id="loadProgress">
   <div class="load-progress__bar" id="loadBar"></div>
   <span class="load-progress__label" id="loadLabel">Loading…</span>
-</div>
-
-<!-- Микрофоны висят слева от FAB play/pause -->
-<div class="fab-meters" id="fabMeters">
-  <div class="meter meter--in" title="Incoming audio">
-    <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <div class="meter__bars" id="meterIn"></div>
-  </div>
-  <div class="meter meter--out" title="Outgoing audio">
-    <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
-    <div class="meter__bars" id="meterOut"></div>
-  </div>
 </div>
 
 <script>
