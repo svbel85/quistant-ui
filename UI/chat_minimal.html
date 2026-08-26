@@ -205,6 +205,42 @@ body {
   color: var(--accent-2);
   border-color: var(--accent);
 }
+/* когда панель открыта — явная подсветка через .is-open */
+.panel-toggle.is-open,
+.bottom-toggle.is-open {
+  background: var(--accent) !important;
+  color: var(--bg) !important;
+  border-color: var(--accent) !important;
+  width: 26px !important;
+  box-shadow: 0 0 16px rgba(132,132,214,.7), 0 0 0 2px var(--accent-2) inset !important;
+}
+.panel-toggle--left.is-open,
+.bottom-toggle.is-open {
+  border-left-color: var(--accent) !important;
+}
+.panel-toggle--right.is-open {
+  border-right-color: var(--accent) !important;
+}
+.panel-toggle.is-open svg,
+.bottom-toggle.is-open svg {
+  color: var(--bg) !important;
+  transform: scaleX(1) !important;
+}
+.panel-toggle--bottom.is-open svg { transform: rotate(180deg) !important; }
+/* внутренняя белая полоска-индикатор */
+.panel-toggle.is-open::before,
+.bottom-toggle.is-open::before {
+  content: '';
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  width: 4px; height: 18px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(255,255,255,.9);
+}
+.panel-toggle--left.is-open::before { left: 5px; }
+.panel-toggle--right.is-open::before { right: 5px; }
+.bottom-toggle.is-open::before { left: 5px; }
 .panel-toggle svg { width: 13px; height: 13px; }
 
 /* left toggle — сидит у левого края экрана, при открытой панели сдвигается к её правому краю */
@@ -1773,10 +1809,21 @@ body {
                     side === 'sessions' || side === 'windows' ? ['sessions', 'windows'] : [side];
       const wasOpen = app.classList.contains('is-' + side + '-open');
       group.forEach(s => app.classList.remove('is-' + s + '-open'));
-      if (!wasOpen) app.classList.add('is-' + side + '-open');
+      // снимаем подсветку со ВСЕХ toggle-кнопок этой группы
+      document.querySelectorAll('.panel-toggle').forEach(b => b.classList.remove('is-open'));
+      if (!wasOpen) {
+        app.classList.add('is-' + side + '-open');
+        // подсвечиваем соответствующую кнопку
+        const btn = document.querySelector('.panel-toggle[data-side="' + side + '"]');
+        if (btn) btn.classList.add('is-open');
+      }
       return;
     }
-    if (side === 'bottom') app.classList.toggle('is-bottom-open');
+    if (side === 'bottom') {
+      app.classList.toggle('is-bottom-open');
+      const bb = document.querySelector('.bottom-toggle');
+      if (bb) bb.classList.toggle('is-open', app.classList.contains('is-bottom-open'));
+    }
   }
 
   // ─── audio meters ───
