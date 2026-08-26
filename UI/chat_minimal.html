@@ -208,12 +208,11 @@ body {
 .panel-toggle--bottom:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); }
 .panel-toggle--bottom svg { width: 13px; height: 13px; }
 .app.is-bottom-open .panel-toggle--bottom {
-  bottom: 140px;
-  background: var(--accent-soft);
-  color: var(--accent-2);
-  border-color: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 10px);
 }
-.app.is-bottom-open .panel-toggle--bottom svg { transform: rotate(180deg); }
+.app:not(.is-bottom-open) .panel-toggle--bottom { transform: translateX(-50%); }
 /* явное размещение в grid */
 .panel--sources   { grid-column: 1; grid-row: 1; }
 .panel--capture   { grid-column: 1; grid-row: 1; }
