@@ -90,10 +90,10 @@ body {
   border-radius: 0 8px 8px 0;
 }
 
-/* FAB play/pause — снаружи, плавающий над composer'ом */
+/* FAB play/pause — снаружи, плавающий над composer'ом (чуть выше) */
 .fab-play {
   position: absolute;
-  bottom: 78px;
+  bottom: 110px;
   right: 28px;
   z-index: 55;
   width: 52px; height: 52px;
@@ -116,10 +116,10 @@ body {
 .fab-play[data-state="live"] { background: var(--live); box-shadow: 0 6px 20px rgba(148,208,122,.35), 0 0 0 1px rgba(148,208,122,.2); }
 .fab-play[data-state="live"]:hover { background: #84c46b; box-shadow: 0 8px 24px rgba(148,208,122,.5), 0 0 0 1px var(--live); }
 
-/* микрофоны слева от FAB, на той же высоте */
+/* микрофоны слева от FAB, выровнены по центру FAB по вертикали */
 .fab-meters {
   position: absolute;
-  bottom: 86px;
+  bottom: 121px;
   right: 92px;
   z-index: 54;
   display: flex; align-items: center; gap: 8px;
