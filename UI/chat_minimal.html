@@ -170,9 +170,10 @@ body {
   border-left: none;
   border-top: 1px solid var(--border);
   background: var(--bg-1);
-  display: flex;
+  display: none;
   flex-direction: column;
 }
+.app.is-bottom-open .panel--bottom { display: flex; }
 .panel--bottom .panel__head {
   flex-shrink: 0;
   padding: 8px 16px;
