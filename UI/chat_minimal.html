@@ -72,13 +72,13 @@ body {
 .panel--bottom { display: none; }
 .app.is-bottom-open .panel--bottom { display: flex; }
 
-/* кнопка-переключатель: вертикальная пилюля у левого края чата, по высоте диалога */
+/* кнопка-переключатель: вертикальная пилюля у левого края чата, в линию с composer'ом */
 .bottom-toggle {
   position: fixed;
-  bottom: 14px;
+  bottom: 18px;
   left: 0;
   z-index: 60;
-  width: 18px; height: 36px;
+  width: 18px; height: 38px;
   display: flex; align-items: center; justify-content: center;
   background: var(--bg-2);
   border: 1px solid var(--border);
@@ -92,7 +92,7 @@ body {
 .app.is-sources-open .bottom-toggle,
 .app.is-capture-open .bottom-toggle { left: 260px; }
 /* нижняя панель открыта — поднимаемся НАД ней, чтобы не сидеть внутри */
-.app.is-bottom-open .bottom-toggle { bottom: 104px; }
+.app.is-bottom-open .bottom-toggle { bottom: 108px; }
 .bottom-toggle:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); border-left-color: var(--bg-3); }
 .bottom-toggle svg { width: 11px; height: 11px; transition: transform .2s; }
 .app.is-bottom-open .bottom-toggle {
