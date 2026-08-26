@@ -1791,11 +1791,9 @@ body {
   }
 
   function setActiveSession(item) {
-    // просто подсвечиваем выбранную — статус НЕ меняем автоматически
+    // просто подсвечиваем выбранную — статус и заголовок НЕ меняем
     document.querySelectorAll('.sess-item').forEach(s => s.classList.remove('is-active'));
     item.classList.add('is-active');
-    sessName.textContent = item.dataset.name;
-    sessDot.className = 'header__center-dot is-' + item.dataset.status;
   }
 
   document.querySelectorAll('.sess-item').forEach(item => {
@@ -1853,6 +1851,8 @@ body {
         });
         item.dataset.status = 'live';
         syncSessionRowUI(item);
+        // ТОЛЬКО при реальном старте обновляем заголовок
+        sessName.textContent = item.dataset.name;
         sessDot.className = 'header__center-dot is-live';
         loadSession(item, actBtn);
         refreshFabState();
