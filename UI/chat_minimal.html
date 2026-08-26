@@ -1702,6 +1702,12 @@ body {
   <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
 </button>
 
+<!-- Глобальный прогресс-бар загрузки сессии (висит внизу экрана) -->
+<div class="load-progress" id="loadProgress">
+  <div class="load-progress__bar" id="loadBar"></div>
+  <span class="load-progress__label" id="loadLabel">Loading…</span>
+</div>
+
 <!-- Микрофоны висят слева от FAB play/pause -->
 <div class="fab-meters" id="fabMeters">
   <div class="meter meter--in" title="Incoming audio">
@@ -1775,20 +1781,6 @@ body {
   // ─── sessions ───
   const sessName = document.getElementById('sessName');
   const sessDot  = document.getElementById('sessDot');
-  const playPause = document.getElementById('playPause');
-  const ppIcon  = document.getElementById('ppIcon');
-  const ppTitle = document.getElementById('ppTitle');
-  const ppSub   = document.getElementById('ppSub');
-
-  const ICON_LIVE  = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
-  const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-
-  function refreshPlayPause(status) {
-    playPause.dataset.status = status;
-    ppIcon.innerHTML  = status === 'live' ? ICON_LIVE : ICON_PAUSE;
-    ppTitle.textContent = status === 'live' ? 'Pause session' : 'Resume session';
-    ppSub.textContent   = status === 'live' ? 'stops audio capture & hints' : 'starts listening & giving hints';
-  }
 
   function syncSessionRowUI(item) {
     const dot = item.querySelector('.d');
@@ -1799,52 +1791,86 @@ body {
   }
 
   function setActiveSession(item) {
+    // просто подсвечиваем выбранную — статус НЕ меняем автоматически
     document.querySelectorAll('.sess-item').forEach(s => s.classList.remove('is-active'));
     item.classList.add('is-active');
-
-    // все сессии, что были LIVE, переводим в FROZEN — активной может быть только одна
-    document.querySelectorAll('.sess-item').forEach(other => {
-      if (other !== item && other.dataset.status === 'live') {
-        other.dataset.status = 'frozen';
-        syncSessionRowUI(other);
-      }
-    });
-
-    // выбранная сессия: если была IDLE/FROZEN — автоматически делаем LIVE
-    if (item.dataset.status !== 'live') {
-      item.dataset.status = 'live';
-      syncSessionRowUI(item);
-    }
-
     sessName.textContent = item.dataset.name;
     sessDot.className = 'header__center-dot is-' + item.dataset.status;
-    refreshPlayPause(item.dataset.status);
   }
 
   document.querySelectorAll('.sess-item').forEach(item => {
     item.addEventListener('click', () => setActiveSession(item));
   });
 
-  // play/pause главная кнопка
-  if (playPause) {
-    playPause.addEventListener('click', () => {
-      const active = document.querySelector('.sess-item.is-active');
-      if (!active) return;
-      const cur = active.dataset.status;
-      const next = cur === 'live' ? 'idle' : 'live';
-      active.dataset.status = next;
-      // если делаем LIVE — все остальные замораживаем
-      if (next === 'live') {
+  // ─── загрузка сессии (имитация с прогресс-ом и shimmer на кнопке) ───
+  const loadProgress = document.getElementById('loadProgress');
+  const loadBar      = document.getElementById('loadBar');
+  const loadLabel    = document.getElementById('loadLabel');
+  let loadTimer = null;
+
+  function loadSession(item, btn) {
+    if (loadTimer) { clearInterval(loadTimer); loadTimer = null; }
+    if (btn) btn.classList.add('is-loading');
+    loadProgress.classList.add('is-on');
+    let pct = 0;
+    loadLabel.textContent = 'Loading ' + item.dataset.name + '… 0%';
+    loadBar.style.width = '0%';
+    loadTimer = setInterval(() => {
+      pct = Math.min(100, pct + Math.random() * 14 + 4);
+      loadBar.style.width = pct + '%';
+      loadLabel.textContent = 'Loading ' + item.dataset.name + '… ' + Math.round(pct) + '%';
+      if (pct >= 100) {
+        clearInterval(loadTimer); loadTimer = null;
+        if (btn) btn.classList.remove('is-loading');
+        setTimeout(() => loadProgress.classList.remove('is-on'), 350);
+      }
+    }, 90);
+  }
+
+  // клик по per-row action-кнопке (Freeze / Resume)
+  document.querySelectorAll('.sess-item').forEach(item => {
+    const actBtn = item.querySelector('.sess-act:not(.sess-act--danger)');
+    if (!actBtn) return;
+    actBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      // делаем сессию активной визуально
+      setActiveSession(item);
+
+      const cur = item.dataset.status;
+      if (cur === 'live') {
+        // пауза: LIVE → IDLE
+        item.dataset.status = 'idle';
+        syncSessionRowUI(item);
+        sessDot.className = 'header__center-dot is-idle';
+        refreshFabState();
+      } else {
+        // запуск: IDLE/FROZEN → LIVE (с эксклюзивностью и shimmer-загрузкой)
         document.querySelectorAll('.sess-item').forEach(other => {
-          if (other !== active && other.dataset.status === 'live') {
+          if (other !== item && other.dataset.status === 'live') {
             other.dataset.status = 'frozen';
             syncSessionRowUI(other);
           }
         });
+        item.dataset.status = 'live';
+        syncSessionRowUI(item);
+        sessDot.className = 'header__center-dot is-live';
+        loadSession(item, actBtn);
+        refreshFabState();
       }
-      syncSessionRowUI(active);
-      refreshPlayPause(next);
     });
+  });
+
+  // ─── синхронизация FAB play/pause с активной сессией ───
+  function refreshFabState() {
+    const fab = document.getElementById('fabPlay');
+    const active = document.querySelector('.sess-item.is-active');
+    if (!fab || !active) return;
+    const state = active.dataset.status === 'live' ? 'live' : 'paused';
+    fab.dataset.state = state;
+    fab.innerHTML = state === 'live'
+      ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    if (state === 'live') pauseMeters(false); else pauseMeters(true);
   }
 
   // редактирование заголовка сессии прямо в header
@@ -1895,7 +1921,7 @@ body {
     });
   }
 
-  // ─── FAB play/pause ───
+  // ─── FAB play/pause — синхронизирован с активной сессией ───
   const fabPlay = document.getElementById('fabPlay');
   const FAB_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
   const FAB_PLAY  = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
@@ -1915,11 +1941,16 @@ body {
   }
   if (fabPlay) {
     fabPlay.addEventListener('click', () => {
+      // если есть активная сессия — кликаем её per-row кнопку (логика та же)
+      const active = document.querySelector('.sess-item.is-active');
+      if (active) {
+        active.querySelector('.sess-act:not(.sess-act--danger)').click();
+        return;
+      }
+      // нет активной — fallback к старой логике
       const cur = fabPlay.dataset.state;
       const next = cur === 'live' ? 'paused' : 'live';
       refreshFab(next);
-      const pp = document.getElementById('playPause');
-      if (pp && pp.dataset.status !== next) pp.click();
     });
   }
 
