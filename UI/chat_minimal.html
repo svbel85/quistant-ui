@@ -172,6 +172,17 @@ body {
   color: var(--accent-2);
   border-color: var(--accent);
   border-left-color: var(--accent);
+  width: 22px;
+  box-shadow: -2px 0 12px rgba(132,132,214,.4), 0 0 0 1px var(--accent) inset;
+}
+.app.is-bottom-open .bottom-toggle::before {
+  content: '';
+  position: absolute;
+  left: 4px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 14px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(132,132,214,.7);
 }
 .app.is-bottom-open .bottom-toggle svg { transform: rotate(180deg); }
 
@@ -208,8 +219,24 @@ body {
   background: var(--accent-soft);
   color: var(--accent-2);
   border-color: var(--accent);
+  box-shadow: -2px 0 12px rgba(132,132,214,.4), 0 0 0 1px var(--accent) inset;
+  width: 22px;
+}
+.app.is-sources-open .panel-toggle--left[data-side="sources"]::before,
+.app.is-capture-open .panel-toggle--left[data-side="capture"]::before {
+  content: '';
+  position: absolute;
+  left: 4px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 14px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(132,132,214,.7);
 }
 .panel-toggle--left svg { transform: scaleX(-1); }
+.app.is-sources-open .panel-toggle--left[data-side="sources"] svg,
+.app.is-capture-open .panel-toggle--left[data-side="capture"] svg {
+  transform: scaleX(1);
+}
 
 /* два левых тоггла стекаются вертикально */
 .panel-toggle--left[data-side="sources"] { top: calc(50% - 32px); }
@@ -229,6 +256,18 @@ body {
   background: var(--accent-soft);
   color: var(--accent-2);
   border-color: var(--accent);
+  box-shadow: 2px 0 12px rgba(132,132,214,.4), 0 0 0 1px var(--accent) inset;
+  width: 22px;
+}
+.app.is-sessions-open .panel-toggle--right[data-side="sessions"]::before,
+.app.is-windows-open .panel-toggle--right[data-side="windows"]::before {
+  content: '';
+  position: absolute;
+  right: 4px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 14px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(132,132,214,.7);
 }
 /* два правых стекаются по вертикали (зеркально левым) */
 .panel-toggle--right[data-side="sessions"] { top: calc(50% - 32px); }
