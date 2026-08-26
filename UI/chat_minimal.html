@@ -72,13 +72,14 @@ body {
 .panel--bottom { display: none; }
 .app.is-bottom-open .panel--bottom { display: flex; }
 
-/* кнопка-переключатель: вертикальная пилюля у левого края чата, в линию с composer'ом */
+/* кнопка-переключатель: вертикальная пилюля у левого края чата,
+   той же высоты что и composer__box (≈44px) для выравнивания в одну линию */
 .bottom-toggle {
   position: fixed;
   bottom: 18px;
   left: 0;
   z-index: 60;
-  width: 18px; height: 38px;
+  width: 18px; height: 44px;
   display: flex; align-items: center; justify-content: center;
   background: var(--bg-2);
   border: 1px solid var(--border);
