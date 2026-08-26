@@ -1235,12 +1235,12 @@ body {
       </button>
 
       <button class="play-pause" id="playPause" data-status="live" title="Запустить / остановить">
-        <span class="play-pause__icon">
+        <span class="play-pause__icon" id="ppIcon">
           <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
         </span>
         <span class="play-pause__text">
-          <span class="play-pause__title">Pause session</span>
-          <span class="play-pause__sub">stops audio capture &amp; hints</span>
+          <span class="play-pause__title" id="ppTitle">Pause session</span>
+          <span class="play-pause__sub" id="ppSub">stops audio capture &amp; hints</span>
         </span>
       </button>
 
@@ -1474,20 +1474,26 @@ body {
   const sessName = document.getElementById('sessName');
   const sessDot  = document.getElementById('sessDot');
   const playPause = document.getElementById('playPause');
+  const ppIcon  = document.getElementById('ppIcon');
+  const ppTitle = document.getElementById('ppTitle');
+  const ppSub   = document.getElementById('ppSub');
+
+  const ICON_LIVE  = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+  const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+
+  function refreshPlayPause(status) {
+    playPause.dataset.status = status;
+    ppIcon.innerHTML  = status === 'live' ? ICON_LIVE : ICON_PAUSE;
+    ppTitle.textContent = status === 'live' ? 'Pause session' : 'Resume session';
+    ppSub.textContent   = status === 'live' ? 'stops audio capture & hints' : 'starts listening & giving hints';
+  }
 
   function setActiveSession(item) {
     document.querySelectorAll('.sess-item').forEach(s => s.classList.remove('is-active'));
     item.classList.add('is-active');
-    const name = item.dataset.name;
-    const status = item.dataset.status;
-    sessName.textContent = name;
-    sessDot.className = 'header__center-dot is-' + status;
-    if (playPause) {
-      playPause.dataset.status = status;
-      playPause.innerHTML = status === 'live'
-        ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>'
-        : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-    }
+    sessName.textContent = item.dataset.name;
+    sessDot.className = 'header__center-dot is-' + item.dataset.status;
+    refreshPlayPause(item.dataset.status);
   }
 
   document.querySelectorAll('.sess-item').forEach(item => {
@@ -1513,7 +1519,7 @@ body {
         stat.className = 'sess-item__status is-idle';
         stat.innerHTML = '<span class="d"></span>IDLE';
       }
-      setActiveSession(active);
+      refreshPlayPause(next);
     });
   }
 
