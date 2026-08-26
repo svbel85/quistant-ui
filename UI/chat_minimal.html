@@ -784,6 +784,21 @@ body {
 .sess-tag--sal   { background: var(--warn); }
 .sess-tag--lec   { background: var(--kb); }
 
+/* model badge (Fast / Heavy) */
+.sess-model {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  font-size: 9.5px;
+  font-weight: 600;
+  font-family: 'Geist Mono', monospace;
+  letter-spacing: .04em;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+.sess-model--fast  { background: rgba(132,191,214,.12); color: var(--kb); border: 1px solid rgba(132,191,214,.3); }
+.sess-model--heavy { background: var(--accent-soft); color: var(--accent-2); border: 1px solid rgba(132,132,214,.35); }
+
 /* big play/pause button — самое видное место */
 .play-pause {
   width: 100%;
@@ -1233,16 +1248,14 @@ body {
 
       <div class="sess-list" id="sessList">
 
-        <div class="sess-item is-active" data-id="coding" data-name="Coding Helper" data-model="Claude Sonnet 4" data-status="live" data-context="N=10">
+        <div class="sess-item is-active" data-id="coding" data-name="Coding Helper" data-model="Heavy" data-status="live" data-context="N=10">
           <div class="sess-item__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
           <div class="sess-item__body">
-            <div class="sess-item__name"><span class="sess-tag sess-tag--dev"></span>Coding Helper</div>
+            <div class="sess-item__name"><span class="sess-tag sess-tag--dev"></span>Coding Helper <span class="sess-model sess-model--heavy">Heavy</span></div>
             <div class="sess-item__meta">
               <span class="sess-item__status is-live"><span class="d"></span>LIVE</span>
-              <span>·</span>
-              <span>Claude Sonnet 4</span>
               <span>·</span>
               <span>13:55</span>
             </div>
@@ -1257,16 +1270,14 @@ body {
           </div>
         </div>
 
-        <div class="sess-item" data-id="behavioral" data-name="Behavioral Coach" data-model="Claude Haiku 4" data-status="idle" data-context="N=5">
+        <div class="sess-item" data-id="behavioral" data-name="Behavioral Coach" data-model="Fast" data-status="idle" data-context="N=5">
           <div class="sess-item__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
           </div>
           <div class="sess-item__body">
-            <div class="sess-item__name"><span class="sess-tag sess-tag--beh"></span>Behavioral Coach</div>
+            <div class="sess-item__name"><span class="sess-tag sess-tag--beh"></span>Behavioral Coach <span class="sess-model sess-model--fast">Fast</span></div>
             <div class="sess-item__meta">
               <span class="sess-item__status is-idle"><span class="d"></span>IDLE</span>
-              <span>·</span>
-              <span>Claude Haiku 4</span>
               <span>·</span>
               <span>2h ago</span>
             </div>
@@ -1281,16 +1292,14 @@ body {
           </div>
         </div>
 
-        <div class="sess-item" data-id="salary" data-name="Salary Negotiator" data-model="GPT-4o mini" data-status="frozen" data-context="N=8">
+        <div class="sess-item" data-id="salary" data-name="Salary Negotiator" data-model="Fast" data-status="frozen" data-context="N=8">
           <div class="sess-item__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="4.93" y1="19.07" x2="19.07" y2="4.93"/></svg>
           </div>
           <div class="sess-item__body">
-            <div class="sess-item__name"><span class="sess-tag sess-tag--sal"></span>Salary Negotiator</div>
+            <div class="sess-item__name"><span class="sess-tag sess-tag--sal"></span>Salary Negotiator <span class="sess-model sess-model--fast">Fast</span></div>
             <div class="sess-item__meta">
               <span class="sess-item__status is-frozen"><span class="d"></span>FROZEN</span>
-              <span>·</span>
-              <span>GPT-4o mini</span>
               <span>·</span>
               <span>3d ago</span>
             </div>
@@ -1305,16 +1314,14 @@ body {
           </div>
         </div>
 
-        <div class="sess-item" data-id="lecture" data-name="Lecture Notes" data-model="glm-4.7" data-status="idle" data-context="N=0">
+        <div class="sess-item" data-id="lecture" data-name="Lecture Notes" data-model="Fast" data-status="idle" data-context="N=0">
           <div class="sess-item__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
           </div>
           <div class="sess-item__body">
-            <div class="sess-item__name"><span class="sess-tag sess-tag--lec"></span>Lecture Notes</div>
+            <div class="sess-item__name"><span class="sess-tag sess-tag--lec"></span>Lecture Notes <span class="sess-model sess-model--fast">Fast</span></div>
             <div class="sess-item__meta">
               <span class="sess-item__status is-idle"><span class="d"></span>IDLE</span>
-              <span>·</span>
-              <span>glm-4.7</span>
               <span>·</span>
               <span>1w ago</span>
             </div>
