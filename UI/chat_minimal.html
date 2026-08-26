@@ -1781,9 +1781,32 @@ body {
     ppSub.textContent   = status === 'live' ? 'stops audio capture & hints' : 'starts listening & giving hints';
   }
 
+  function syncSessionRowUI(item) {
+    const dot = item.querySelector('.d');
+    const stat = item.querySelector('.sess-item__status');
+    const s = item.dataset.status;
+    stat.className = 'sess-item__status is-' + s;
+    stat.innerHTML = '<span class="d"></span>' + s.toUpperCase();
+  }
+
   function setActiveSession(item) {
     document.querySelectorAll('.sess-item').forEach(s => s.classList.remove('is-active'));
     item.classList.add('is-active');
+
+    // все сессии, что были LIVE, переводим в FROZEN — активной может быть только одна
+    document.querySelectorAll('.sess-item').forEach(other => {
+      if (other !== item && other.dataset.status === 'live') {
+        other.dataset.status = 'frozen';
+        syncSessionRowUI(other);
+      }
+    });
+
+    // выбранная сессия: если была IDLE/FROZEN — автоматически делаем LIVE
+    if (item.dataset.status !== 'live') {
+      item.dataset.status = 'live';
+      syncSessionRowUI(item);
+    }
+
     sessName.textContent = item.dataset.name;
     sessDot.className = 'header__center-dot is-' + item.dataset.status;
     refreshPlayPause(item.dataset.status);
@@ -1801,17 +1824,16 @@ body {
       const cur = active.dataset.status;
       const next = cur === 'live' ? 'idle' : 'live';
       active.dataset.status = next;
-      const dot = active.querySelector('.d');
-      const stat = active.querySelector('.sess-item__status');
+      // если делаем LIVE — все остальные замораживаем
       if (next === 'live') {
-        dot.style.background = 'var(--live)';
-        stat.className = 'sess-item__status is-live';
-        stat.innerHTML = '<span class="d"></span>LIVE';
-      } else {
-        dot.style.background = 'var(--muted-2)';
-        stat.className = 'sess-item__status is-idle';
-        stat.innerHTML = '<span class="d"></span>IDLE';
+        document.querySelectorAll('.sess-item').forEach(other => {
+          if (other !== active && other.dataset.status === 'live') {
+            other.dataset.status = 'frozen';
+            syncSessionRowUI(other);
+          }
+        });
       }
+      syncSessionRowUI(active);
       refreshPlayPause(next);
     });
   }
