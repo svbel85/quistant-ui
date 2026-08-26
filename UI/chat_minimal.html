@@ -1,0 +1,1591 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quistan — Чат</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:         #0B0B0E;
+  --bg-1:       #141419;
+  --bg-2:       #1E1E24;
+  --bg-3:       #27272F;
+  --border:     #2D2D38;
+  --border-2:   #38384A;
+  --text:       #DBDBE0;
+  --text-2:     #B0B0BD;
+  --muted:      #9090A1;
+  --muted-2:    #5E5E70;
+  --accent:     #8484D6;
+  --accent-2:   #9C9CE0;
+  --accent-soft:rgba(132,132,214,.12);
+  --live:       #94D07A;
+  --solo:       #B497D7;
+  --kb:         #84BFD6;
+  --warn:       #D6BC84;
+  --danger:     #D28079;
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  background: var(--bg) url('obsidian.png') center / cover no-repeat fixed;
+  background-blend-mode: luminosity;
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* ════════════ APP GRID ════════════ */
+.app {
+  display: grid;
+  grid-template-columns: 0 1fr 0;
+  height: 100vh;
+  transition: grid-template-columns .25s ease;
+}
+.app.is-sources-open { grid-template-columns: 260px 1fr 0; }
+.app.is-capture-open { grid-template-columns: 260px 1fr 0; }
+.app.is-sessions-open,
+.app.is-windows-open   { grid-template-columns: 0 1fr 320px; }
+.app.is-sources-open.is-sessions-open,
+.app.is-capture-open.is-sessions-open,
+.app.is-sources-open.is-windows-open,
+.app.is-capture-open.is-windows-open { grid-template-columns: 260px 1fr 320px; }
+
+/* ════════════ PANEL TOGGLES (плавающие, на гранях) ════════════ */
+.panel-toggle {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  width: 25px; height: 56px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+}
+.panel-toggle:hover {
+  background: var(--bg-3);
+  color: var(--accent-2);
+  border-color: var(--accent);
+}
+.panel-toggle svg { width: 13px; height: 13px; }
+
+/* left toggle — сидит у левого края экрана, при открытой панели сдвигается к её правому краю */
+.panel-toggle--left {
+  left: 0;
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+}
+.app.is-sources-open .panel-toggle--left[data-side="sources"],
+.app.is-capture-open .panel-toggle--left[data-side="capture"] {
+  left: 260px;
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  border-color: var(--accent);
+}
+.panel-toggle--left svg { transform: scaleX(-1); }
+
+/* два левых тоггла стекаются вертикально */
+.panel-toggle--left[data-side="sources"] { top: calc(50% - 32px); }
+.panel-toggle--left[data-side="capture"] { top: calc(50% + 32px); }
+.app.is-sources-open .panel-toggle--left[data-side="sources"] { top: calc(50% - 32px); }
+.app.is-capture-open .panel-toggle--left[data-side="capture"] { top: calc(50% + 32px); }
+
+/* right toggle */
+.panel-toggle--right {
+  right: 0;
+  border-right: none;
+  border-radius: 10px 0 0 10px;
+}
+.app.is-sessions-open .panel-toggle--right[data-side="sessions"],
+.app.is-windows-open .panel-toggle--right[data-side="windows"] {
+  right: 320px;
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  border-color: var(--accent);
+}
+/* два правых стекаются по вертикали (зеркально левым) */
+.panel-toggle--right[data-side="sessions"] { top: calc(50% - 32px); }
+.panel-toggle--right[data-side="windows"]  { top: calc(50% + 32px); }
+
+/* tooltip */
+.panel-toggle { position: fixed; }
+.panel-toggle::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 8px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 11px;
+  font-family: 'Geist Mono', monospace;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s;
+}
+.panel-toggle--left::after  { left: calc(100% + 10px); }
+.panel-toggle--right::after { right: calc(100% + 10px); }
+.panel-toggle:hover::after { opacity: 1; }
+
+/* ════════════ SIDE PANELS ════════════ */
+.panel {
+  background: var(--bg-1);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.panel--right {
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+/* явное размещение в grid */
+.panel--sources   { grid-column: 1; grid-row: 1; }
+.panel--capture   { grid-column: 1; grid-row: 1; }
+.window           { grid-column: 2; grid-row: 1; }
+.panel--sessions  { grid-column: 3; grid-row: 1; }
+.panel--windows   { grid-column: 3; grid-row: 1; }
+/* переключаемость левых */
+.panel--capture { display: none; }
+.app.is-capture-open .panel--capture { display: flex; }
+.app.is-capture-open .panel--sources { display: none; }
+/* переключаемость правых */
+.panel--windows { display: none; }
+.app.is-windows-open .panel--windows { display: flex; }
+.app.is-windows-open .panel--sessions { display: none; }
+.panel__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted-2);
+  font-family: 'Geist Mono', monospace;
+  flex-shrink: 0;
+}
+.panel__close {
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none;
+  color: var(--muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.panel__close:hover { background: var(--bg-3); color: var(--text); }
+.panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.panel__empty {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: var(--muted-2);
+  gap: 10px;
+  padding: 24px;
+}
+.panel__empty svg { width: 36px; height: 36px; opacity: .5; }
+.panel__empty p { margin: 0; font-size: 12.5px; }
+
+/* ════════════ CENTER WINDOW ════════════ */
+.window {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ════════════ HEADER ════════════ */
+.header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+  flex-shrink: 0;
+}
+.brand {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 700; font-size: 15px;
+  letter-spacing: -.01em;
+  color: var(--text);
+}
+.brand svg { flex-shrink: 0; }
+
+.header__divider { width: 1px; height: 20px; background: var(--border); }
+
+/* centered session title */
+.header { position: relative; }
+.header__center {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; align-items: center; gap: 10px;
+  pointer-events: none;
+}
+.header__center > * { pointer-events: auto; }
+.header__center-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+}
+.header__center-dot.is-live   { background: var(--live); box-shadow: 0 0 8px rgba(148,208,122,.6); animation: pulse-soft 1.6s ease-in-out infinite; }
+.header__center-dot.is-frozen { background: var(--kb); }
+.header__center-dot.is-idle   { background: var(--muted); }
+.header__center-name {
+  font-size: 13px; font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  cursor: text;
+  transition: background .12s;
+}
+.header__center-name:hover { background: var(--bg-3); }
+.header__center-name[contenteditable="true"] {
+  background: var(--bg-2);
+  outline: 1px solid var(--accent);
+  color: var(--accent-2);
+}
+.header__center-hint {
+  font-size: 10px;
+  font-family: 'Geist Mono', monospace;
+  color: var(--muted-2);
+  white-space: nowrap;
+}
+
+/* audio meters */
+.meter {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 10px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+.meter__icon { width: 12px; height: 12px; color: var(--muted); }
+.meter--in  .meter__icon { color: var(--kb); }
+.meter--out .meter__icon { color: var(--live); }
+.meter__bars {
+  display: flex; align-items: center; gap: 1.5px;
+  height: 12px;
+}
+.meter__bar {
+  width: 2px;
+  background: var(--muted-2);
+  border-radius: 1px;
+  transition: background .1s, height .15s;
+}
+.meter--in  .meter__bar.is-on { background: var(--kb); }
+.meter--out .meter__bar.is-on { background: var(--live); }
+.meter__db {
+  font-size: 10px;
+  color: var(--text-2);
+  min-width: 38px;
+  text-align: right;
+}
+
+.gear {
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none;
+  color: var(--muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all .15s;
+}
+.gear:hover { background: var(--bg-3); color: var(--accent-2); transform: rotate(45deg); }
+.gear--push { margin-left: auto; }
+.gear:not(.gear--push):hover { transform: none; }
+
+/* window controls (Windows-style, крайне справа) */
+.window-ctl {
+  display: flex;
+  margin-left: 8px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border);
+}
+
+/* hide audio meters via toggle */
+.header.meters-hidden .meter { display: none; }
+.header.meters-hidden .meter-toggle svg { transform: rotate(180deg); }
+.header:not(.meters-hidden) .meter-toggle .icon-show { display: none; }
+.header.meters-hidden .meter-toggle .icon-hide { display: none; }
+
+.meter-toggle {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none;
+  color: var(--muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.meter-toggle:hover { background: var(--bg-3); color: var(--text); }
+.meter-toggle svg { transition: transform .2s; }
+.win-btn {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .12s;
+}
+.win-btn:hover { background: var(--bg-3); color: var(--text); }
+.win-btn--close:hover { background: #c42b1c; color: #fff; }
+
+@keyframes pulse-soft { 0%,100% { opacity: 1 } 50% { opacity: .3 } }
+
+/* ════════════ FEED ════════════ */
+.feed {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+}
+.feed::-webkit-scrollbar { width: 8px; }
+.feed::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+.feed::-webkit-scrollbar-thumb:hover { background: var(--border-2); }
+
+.day {
+  display: flex; align-items: center; gap: 14px;
+  margin: 6px 0 18px;
+  color: var(--muted-2);
+  font-size: 11px;
+  font-family: 'Geist Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.day::before, .day::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+.msg {
+  display: flex; gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.msg--user { justify-content: flex-end; }
+.msg__col { flex: 1; min-width: 0; max-width: 78%; }
+.msg--user .msg__col { display: flex; flex-direction: column; align-items: flex-end; }
+
+.msg__meta {
+  font-size: 11px;
+  margin-bottom: 4px;
+  font-family: 'Geist Mono', monospace;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 8px;
+}
+.msg__meta--accent { color: var(--accent-2); }
+.msg__meta--kb { color: var(--kb); }
+.msg__meta--mic { color: var(--live); }
+.msg__meta b { font-weight: 500; }
+
+.bubble {
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 1.55;
+  border-radius: var(--radius-md);
+  max-width: 100%;
+  word-wrap: break-word;
+  border: 1px solid transparent;
+}
+.bubble--user {
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.bubble--user-kb {
+  background: var(--text);
+  color: var(--bg);
+  border-bottom-right-radius: 4px;
+}
+.bubble--other {
+  background: var(--bg-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.bubble--system {
+  background: transparent;
+  color: var(--muted);
+  font-size: 12.5px;
+  text-align: center;
+  border: none;
+  padding: 4px 0;
+}
+.bubble--system code {
+  font-family: 'Geist Mono', monospace;
+  color: var(--accent-2);
+  background: rgba(132,132,214,.08);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.bubble code {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12.5px;
+  background: rgba(0,0,0,.25);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.bubble--user code { background: rgba(255,255,255,.18); color: #fff; }
+
+.avatar-sm {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 12px; color: #fff;
+  flex-shrink: 0;
+}
+.avatar-sm--ai { background: linear-gradient(135deg, var(--accent), var(--solo)); }
+.avatar-sm--other { background: linear-gradient(135deg, var(--solo), var(--accent)); }
+.avatar-sm--user { background: var(--bg-3); color: var(--text); border: 1px solid var(--border); }
+
+.hint {
+  margin-top: 6px;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, rgba(132,132,214,.06), transparent), var(--bg-2);
+  border: 1px solid rgba(132,132,214,.30);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  font-size: 13.5px;
+}
+.hint__head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  color: var(--accent-2);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.hint__head svg { width: 12px; height: 12px; }
+.hint h4 { margin: 0 0 8px; font-size: 14px; color: var(--text); }
+.hint ol, .hint ul { margin: 4px 0 0 18px; padding: 0; color: var(--text-2); line-height: 1.7; font-size: 13px; }
+.hint code {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  background: rgba(0,0,0,.3);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--warn);
+}
+.hint__src {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 6px;
+}
+
+.typing {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 12px 14px;
+}
+.typing span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--muted);
+  animation: pulse-soft 1.2s ease-in-out infinite;
+}
+.typing span:nth-child(2) { animation-delay: .2s; }
+.typing span:nth-child(3) { animation-delay: .4s; }
+
+/* ════════════ COMPOSER ════════════ */
+.composer {
+  padding: 14px 20px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-1);
+  flex-shrink: 0;
+}
+.composer__box {
+  display: flex; align-items: flex-end; gap: 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px 12px 10px;
+  transition: all .15s;
+}
+.composer__box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.composer__input {
+  flex: 1;
+  background: transparent;
+  border: none; outline: none;
+  color: var(--text);
+  font-size: 14.5px;
+  font-family: inherit;
+  resize: none;
+  line-height: 1.5;
+  min-height: 22px;
+  max-height: 160px;
+}
+.composer__input::placeholder { color: var(--muted-2); }
+.composer__send {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent); color: var(--bg);
+  border: none; border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(132,132,214,.25);
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.composer__send:hover { background: var(--accent-2); }
+
+/* paperclip (attach) inside composer */
+.attach-btn {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none;
+  color: var(--muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all .15s;
+  flex-shrink: 0;
+  align-self: flex-end;
+  margin-bottom: 1px;
+}
+.attach-btn:hover { background: var(--bg-3); color: var(--accent-2); }
+.attach-btn.is-active { background: var(--accent-soft); color: var(--accent-2); }
+
+/* checkbox list in panels */
+.src-list { display: flex; flex-direction: column; gap: 4px; }
+.src-list__head {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted-2);
+  margin: 0 0 10px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.src-list__head button {
+  background: none; border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 11px;
+  font-family: 'Geist Mono', monospace;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+.src-list__head button:hover { background: var(--bg-3); color: var(--text-2); }
+
+.src-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background .12s;
+}
+.src-item:hover { background: var(--bg-2); }
+.src-item__box {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border-2);
+  background: var(--bg-1);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all .12s;
+}
+.src-item__box.is-on { background: var(--accent); border-color: var(--accent); }
+.src-item__icon { width: 13px; height: 13px; color: var(--muted); flex-shrink: 0; }
+.src-item__body { flex: 1; min-width: 0; }
+.src-item__name {
+  font-size: 12.5px;
+  color: var(--text-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.src-item__name b { color: var(--text); font-weight: 500; }
+.src-item__meta {
+  font-size: 10.5px;
+  font-family: 'Geist Mono', monospace;
+  color: var(--muted-2);
+  margin-top: 2px;
+  display: flex; gap: 6px;
+}
+.src-item__score { color: var(--live); }
+
+.src-divider {
+  height: 1px; background: var(--border); margin: 10px 0;
+}
+
+/* capture panel helpers */
+.row-line {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+.row-line span:last-child { font-size: 11px; }
+
+.range {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px; background: var(--bg-3);
+  border-radius: 999px; outline: none;
+  cursor: pointer;
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--bg-1);
+  cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(132,132,214,.15);
+}
+.range::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--bg-1);
+  cursor: pointer;
+}
+
+.switch {
+  position: relative; display: inline-block;
+  width: 32px; height: 18px;
+  background: var(--bg-3); border: 1px solid var(--border);
+  border-radius: 999px; cursor: pointer;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.switch::after {
+  content: ''; position: absolute; left: 2px; top: 1px;
+  width: 12px; height: 12px; background: var(--muted);
+  border-radius: 50%; transition: all .15s;
+}
+.switch.on { background: var(--accent); border-color: var(--accent); }
+.switch.on::after { left: 16px; background: #fff; }
+
+/* sessions list in right panel */
+.sess-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background .12s;
+  margin-bottom: 4px;
+  position: relative;
+}
+.sess-item:hover { background: var(--bg-2); }
+.sess-item.is-active {
+  background: var(--accent-soft);
+  outline: 1px solid rgba(132,132,214,.35);
+}
+.sess-item.is-active .sess-item__name { color: var(--accent-2); }
+.sess-item__icon {
+  width: 30px; height: 30px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-3);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+.sess-item.is-active .sess-item__icon { background: rgba(132,132,214,.18); color: var(--accent-2); }
+.sess-item__icon svg { width: 14px; height: 14px; }
+.sess-item__body { flex: 1; min-width: 0; }
+.sess-item__name {
+  font-size: 13px; font-weight: 500;
+  color: var(--text-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sess-item__meta {
+  font-size: 10.5px;
+  font-family: 'Geist Mono', monospace;
+  color: var(--muted-2);
+  margin-top: 2px;
+  display: flex; align-items: center; gap: 6px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sess-item__status {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-weight: 500;
+}
+.sess-item__status .d {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.sess-item__status.is-live   { color: var(--live); }
+.sess-item__status.is-live   .d { background: var(--live); box-shadow: 0 0 6px rgba(148,208,122,.5); }
+.sess-item__status.is-frozen { color: var(--kb); }
+.sess-item__status.is-frozen .d { background: var(--kb); }
+.sess-item__status.is-idle   { color: var(--muted); }
+.sess-item__status.is-idle   .d { background: var(--muted-2); }
+.sess-item__acts {
+  display: flex; gap: 2px;
+  opacity: 0;
+  transition: opacity .12s;
+}
+.sess-item:hover .sess-item__acts,
+.sess-item.is-active .sess-item__acts { opacity: 1; }
+.sess-act {
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none;
+  color: var(--muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.sess-act:hover { background: var(--bg-3); color: var(--text); }
+.sess-act--danger:hover { background: rgba(210,128,121,.15); color: var(--danger); }
+.sess-act svg { width: 12px; height: 12px; }
+
+.new-sess-btn {
+  width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 9px;
+  background: var(--bg-1);
+  border: 1px dashed var(--border-2);
+  border-radius: var(--radius-md);
+  color: var(--text-2);
+  font-family: inherit; font-size: 12.5px; font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+  margin-bottom: 12px;
+}
+.new-sess-btn:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-2); border-style: solid; }
+.new-sess-btn svg { width: 13px; height: 13px; }
+
+/* session color tag */
+.sess-tag {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.sess-tag--dev   { background: var(--live); box-shadow: 0 0 6px rgba(148,208,122,.5); }
+.sess-tag--beh   { background: var(--solo); }
+.sess-tag--sal   { background: var(--warn); }
+.sess-tag--lec   { background: var(--kb); }
+
+/* big play/pause button — самое видное место */
+.play-pause {
+  width: 100%;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  cursor: pointer;
+  transition: all .15s;
+  font-family: inherit;
+  font-size: 13px; font-weight: 500;
+  text-align: left;
+}
+.play-pause:hover { background: var(--bg-3); border-color: var(--border-2); }
+.play-pause__icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.play-pause__icon svg { width: 14px; height: 14px; }
+.play-pause__text { display: flex; flex-direction: column; line-height: 1.2; }
+.play-pause__title { font-size: 13px; font-weight: 600; color: var(--text); }
+.play-pause__sub { font-size: 11px; color: var(--muted); font-family: 'Geist Mono', monospace; margin-top: 2px; }
+.play-pause[data-status="live"] .play-pause__icon { background: var(--live); box-shadow: 0 0 12px rgba(148,208,122,.4); }
+
+/* screen capture buttons */
+.cap-region {
+  width: 100%;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 12px;
+  background: var(--bg-2);
+  border: 1.5px dashed var(--border-2);
+  border-radius: var(--radius-md);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all .15s;
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+}
+.cap-region:hover { border-color: var(--accent); color: var(--accent-2); background: rgba(132,132,214,.04); }
+.cap-region.is-picking { border-style: solid; border-color: var(--accent); background: var(--accent-soft); color: var(--accent-2); }
+.cap-region__hint {
+  margin-left: auto;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  color: var(--muted-2);
+}
+.cap-region.is-set .cap-region__hint { color: var(--live); }
+
+.cap-btn {
+  width: 100%;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all .15s;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  text-align: left;
+  margin-bottom: 8px;
+}
+.cap-btn:last-child { margin-bottom: 0; }
+.cap-btn:hover { background: var(--bg-2); border-color: var(--border-2); color: var(--text); }
+.cap-btn svg { color: var(--muted); flex-shrink: 0; }
+.cap-btn:hover svg { color: var(--accent-2); }
+.cap-btn--primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.cap-btn--primary:hover { background: var(--accent-2); border-color: var(--accent-2); color: #fff; }
+.cap-btn--primary svg { color: #fff; }
+.cap-btn--primary:hover svg { color: #fff; }
+.cap-btn__kbd {
+  margin-left: auto;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  padding: 2px 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--muted);
+}
+.cap-btn--primary .cap-btn__kbd { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.25); color: rgba(255,255,255,.85); }
+</style>
+</head>
+
+<body>
+
+<div class="app" id="app">
+
+  <!-- LEFT PANEL: SOURCES -->
+  <aside class="panel panel--left panel--sources" id="sourcesPanel">
+    <div class="panel__head">
+      <span>Knowledge sources</span>
+      <button class="panel__close" onclick="togglePanel('sources')" title="Скрыть">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+    </div>
+    <div class="panel__body">
+      <div class="src-list__head">
+        <span>Active sources</span>
+      </div>
+
+      <div class="src-list" id="srcList">
+
+        <label class="src-item">
+          <span class="src-item__box is-on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg></span>
+          <svg class="src-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <div class="src-item__body">
+            <div class="src-item__name"><b>System-Design-Primer</b></div>
+            <div class="src-item__meta"><span>142 files</span><span class="src-item__score">92%</span></div>
+          </div>
+        </label>
+
+        <label class="src-item">
+          <span class="src-item__box is-on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg></span>
+          <svg class="src-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <div class="src-item__body">
+            <div class="src-item__name">fan-out-strategies.md</div>
+            <div class="src-item__meta"><span>notes/</span><span class="src-item__score">87%</span></div>
+          </div>
+        </label>
+
+        <label class="src-item">
+          <span class="src-item__box is-on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg></span>
+          <svg class="src-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+          <div class="src-item__body">
+            <div class="src-item__name">highscalability.com</div>
+            <div class="src-item__meta"><span>web</span><span class="src-item__score">79%</span></div>
+          </div>
+        </label>
+
+        <div class="src-divider"></div>
+
+        <label class="src-item">
+          <span class="src-item__box"></span>
+          <svg class="src-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <div class="src-item__body">
+            <div class="src-item__name">Behavioral Bank</div>
+            <div class="src-item__meta"><span>68 files</span></div>
+          </div>
+        </label>
+
+        <label class="src-item">
+          <span class="src-item__box"></span>
+          <svg class="src-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <div class="src-item__body">
+            <div class="src-item__name">Salary Notes</div>
+            <div class="src-item__meta"><span>24 files</span></div>
+          </div>
+        </label>
+
+        <label class="src-item">
+          <span class="src-item__box"></span>
+          <svg class="src-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <div class="src-item__body">
+            <div class="src-item__name">3Blue1Brown transcripts</div>
+            <div class="src-item__meta"><span>31 files</span></div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER -->
+  <div class="window">
+
+    <!-- HEADER (теперь только brand + meters + settings) -->
+    <header class="header">
+      <div class="brand">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="#8484D6"/>
+          <text x="12" y="16" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="Inter">Q</text>
+        </svg>
+        Quistan
+      </div>
+
+      <div class="header__divider"></div>
+
+      <div class="meter meter--in" title="Incoming audio">
+        <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <div class="meter__bars" id="meterIn"></div>
+        <span class="meter__db" id="dbIn">−∞ dB</span>
+      </div>
+
+      <div class="meter meter--out" title="Outgoing audio">
+        <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
+        <div class="meter__bars" id="meterOut"></div>
+        <span class="meter__db" id="dbOut">−∞ dB</span>
+      </div>
+
+      <button class="meter-toggle" id="meterToggle" title="Скрыть / показать микрофоны">
+        <svg class="icon-hide" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        <svg class="icon-show" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m18 15-6-6-6 6"/></svg>
+      </button>
+
+      <!-- centered: current session title (editable) -->
+      <div class="header__center" id="headerCenter">
+        <span class="header__center-dot is-live" id="sessDot"></span>
+        <div class="header__center-name" id="sessName" contenteditable="false" spellcheck="false">Coding Helper</div>
+      </div>
+
+      <button class="gear gear--push" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+
+      <div class="window-ctl">
+        <button class="win-btn" title="Свернуть">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="win-btn" title="Развернуть">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
+        </button>
+        <button class="win-btn win-btn--close" title="Закрыть">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+        </button>
+      </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </header>
+
+    <!-- FEED -->
+    <main class="feed">
+      <div class="day">Today · 26 Aug</div>
+
+      <div class="bubble bubble--system">
+        ⚙ Context activated: <code>System-Design-Primer/06-twitter.md</code> · N=10 · Claude Sonnet 4
+      </div>
+
+      <div class="msg">
+        <div class="avatar-sm avatar-sm--other">И</div>
+        <div class="msg__col">
+          <div class="msg__meta"><b>Interviewer</b> · 13:55:12 · Google Meet</div>
+          <div class="bubble bubble--other">Tell me, how would you design an event processing system for a Twitter-like service?</div>
+        </div>
+      </div>
+
+      <div class="msg">
+        <div class="avatar-sm avatar-sm--ai">Q</div>
+        <div class="msg__col">
+          <div class="msg__meta msg__meta--accent">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>
+            <b>Quistan · hint</b> · 13:55:08
+          </div>
+          <div class="hint">
+            <div class="hint__head">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+              System Design — Event-driven architecture
+            </div>
+            <h4>Answer building blocks:</h4>
+            <ol>
+              <li><code>Kafka</code> as event queue (feed, likes, follows)</li>
+              <li>Fan-out services by event type</li>
+              <li>Materialized view in <code>Cassandra</code> for timeline</li>
+              <li>Cache layer <code>Redis</code> for hot timelines</li>
+            </ol>
+            <div class="hint__src">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              found in System-Design-Primer/06-twitter.md · line 142
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg msg--user">
+        <div class="msg__col">
+          <div class="msg__meta msg__meta--mic" style="justify-content:flex-end">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
+            <b>microphone</b> · 13:55:38
+          </div>
+          <div class="bubble bubble--user">I'd start by separating <code>write-path</code> and <code>read-path</code>. For writes — Kafka with partitioning by user_id, for reads — pre-computed timelines in Cassandra.</div>
+        </div>
+        <div class="avatar-sm avatar-sm--user">Я</div>
+      </div>
+
+      <div class="msg">
+        <div class="avatar-sm avatar-sm--other">И</div>
+        <div class="msg__col">
+          <div class="msg__meta"><b>Interviewer</b> · 13:56:04</div>
+          <div class="bubble bubble--other">Good. What about fan-out — push or pull?</div>
+        </div>
+      </div>
+
+      <div class="msg msg--user">
+        <div class="msg__col">
+          <div class="msg__meta msg__meta--kb" style="justify-content:flex-end">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+            <b>keyboard</b> · 13:56:31
+          </div>
+          <div class="bubble bubble--user-kb">What to answer about consistency?</div>
+        </div>
+        <div class="avatar-sm avatar-sm--user">Я</div>
+      </div>
+
+      <div class="msg">
+        <div class="avatar-sm avatar-sm--ai">Q</div>
+        <div class="msg__col">
+          <div class="msg__meta msg__meta--accent">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>
+            <b>Quistan · quick answer</b> · 13:56:33
+          </div>
+          <div class="hint">
+            <div class="hint__head">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.2-8.55"/></svg>
+              Hybrid fan-out (push + pull)
+            </div>
+            <ul>
+              <li><b>Push</b> for regular users (≤ 10k followers) — fan-out-on-write in timeline</li>
+              <li><b>Pull</b> for celebrities — fan-out-on-read, merge on the fly</li>
+              <li>Consistency: <code>eventual</code> for feeds, <code>strong</code> only for likes/follows</li>
+            </ul>
+            <div class="hint__src">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.5-4.5"/></svg>
+              3 relevant chunks from System-Design-Primer + 1 from HighScalability
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg msg--user">
+        <div class="msg__col">
+          <div class="msg__meta msg__meta--mic" style="justify-content:flex-end">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
+            <b>microphone</b> · 13:56:58
+          </div>
+          <div class="bubble bubble--user">I'd go hybrid: push for regular users, pull for celebrities. Consistency — eventual for feeds, strong only for likes and follows.</div>
+        </div>
+        <div class="avatar-sm avatar-sm--user">Я</div>
+      </div>
+
+      <div class="msg">
+        <div class="avatar-sm avatar-sm--other">И</div>
+        <div class="msg__col">
+          <div class="msg__meta"><b>Interviewer</b> · 13:57:24</div>
+          <div class="bubble bubble--other">Ok, last question. How will you count metrics and monitor latencies?</div>
+        </div>
+      </div>
+
+      <div class="msg">
+        <div class="avatar-sm avatar-sm--ai">Q</div>
+        <div class="msg__col">
+          <div class="msg__meta msg__meta--accent"><b>Quistan</b> is thinking</div>
+          <div class="bubble bubble--other typing">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- COMPOSER -->
+    <footer class="composer">
+      <div class="composer__box">
+        <button class="attach-btn" title="Прикрепить файл">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m21.4 11-8.8 8.8a5 5 0 0 1-7-7l8.8-8.8a3.5 3.5 0 1 1 5 5l-8.8 8.8a2 2 0 1 1-2.8-2.8l8.5-8.5"/></svg>
+        </button>
+        <textarea class="composer__input" rows="1" placeholder="Write to Quistan…"></textarea>
+        <button class="composer__send" title="Send">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        </button>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- LEFT PANEL: SCREEN CAPTURE -->
+  <aside class="panel panel--left panel--capture" id="capturePanel">
+    <div class="panel__head">
+      <span>Screen capture</span>
+      <button class="panel__close" onclick="togglePanel('capture')" title="Скрыть">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+    </div>
+    <div class="panel__body">
+
+      <div class="src-list__head"><span>Region</span></div>
+
+      <button class="cap-region" id="capRegion" title="Выделить область экрана">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 8V6a2 2 0 0 1 2-2h2"/>
+          <path d="M20 8V6a2 2 0 0 0-2-2h-2"/>
+          <path d="M4 16v2a2 2 0 0 0 2 2h2"/>
+          <path d="M20 16v2a2 2 0 0 1-2 2h-2"/>
+          <path d="M4 12h16"/>
+        </svg>
+        <span>Select region</span>
+        <span class="cap-region__hint" id="capRegionHint">not set</span>
+      </button>
+
+      <div class="src-divider"></div>
+      <div class="src-list__head"><span>Capture</span></div>
+
+      <button class="cap-btn cap-btn--primary" id="capShotRegion">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 7h3l2-2h4l2 2h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
+          <circle cx="12" cy="13" r="3.5"/>
+        </svg>
+        <span>Screenshot region</span>
+        <span class="cap-btn__kbd">Ctrl+Shift+4</span>
+      </button>
+
+      <button class="cap-btn" id="capShotFull">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="13" rx="2"/>
+          <path d="M8 21h8M12 17v4"/>
+        </svg>
+        <span>Screenshot full screen</span>
+        <span class="cap-btn__kbd">Ctrl+Shift+3</span>
+      </button>
+
+    </div>
+  </aside>
+
+  <!-- RIGHT PANEL: SESSIONS -->
+  <aside class="panel panel--right panel--sessions" id="sessionsPanel">
+    <div class="panel__head">
+      <span>Sessions</span>
+      <button class="panel__close" onclick="togglePanel('sessions')" title="Скрыть">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+    <div class="panel__body">
+
+      <button class="new-sess-btn" title="Создать новую сессию">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        New session
+      </button>
+
+      <button class="play-pause" id="playPause" data-status="live" title="Запустить / остановить">
+        <span class="play-pause__icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+        </span>
+        <span class="play-pause__text">
+          <span class="play-pause__title">Pause session</span>
+          <span class="play-pause__sub">stops audio capture &amp; hints</span>
+        </span>
+      </button>
+
+      <div class="sess-list" id="sessList">
+
+        <div class="sess-item is-active" data-id="coding" data-name="Coding Helper" data-model="Claude Sonnet 4" data-status="live" data-context="N=10">
+          <div class="sess-item__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="sess-item__body">
+            <div class="sess-item__name"><span class="sess-tag sess-tag--dev"></span>Coding Helper</div>
+            <div class="sess-item__meta">
+              <span class="sess-item__status is-live"><span class="d"></span>LIVE</span>
+              <span>·</span>
+              <span>Claude Sonnet 4</span>
+              <span>·</span>
+              <span>13:55</span>
+            </div>
+          </div>
+          <div class="sess-item__acts">
+            <button class="sess-act" title="Freeze" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="4.93" y1="19.07" x2="19.07" y2="4.93"/></svg>
+            </button>
+            <button class="sess-act sess-act--danger" title="End" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="sess-item" data-id="behavioral" data-name="Behavioral Coach" data-model="Claude Haiku 4" data-status="idle" data-context="N=5">
+          <div class="sess-item__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </div>
+          <div class="sess-item__body">
+            <div class="sess-item__name"><span class="sess-tag sess-tag--beh"></span>Behavioral Coach</div>
+            <div class="sess-item__meta">
+              <span class="sess-item__status is-idle"><span class="d"></span>IDLE</span>
+              <span>·</span>
+              <span>Claude Haiku 4</span>
+              <span>·</span>
+              <span>2h ago</span>
+            </div>
+          </div>
+          <div class="sess-item__acts">
+            <button class="sess-act" title="Resume" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button class="sess-act sess-act--danger" title="End" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="sess-item" data-id="salary" data-name="Salary Negotiator" data-model="GPT-4o mini" data-status="frozen" data-context="N=8">
+          <div class="sess-item__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="4.93" y1="19.07" x2="19.07" y2="4.93"/></svg>
+          </div>
+          <div class="sess-item__body">
+            <div class="sess-item__name"><span class="sess-tag sess-tag--sal"></span>Salary Negotiator</div>
+            <div class="sess-item__meta">
+              <span class="sess-item__status is-frozen"><span class="d"></span>FROZEN</span>
+              <span>·</span>
+              <span>GPT-4o mini</span>
+              <span>·</span>
+              <span>3d ago</span>
+            </div>
+          </div>
+          <div class="sess-item__acts">
+            <button class="sess-act" title="Resume" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button class="sess-act sess-act--danger" title="End" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="sess-item" data-id="lecture" data-name="Lecture Notes" data-model="glm-4.7" data-status="idle" data-context="N=0">
+          <div class="sess-item__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          </div>
+          <div class="sess-item__body">
+            <div class="sess-item__name"><span class="sess-tag sess-tag--lec"></span>Lecture Notes</div>
+            <div class="sess-item__meta">
+              <span class="sess-item__status is-idle"><span class="d"></span>IDLE</span>
+              <span>·</span>
+              <span>glm-4.7</span>
+              <span>·</span>
+              <span>1w ago</span>
+            </div>
+          </div>
+          <div class="sess-item__acts">
+            <button class="sess-act" title="Resume" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button class="sess-act sess-act--danger" title="End" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </aside>
+
+  <!-- RIGHT PANEL: WINDOWS -->
+  <aside class="panel panel--right panel--windows" id="windowsPanel">
+    <div class="panel__head">
+      <span>Floating windows</span>
+      <button class="panel__close" onclick="togglePanel('windows')" title="Скрыть">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+    <div class="panel__body">
+
+      <div class="src-list__head"><span>Predefined</span></div>
+
+      <div class="src-list" id="winList">
+
+        <label class="src-item">
+          <span class="src-item__box is-on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg></span>
+          <svg class="src-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <div class="src-item__body">
+            <div class="src-item__name"><b>Coding Helper</b></div>
+            <div class="src-item__meta"><span style="color:var(--live)">● LIVE</span><span>N=10</span></div>
+          </div>
+        </label>
+
+        <label class="src-item">
+          <span class="src-item__box is-on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg></span>
+          <svg class="src-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <div class="src-item__body">
+            <div class="src-item__name">Behavioral Coach</div>
+            <div class="src-item__meta"><span>SOLO</span><span>N=5</span></div>
+          </div>
+        </label>
+
+        <label class="src-item">
+          <span class="src-item__box is-on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg></span>
+          <svg class="src-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a7 7 0 0 0-7 7c0 3 1 5 2 7v3h10v-3c1-2 2-4 2-7a7 7 0 0 0-7-7z"/><path d="M9 22h6"/></svg>
+          <div class="src-item__body">
+            <div class="src-item__name">Salary Negotiator</div>
+            <div class="src-item__meta"><span>FROZEN</span></div>
+          </div>
+        </label>
+
+        <label class="src-item">
+          <span class="src-item__box"></span>
+          <svg class="src-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <div class="src-item__body">
+            <div class="src-item__name" style="color:var(--muted-2)">Lecture Notes</div>
+            <div class="src-item__meta"><span>hidden</span></div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- ════════ PANEL TOGGLES (плавающие на гранях экрана) ════════ -->
+
+<!-- Левая верхняя: иконка книжки (Knowledge sources) -->
+<button class="panel-toggle panel-toggle--left" data-side="sources" onclick="togglePanel('sources')" data-tip="Knowledge sources">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+  </svg>
+</button>
+
+<!-- Левая нижняя: иконка фотоаппарата (Screen capture) -->
+<button class="panel-toggle panel-toggle--left" data-side="capture" onclick="togglePanel('capture')" data-tip="Screen capture">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+    <circle cx="12" cy="13" r="3.5"/>
+  </svg>
+</button>
+
+<!-- Правая: иконка "sidebar-right" — рамка с подсвеченной ПРАВОЙ стороной -->
+<!-- Правая верхняя: иконка чата (Sessions) -->
+<button class="panel-toggle panel-toggle--right" data-side="sessions" onclick="togglePanel('sessions')" data-tip="Sessions">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+</button>
+
+<!-- Правая нижняя: иконка окошек (Floating windows) -->
+<button class="panel-toggle panel-toggle--right" data-side="windows" onclick="togglePanel('windows')" data-tip="Floating windows">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="13" height="13" rx="2"/>
+    <rect x="8" y="8" width="13" height="13" rx="2"/>
+  </svg>
+</button>
+
+<script>
+  // ─── panel toggle ───
+  function togglePanel(side) {
+    const app = document.getElementById('app');
+    if (side === 'sources' || side === 'capture' || side === 'sessions' || side === 'windows') {
+      const group = side.startsWith('s') && side !== 'sessions' ? ['sources', 'capture'] :
+                    side === 'sessions' || side === 'windows' ? ['sessions', 'windows'] : [side];
+      const wasOpen = app.classList.contains('is-' + side + '-open');
+      group.forEach(s => app.classList.remove('is-' + s + '-open'));
+      if (!wasOpen) app.classList.add('is-' + side + '-open');
+    }
+  }
+
+  // ─── audio meters ───
+  function buildMeter(el, count) {
+    el.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const b = document.createElement('span');
+      b.className = 'meter__bar';
+      b.style.height = '20%';
+      el.appendChild(b);
+    }
+    return el.querySelectorAll('.meter__bar');
+  }
+  const inBars  = buildMeter(document.getElementById('meterIn'),  14);
+  const outBars = buildMeter(document.getElementById('meterOut'), 14);
+  const dbIn  = document.getElementById('dbIn');
+  const dbOut = document.getElementById('dbOut');
+
+  function tickMeter(bars, dbEl) {
+    const lvl = Math.floor(Math.random() * bars.length * 0.9);
+    bars.forEach((b, i) => {
+      b.classList.toggle('is-on', i < lvl);
+      b.style.height = (30 + Math.random() * 70) + '%';
+    });
+    const db = -60 + (lvl / bars.length) * 50;
+    dbEl.textContent = (db > -60 ? Math.round(db) : '−∞') + ' dB';
+  }
+
+  setInterval(() => tickMeter(inBars,  dbIn),  120);
+  setInterval(() => tickMeter(outBars, dbOut), 90);
+
+  // ─── sessions ───
+  const sessName = document.getElementById('sessName');
+  const sessDot  = document.getElementById('sessDot');
+  const playPause = document.getElementById('playPause');
+
+  function setActiveSession(item) {
+    document.querySelectorAll('.sess-item').forEach(s => s.classList.remove('is-active'));
+    item.classList.add('is-active');
+    const name = item.dataset.name;
+    const status = item.dataset.status;
+    sessName.textContent = name;
+    sessDot.className = 'header__center-dot is-' + status;
+    if (playPause) {
+      playPause.dataset.status = status;
+      playPause.innerHTML = status === 'live'
+        ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    }
+  }
+
+  document.querySelectorAll('.sess-item').forEach(item => {
+    item.addEventListener('click', () => setActiveSession(item));
+  });
+
+  // play/pause главная кнопка
+  if (playPause) {
+    playPause.addEventListener('click', () => {
+      const active = document.querySelector('.sess-item.is-active');
+      if (!active) return;
+      const cur = active.dataset.status;
+      const next = cur === 'live' ? 'idle' : 'live';
+      active.dataset.status = next;
+      const dot = active.querySelector('.d');
+      const stat = active.querySelector('.sess-item__status');
+      if (next === 'live') {
+        dot.style.background = 'var(--live)';
+        stat.className = 'sess-item__status is-live';
+        stat.innerHTML = '<span class="d"></span>LIVE';
+      } else {
+        dot.style.background = 'var(--muted-2)';
+        stat.className = 'sess-item__status is-idle';
+        stat.innerHTML = '<span class="d"></span>IDLE';
+      }
+      setActiveSession(active);
+    });
+  }
+
+  // редактирование заголовка сессии прямо в header
+  sessName.addEventListener('click', () => {
+    sessName.setAttribute('contenteditable', 'true');
+    sessName.focus();
+    // выделим весь текст
+    const range = document.createRange();
+    range.selectNodeContents(sessName);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  });
+  function commitTitle() {
+    sessName.setAttribute('contenteditable', 'false');
+    const active = document.querySelector('.sess-item.is-active');
+    if (active) active.dataset.name = sessName.textContent.trim() || 'Untitled';
+  }
+  sessName.addEventListener('blur', commitTitle);
+  sessName.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); sessName.blur(); }
+    if (e.key === 'Escape') { sessName.textContent = sessName.dataset.last || 'Untitled'; sessName.blur(); }
+  });
+
+  // ─── screen capture demo ───
+  const capRegion = document.getElementById('capRegion');
+  const capRegionHint = document.getElementById('capRegionHint');
+  if (capRegion) {
+    capRegion.addEventListener('click', () => {
+      if (capRegion.classList.contains('is-picking')) {
+        capRegion.classList.remove('is-picking');
+        capRegion.classList.add('is-set');
+        capRegionHint.textContent = '1920 × 1080';
+      } else if (!capRegion.classList.contains('is-set')) {
+        capRegion.classList.add('is-picking');
+        capRegionHint.textContent = 'pick…';
+      } else {
+        capRegion.classList.remove('is-set');
+        capRegionHint.textContent = 'not set';
+      }
+    });
+  }
+
+  // ─── meters toggle ───
+  document.getElementById('meterToggle').addEventListener('click', () => {
+    document.querySelector('.header').classList.toggle('meters-hidden');
+  });
+
+  // ─── sources & windows checkboxes ───
+  document.querySelectorAll('.src-item').forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      const box = item.querySelector('.src-item__box');
+      box.classList.toggle('is-on');
+      if (box.classList.contains('is-on')) {
+        box.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg>';
+      } else {
+        box.innerHTML = '';
+      }
+    });
+  });
+
+  // ─── composer ───
+  const ta = document.querySelector('.composer__input');
+  const feed = document.querySelector('.feed');
+  if (ta) {
+    const r = () => {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 160) + 'px';
+    };
+    ta.addEventListener('input', r);
+    r();
+    ta.focus();
+  }
+  window.addEventListener('load', () => { if (feed) feed.scrollTop = feed.scrollHeight; });
+</script>
+
+</body>
+</html>
