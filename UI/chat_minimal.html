@@ -72,26 +72,27 @@ body {
 .panel--bottom { display: none; }
 .app.is-bottom-open .panel--bottom { display: flex; }
 
-/* кнопка-переключатель: вертикальная пилюля у левого края, как остальные тогглы,
-   но прижата к низу, чтобы не перекрывать диалоговое окно */
+/* кнопка-переключатель: вертикальная пилюля у левого края чата, по высоте диалога */
 .bottom-toggle {
   position: fixed;
-  bottom: 10px;
+  bottom: 14px;
   left: 0;
   z-index: 60;
-  width: 20px; height: 40px;
+  width: 18px; height: 36px;
   display: flex; align-items: center; justify-content: center;
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-left: none;
   color: var(--muted);
   cursor: pointer;
-  transition: left .25s ease, background .15s, color .15s, border-color .15s;
+  transition: left .25s ease, bottom .25s ease, background .15s, color .15s, border-color .15s;
   border-radius: 0 8px 8px 0;
 }
-/* когда открыта левая панель — отступаем, чтобы не перекрывать её */
+/* левая панель открыта — отступаем на её ширину */
 .app.is-sources-open .bottom-toggle,
 .app.is-capture-open .bottom-toggle { left: 260px; }
+/* нижняя панель открыта — поднимаемся НАД ней, чтобы не сидеть внутри */
+.app.is-bottom-open .bottom-toggle { bottom: 104px; }
 .bottom-toggle:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); border-left-color: var(--bg-3); }
 .bottom-toggle svg { width: 11px; height: 11px; transition: transform .2s; }
 .app.is-bottom-open .bottom-toggle {
