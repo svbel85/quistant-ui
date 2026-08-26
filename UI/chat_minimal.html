@@ -52,8 +52,9 @@ body {
 .app {
   display: grid;
   grid-template-columns: 0 1fr 0;
+  grid-template-rows: 1fr 0;
   height: 100vh;
-  transition: grid-template-columns .25s ease;
+  transition: grid-template-columns .25s ease, grid-template-rows .25s ease;
 }
 .app.is-sources-open { grid-template-columns: 260px 1fr 0; }
 .app.is-capture-open { grid-template-columns: 260px 1fr 0; }
@@ -63,6 +64,8 @@ body {
 .app.is-capture-open.is-sessions-open,
 .app.is-sources-open.is-windows-open,
 .app.is-capture-open.is-windows-open { grid-template-columns: 260px 1fr 320px; }
+/* bottom panel: row 2 появляется */
+.app.is-bottom-open { grid-template-rows: 1fr 140px; }
 
 /* ════════════ PANEL TOGGLES (плавающие, на гранях) ════════════ */
 .panel-toggle {
@@ -158,6 +161,59 @@ body {
   border-right: none;
   border-left: 1px solid var(--border);
 }
+
+/* bottom panel: full-width, узкая полоска снизу */
+.panel--bottom {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  border-right: none;
+  border-left: none;
+  border-top: 1px solid var(--border);
+  background: var(--bg-1);
+  display: flex;
+  flex-direction: column;
+}
+.panel--bottom .panel__head {
+  flex-shrink: 0;
+  padding: 8px 16px;
+}
+.panel--bottom .panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 18px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--muted-2);
+  font-size: 12.5px;
+}
+
+/* bottom edge toggle (горизонтальная пилюля по центру снизу) */
+.panel-toggle--bottom {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: 80px; height: 25px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+  border-radius: 10px 10px 0 0;
+}
+.panel-toggle--bottom:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); }
+.panel-toggle--bottom svg { width: 13px; height: 13px; }
+.app.is-bottom-open .panel-toggle--bottom {
+  bottom: 140px;
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  border-color: var(--accent);
+}
+.app.is-bottom-open .panel-toggle--bottom svg { transform: rotate(180deg); }
 /* явное размещение в grid */
 .panel--sources   { grid-column: 1; grid-row: 1; }
 .panel--capture   { grid-column: 1; grid-row: 1; }
@@ -1390,6 +1446,19 @@ body {
     </div>
   </aside>
 
+  <!-- BOTTOM PANEL (узкая) -->
+  <aside class="panel panel--bottom" id="bottomPanel">
+    <div class="panel__head">
+      <span>Bottom panel</span>
+      <button class="panel__close" onclick="togglePanel('bottom')" title="Скрыть">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 6 6 6 6-6"/></svg>
+      </button>
+    </div>
+    <div class="panel__body">
+      <span>Empty. Will be filled later.</span>
+    </div>
+  </aside>
+
 </div>
 
 <!-- ════════ PANEL TOGGLES (плавающие на гранях экрана) ════════ -->
@@ -1426,6 +1495,11 @@ body {
   </svg>
 </button>
 
+<!-- Нижняя: горизонтальная пилюля по центру (Bottom panel) -->
+<button class="panel-toggle panel-toggle--bottom" onclick="togglePanel('bottom')" data-tip="Bottom panel">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 15 6-6 6 6"/></svg>
+</button>
+
 <script>
   // ─── panel toggle ───
   function togglePanel(side) {
@@ -1436,7 +1510,9 @@ body {
       const wasOpen = app.classList.contains('is-' + side + '-open');
       group.forEach(s => app.classList.remove('is-' + s + '-open'));
       if (!wasOpen) app.classList.add('is-' + side + '-open');
+      return;
     }
+    if (side === 'bottom') app.classList.toggle('is-bottom-open');
   }
 
   // ─── audio meters ───
