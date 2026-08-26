@@ -194,30 +194,34 @@ body {
   font-size: 12.5px;
 }
 
-/* bottom-tab: кнопка-переключатель как часть панели */
+/* bottom-tab: маленькая пилюля по центру */
 .bottom-tab {
-  width: 100%;
-  height: 26px;
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px;
+  height: 22px;
+  padding: 0 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  margin: 0 auto;
   background: var(--bg-2);
   color: var(--muted);
   cursor: pointer;
-  border: none;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
   font-family: 'Geist Mono', monospace;
-  font-size: 10.5px;
+  font-size: 10px;
   letter-spacing: .06em;
   text-transform: uppercase;
   transition: all .15s;
 }
-.bottom-tab:hover { background: var(--bg-3); color: var(--accent-2); }
-.bottom-tab svg { width: 13px; height: 13px; transition: transform .2s; }
+.bottom-tab:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); }
+.bottom-tab svg { width: 11px; height: 11px; transition: transform .2s; }
 .app.is-bottom-open .bottom-tab {
   background: var(--accent-soft);
   color: var(--accent-2);
-  border-bottom: 1px solid rgba(132,132,214,.3);
+  border-color: var(--accent);
 }
 .app.is-bottom-open .bottom-tab svg { transform: rotate(180deg); }
+.panel--bottom .panel__head { display: flex; justify-content: center; }
 /* явное размещение в grid */
 .panel--sources   { grid-column: 1; grid-row: 1; }
 .panel--capture   { grid-column: 1; grid-row: 1; }
