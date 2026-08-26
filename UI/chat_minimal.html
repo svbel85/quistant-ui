@@ -117,6 +117,23 @@ body {
 .fab-play[data-state="live"]:hover { background: #84c46b; box-shadow: 0 8px 24px rgba(148,208,122,.5), 0 0 0 1px var(--live); }
 /* при открытой нижней панели — поднимаемся над ней */
 .app.is-bottom-open .fab-play { bottom: 176px; }
+
+/* когда сессия на паузе: метры замирают, счётчик замирает, иконки тусклые */
+.app.is-paused .meter { opacity: .35; filter: grayscale(.7); }
+.app.is-paused .meter__bar.is-on { background: var(--muted-2) !important; box-shadow: none !important; }
+.app.is-paused .profile-usage__bar span { animation-play-state: paused; }
+.profile-usage__bar span { animation: pulse-soft 2.5s ease-in-out infinite; }
+.profile-paused-badge {
+  display: none;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  color: var(--warn);
+  margin-left: 6px;
+  padding: 1px 6px;
+  border: 1px solid rgba(212,177,106,.4);
+  border-radius: 4px;
+}
+.app.is-paused .profile-paused-badge { display: inline-block; }
 /* левая панель открыта — отступаем на её ширину */
 .app.is-sources-open .bottom-toggle,
 .app.is-capture-open .bottom-toggle { left: 260px; }
@@ -1619,7 +1636,7 @@ body {
 
       <div class="profile-usage">
         <div class="profile-usage__head">
-          <span>Hours left</span>
+          <span>Hours left<span class="profile-paused-badge">PAUSED</span></span>
           <span class="profile-usage__val">12 <span class="muted">h</span></span>
         </div>
         <div class="profile-usage__bar"><span style="width:30%"></span></div>
@@ -1720,8 +1737,22 @@ body {
     dbEl.textContent = (db > -60 ? Math.round(db) : '−∞') + ' dB';
   }
 
-  setInterval(() => tickMeter(inBars,  dbIn),  120);
-  setInterval(() => tickMeter(outBars, dbOut), 90);
+  let meterIntIn  = setInterval(() => tickMeter(inBars,  dbIn),  120);
+  let meterIntOut = setInterval(() => tickMeter(outBars, dbOut), 90);
+
+  function pauseMeters(paused) {
+    clearInterval(meterIntIn);
+    clearInterval(meterIntOut);
+    if (paused) {
+      inBars.forEach(b  => { b.classList.remove('is-on'); b.style.height = '20%'; });
+      outBars.forEach(b => { b.classList.remove('is-on'); b.style.height = '20%'; });
+      dbIn.textContent  = '−∞ dB';
+      dbOut.textContent = '−∞ dB';
+    } else {
+      meterIntIn  = setInterval(() => tickMeter(inBars,  dbIn),  120);
+      meterIntOut = setInterval(() => tickMeter(outBars, dbOut), 90);
+    }
+  }
 
   // ─── sessions ───
   const sessName = document.getElementById('sessName');
@@ -1833,17 +1864,25 @@ body {
   const fabPlay = document.getElementById('fabPlay');
   const FAB_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
   const FAB_PLAY  = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+
   function refreshFab(state) {
     if (!fabPlay) return;
     fabPlay.dataset.state = state;
     fabPlay.innerHTML = state === 'live' ? FAB_PAUSE : FAB_PLAY;
+    const app = document.getElementById('app');
+    if (state === 'live') {
+      app.classList.remove('is-paused');
+      pauseMeters(false);
+    } else {
+      app.classList.add('is-paused');
+      pauseMeters(true);
+    }
   }
   if (fabPlay) {
     fabPlay.addEventListener('click', () => {
       const cur = fabPlay.dataset.state;
       const next = cur === 'live' ? 'paused' : 'live';
       refreshFab(next);
-      // дусихронизация с play/pause в sessions панели
       const pp = document.getElementById('playPause');
       if (pp && pp.dataset.status !== next) pp.click();
     });
