@@ -89,6 +89,34 @@ body {
   transition: left .25s ease, bottom .25s ease, background .15s, color .15s, border-color .15s;
   border-radius: 0 8px 8px 0;
 }
+
+/* круглый FAB play/pause в правом-нижнем углу, над composer'ом */
+.fab-play {
+  position: fixed;
+  bottom: 86px;
+  right: 28px;
+  z-index: 55;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 20px rgba(132,132,214,.35), 0 0 0 1px rgba(132,132,214,.2);
+  transition: all .15s;
+}
+.fab-play:hover {
+  background: var(--accent-2);
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(132,132,214,.45), 0 0 0 1px var(--accent);
+}
+.fab-play:active { transform: scale(.97); }
+.fab-play svg { width: 18px; height: 18px; transition: transform .2s; }
+.fab-play[data-state="live"] { background: var(--live); box-shadow: 0 6px 20px rgba(148,208,122,.35), 0 0 0 1px rgba(148,208,122,.2); }
+.fab-play[data-state="live"]:hover { background: #84c46b; box-shadow: 0 8px 24px rgba(148,208,122,.5), 0 0 0 1px var(--live); }
+/* при открытой нижней панели — поднимаемся над ней */
+.app.is-bottom-open .fab-play { bottom: 176px; }
 /* левая панель открыта — отступаем на её ширину */
 .app.is-sources-open .bottom-toggle,
 .app.is-capture-open .bottom-toggle { left: 260px; }
@@ -1646,6 +1674,11 @@ body {
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 15 6-6 6 6"/></svg>
 </button>
 
+<!-- Плавающая круглая FAB play/pause (правый-нижний угол) -->
+<button class="fab-play" id="fabPlay" data-state="live" title="Запустить / остановить">
+  <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+</button>
+
 <script>
   // ─── panel toggle ───
   function togglePanel(side) {
@@ -1795,6 +1828,26 @@ body {
   document.getElementById('meterToggle').addEventListener('click', () => {
     document.querySelector('.header').classList.toggle('meters-hidden');
   });
+
+  // ─── FAB play/pause ───
+  const fabPlay = document.getElementById('fabPlay');
+  const FAB_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+  const FAB_PLAY  = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+  function refreshFab(state) {
+    if (!fabPlay) return;
+    fabPlay.dataset.state = state;
+    fabPlay.innerHTML = state === 'live' ? FAB_PAUSE : FAB_PLAY;
+  }
+  if (fabPlay) {
+    fabPlay.addEventListener('click', () => {
+      const cur = fabPlay.dataset.state;
+      const next = cur === 'live' ? 'paused' : 'live';
+      refreshFab(next);
+      // дусихронизация с play/pause в sessions панели
+      const pp = document.getElementById('playPause');
+      if (pp && pp.dataset.status !== next) pp.click();
+    });
+  }
 
   // ─── sources & windows checkboxes ───
   document.querySelectorAll('.src-item').forEach(item => {
