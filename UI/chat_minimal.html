@@ -1251,7 +1251,7 @@ body {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
           <div class="sess-item__body">
-            <div class="sess-item__name"><span class="sess-tag sess-tag--dev"></span>Coding Helper <span class="sess-model sess-model--heavy">Heavy</span></div>
+            <div class="sess-item__name"><span class="sess-tag sess-tag--dev"></span><span class="sess-item__name-text">Coding Helper</span> <span class="sess-model sess-model--heavy">Heavy</span></div>
             <div class="sess-item__meta">
               <span class="sess-item__status is-live"><span class="d"></span>LIVE</span>
               <span>·</span>
@@ -1273,7 +1273,7 @@ body {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
           </div>
           <div class="sess-item__body">
-            <div class="sess-item__name"><span class="sess-tag sess-tag--beh"></span>Behavioral Coach <span class="sess-model sess-model--fast">Fast</span></div>
+            <div class="sess-item__name"><span class="sess-tag sess-tag--beh"></span><span class="sess-item__name-text">Behavioral Coach</span> <span class="sess-model sess-model--fast">Fast</span></div>
             <div class="sess-item__meta">
               <span class="sess-item__status is-idle"><span class="d"></span>IDLE</span>
               <span>·</span>
@@ -1295,7 +1295,7 @@ body {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="4.93" y1="19.07" x2="19.07" y2="4.93"/></svg>
           </div>
           <div class="sess-item__body">
-            <div class="sess-item__name"><span class="sess-tag sess-tag--sal"></span>Salary Negotiator <span class="sess-model sess-model--fast">Fast</span></div>
+            <div class="sess-item__name"><span class="sess-tag sess-tag--sal"></span><span class="sess-item__name-text">Salary Negotiator</span> <span class="sess-model sess-model--fast">Fast</span></div>
             <div class="sess-item__meta">
               <span class="sess-item__status is-frozen"><span class="d"></span>FROZEN</span>
               <span>·</span>
@@ -1317,7 +1317,7 @@ body {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
           </div>
           <div class="sess-item__body">
-            <div class="sess-item__name"><span class="sess-tag sess-tag--lec"></span>Lecture Notes <span class="sess-model sess-model--fast">Fast</span></div>
+            <div class="sess-item__name"><span class="sess-tag sess-tag--lec"></span><span class="sess-item__name-text">Lecture Notes</span> <span class="sess-model sess-model--fast">Fast</span></div>
             <div class="sess-item__meta">
               <span class="sess-item__status is-idle"><span class="d"></span>IDLE</span>
               <span>·</span>
@@ -1526,8 +1526,8 @@ body {
   // редактирование заголовка сессии прямо в header
   sessName.addEventListener('click', () => {
     sessName.setAttribute('contenteditable', 'true');
+    sessName.dataset.last = sessName.textContent;
     sessName.focus();
-    // выделим весь текст
     const range = document.createRange();
     range.selectNodeContents(sessName);
     const sel = window.getSelection();
@@ -1537,12 +1537,19 @@ body {
   function commitTitle() {
     sessName.setAttribute('contenteditable', 'false');
     const active = document.querySelector('.sess-item.is-active');
-    if (active) active.dataset.name = sessName.textContent.trim() || 'Untitled';
+    if (!active) return;
+    const newName = sessName.textContent.trim() || 'Untitled';
+    active.dataset.name = newName;
+    const nameEl = active.querySelector('.sess-item__name-text');
+    if (nameEl) nameEl.textContent = newName;
   }
   sessName.addEventListener('blur', commitTitle);
   sessName.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); sessName.blur(); }
-    if (e.key === 'Escape') { sessName.textContent = sessName.dataset.last || 'Untitled'; sessName.blur(); }
+    if (e.key === 'Escape') {
+      sessName.textContent = sessName.dataset.last || 'Untitled';
+      sessName.blur();
+    }
   });
 
   // ─── screen capture demo ───
