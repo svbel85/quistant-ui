@@ -64,9 +64,9 @@ body {
 .app.is-capture-open.is-sessions-open,
 .app.is-sources-open.is-windows-open,
 .app.is-capture-open.is-windows-open { grid-template-columns: 260px 1fr 320px; }
-/* bottom panel: row 2 — закрыта (0), открыта (140) */
+/* bottom panel: row 2 — закрыта (0), открыта (90) */
 .app { grid-template-rows: 1fr 0; }
-.app.is-bottom-open { grid-template-rows: 1fr 140px; }
+.app.is-bottom-open { grid-template-rows: 1fr 90px; }
 
 /* в закрытом состоянии панель полностью скрыта */
 .panel--bottom { display: none; }
@@ -1481,12 +1481,6 @@ body {
 
   <!-- BOTTOM PANEL (узкая полоска) -->
   <aside class="panel panel--bottom" id="bottomPanel">
-    <div class="panel__head">
-      <span>Bottom panel</span>
-      <button class="panel__close" onclick="togglePanel('bottom')" title="Скрыть">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 6 6 6 6-6"/></svg>
-      </button>
-    </div>
     <div class="panel__body">
       <span>Empty. Will be filled later.</span>
     </div>
