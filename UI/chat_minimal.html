@@ -76,10 +76,10 @@ body {
    но прижата к низу, чтобы не перекрывать диалоговое окно */
 .bottom-toggle {
   position: fixed;
-  bottom: 12px;
+  bottom: 10px;
   left: 0;
   z-index: 60;
-  width: 25px; height: 56px;
+  width: 20px; height: 40px;
   display: flex; align-items: center; justify-content: center;
   background: var(--bg-2);
   border: 1px solid var(--border);
@@ -87,13 +87,13 @@ body {
   color: var(--muted);
   cursor: pointer;
   transition: left .25s ease, background .15s, color .15s, border-color .15s;
-  border-radius: 0 10px 10px 0;
+  border-radius: 0 8px 8px 0;
 }
 /* когда открыта левая панель — отступаем, чтобы не перекрывать её */
 .app.is-sources-open .bottom-toggle,
 .app.is-capture-open .bottom-toggle { left: 260px; }
 .bottom-toggle:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); border-left-color: var(--bg-3); }
-.bottom-toggle svg { width: 13px; height: 13px; transition: transform .2s; }
+.bottom-toggle svg { width: 11px; height: 11px; transition: transform .2s; }
 .app.is-bottom-open .bottom-toggle {
   background: var(--accent-soft);
   color: var(--accent-2);
