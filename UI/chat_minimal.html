@@ -205,14 +205,13 @@ body {
   color: var(--accent-2);
   border-color: var(--accent);
 }
-/* когда панель открыта — явная подсветка через .is-open */
+/* когда панель открыта — лёгкая подсветка через .is-open */
 .panel-toggle.is-open,
 .bottom-toggle.is-open {
-  background: var(--accent) !important;
-  color: var(--bg) !important;
+  background: var(--accent-soft) !important;
+  color: var(--accent-2) !important;
   border-color: var(--accent) !important;
-  width: 26px !important;
-  box-shadow: 0 0 16px rgba(132,132,214,.7), 0 0 0 2px var(--accent-2) inset !important;
+  box-shadow: 0 0 8px rgba(132,132,214,.25) !important;
 }
 .panel-toggle--left.is-open,
 .bottom-toggle.is-open {
@@ -223,24 +222,23 @@ body {
 }
 .panel-toggle.is-open svg,
 .bottom-toggle.is-open svg {
-  color: var(--bg) !important;
+  color: var(--accent-2) !important;
   transform: scaleX(1) !important;
 }
 .panel-toggle--bottom.is-open svg { transform: rotate(180deg) !important; }
-/* внутренняя белая полоска-индикатор */
+/* едва заметная внутренняя полоска-индикатор */
 .panel-toggle.is-open::before,
 .bottom-toggle.is-open::before {
   content: '';
   position: absolute;
   top: 50%; transform: translateY(-50%);
-  width: 4px; height: 18px;
-  background: #fff;
-  border-radius: 2px;
-  box-shadow: 0 0 10px rgba(255,255,255,.9);
+  width: 2px; height: 12px;
+  background: var(--accent);
+  border-radius: 1px;
 }
-.panel-toggle--left.is-open::before { left: 5px; }
-.panel-toggle--right.is-open::before { right: 5px; }
-.bottom-toggle.is-open::before { left: 5px; }
+.panel-toggle--left.is-open::before { left: 4px; }
+.panel-toggle--right.is-open::before { right: 4px; }
+.bottom-toggle.is-open::before { left: 4px; }
 .panel-toggle svg { width: 13px; height: 13px; }
 
 /* left toggle — сидит у левого края экрана, при открытой панели сдвигается к её правому краю */
