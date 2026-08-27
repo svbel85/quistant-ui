@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Куистант · Hermes Design System · 5 вариантов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0B0B0F;
+  --bg-1: #14141A;
+  --bg-2: #1B1B22;
+  --bg-3: #23232C;
+  --border: #2A2A33;
+  --border-2: #3A3A45;
+  --text: #FFFFFF;
+  --text-2: #E5E5EA;
+  --muted: #8A8A95;
+  --muted-2: #5E5E68;
+  --accent: #4F7CFF;
+  --accent-2: #6E8FFF;
+  --accent-soft: rgba(79,124,255,.12);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.04 0 0 0 0 0.08 0 0 0 0 0.12 0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='s'><feTurbulence type='fractalNoise' baseFrequency='0.45' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.05 0 0 0 0 0.12 0 0 0 0 0.16 0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23s)'/></svg>"),
+    radial-gradient(ellipse at 12% 0%, rgba(79,124,255,.06), transparent 40%),
+    radial-gradient(ellipse at 88% 18%, rgba(74,222,128,.04), transparent 42%),
+    radial-gradient(ellipse at 50% 100%, rgba(192,132,252,.03), transparent 50%);
+  background-attachment: fixed, fixed, fixed, fixed, fixed;
+}
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><g stroke='%234f7cff' stroke-width='0.4' opacity='0.022'><line x1='-20' y1='40' x2='80' y2='-10'/><line x1='60' y1='120' x2='180' y2='80'/><line x1='150' y1='200' x2='260' y2='150'/><line x1='220' y1='280' x2='340' y2='240'/><line x1='-20' y1='180' x2='60' y2='140'/><line x1='100' y1='40' x2='200' y2='-10'/><line x1='250' y1='90' x2='340' y2='60'/></g></svg>");
+  z-index: 0;
+}
+body > * { position: relative; z-index: 1; }
+
+.main { max-width: 1200px; margin: 0 auto; padding: 64px 32px 80px; }
+.hero { text-align: center; margin-bottom: 48px; }
+.eyebrow {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  padding: 4px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent-soft);
+}
+h1 {
+  font-size: 52px; font-weight: 700;
+  letter-spacing: -.025em;
+  margin-bottom: 14px;
+  background: linear-gradient(180deg, #fff 0%, #B5B5C0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.lead { font-size: 16px; color: var(--muted); max-width: 680px; margin: 0 auto; line-height: 1.55; }
+
+.intro {
+  margin: 40px auto 48px;
+  max-width: 880px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 28px;
+}
+.intro h3 { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+.intro p { color: var(--muted); font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
+.intro p strong { color: var(--text); font-weight: 500; }
+.intro code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: var(--bg-2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--accent-2);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.card {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: all .2s;
+  display: flex; flex-direction: column;
+}
+.card:hover { transform: translateY(-3px); border-color: var(--accent); }
+
+.preview {
+  aspect-ratio: 16 / 9;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  display: grid; place-items: center;
+  position: relative;
+}
+.preview::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 60%, rgba(79,124,255,.06) 100%);
+  pointer-events: none;
+}
+.preview .logo {
+  width: 64px; height: 64px;
+  border-radius: 14px;
+  display: grid; place-items: center;
+}
+.preview .logo svg { width: 36px; height: 36px; }
+
+.body { padding: 22px 24px; flex: 1; display: flex; flex-direction: column; }
+.num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent-2);
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+}
+.title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+.palette {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.palette .swatches { display: inline-flex; gap: 4px; margin-left: 6px; vertical-align: middle; }
+.palette .swatches span {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  display: inline-block;
+}
+.desc { color: var(--muted); font-size: 13px; line-height: 1.55; margin-bottom: 16px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); }
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+}
+.tag.accent { border-color: var(--accent); color: var(--accent-2); background: var(--accent-soft); }
+.open { margin-top: 14px; font-size: 13px; color: var(--accent); font-weight: 500; }
+
+.footer {
+  margin-top: 64px; padding-top: 24px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer .accent { color: var(--accent-2); }
+
+@media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <filter id="hand-drawn">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="0.8"/>
+    </filter>
+  </defs>
+</svg>
+
+<main class="main">
+
+  <section class="hero">
+    <span class="eyebrow">DESIGN SYSTEM · 5 ВАРИАНТОВ</span>
+    <h1>Куистант · Hermes</h1>
+    <p class="lead">Пять точных копий design-system по наполнению (sidebar 260px + 8 секций со ВСЕМИ компонентами) в тёмной Hermes-эстетике с разными цветовыми палитрами.</p>
+  </section>
+
+  <section class="intro">
+    <h3>📋 Что внутри каждого из 5 файлов</h3>
+    <p><strong>Layout:</strong> shell = sidebar 260px (sticky, со своим скроллом) + main (max-width 1100px, центрирован)</p>
+    <p><strong>Sidebar:</strong> brand-логотип «К» (SVG-иконка + слово «Куистант»), иконка новой сессии, nav из 7 пунктов (Чат/Sessions/Skills/Models/Providers/Memory/Tools/Settings), секция «Текущая сессия» с 4 сессиями, footer с профилем</p>
+    <p><strong>Hero:</strong> логотип 80px с градиентом + «Привет, Куистант» (gradient-text) + 4 action-pill (Начать созвон / Подключить папку / Найти в базе / Конспект лекции) + composer с textarea и toolbar (attach/voice/3 select/send)</p>
+    <p><strong>Tokens:</strong> 10 swatches палитры (bg/bg-1/bg-2/bg-3/border/accent/live/solo/kb/danger) + 3 mode-индикатора (LIVE/SOLO/KEYBOARD) + 3 карточки (отступы/радиусы/тени) + типографика (Inter/Display/JetBrains Mono)</p>
+    <p><strong>Buttons:</strong> 4 варианта (primary/secondary/ghost/danger) + 3 размера (32/40/44) + с иконками + 3 icon-only + loading</p>
+    <p><strong>Inputs:</strong> 6 полей (text + search с иконкой + password + range с N + email с ошибкой + disabled HWID)</p>
+    <p><strong>Controls:</strong> checkbox 4 состояния (off/on/indeterminate/disabled), switch 2 (off/on), 2 select (модель ИИ / тариф), 3 slider с прогрессом (громкость/прозрачность/whisper)</p>
+    <p><strong>Chat-лента:</strong> system + other (интервьюер) + ai (с list из 4 пунктов + meta) + user (микрофон) + user-kb (клавиатура) + typing dots</p>
+    <p><strong>Windows:</strong> 3 плавающих окна с drag-handle — Coding Helper (LIVE + N-slider + input), Lecture Notes (SOLO + FROZEN), Salary Coach</p>
+    <p><strong>Feedback:</strong> 6 тегов (active/neutral/success/warn/danger/mono) + 3 тоста (ok/err/warn) + Modal Device Flow с кодом 482 917 + spinner 3 размера</p>
+    <p><strong>Misc:</strong> Side Panel окон (3/5) + 2 Slice Card (#042/#043) + Empty State + Error State + сниппет кода <code>whisper_loop</code> с подсветкой</p>
+  </section>
+
+  <section class="grid">
+
+    <a class="card" href="01_hermes_blue.html">
+      <div class="preview">
+        <div class="logo" style="background: linear-gradient(135deg, #4F7CFF, #B026FF);">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" fill="#fff"/>
+            <text x="12" y="16" text-anchor="middle" fill="#4F7CFF" font-size="12" font-weight="700" font-family="Inter">Q</text>
+          </svg>
+        </div>
+      </div>
+      <div class="body">
+        <div class="num">01 · HERMES BLUE</div>
+        <div class="title">Синий (фирменный)</div>
+        <div class="palette">
+          <span class="swatches">
+            <span style="background:#4F7CFF"></span>
+            <span style="background:#B026FF"></span>
+            <span style="background:#4ADE80"></span>
+          </span>
+          #4F7CFF · #B026FF · #4ADE80
+        </div>
+        <div class="desc">Оригинальная палитра design-system. Тёмный фон, синий как основной акцент, пурпур как 2-й цвет в градиентах, зелёный для live-индикатора.</div>
+        <div class="tags">
+          <span class="tag accent">blue</span>
+          <span class="tag">оригинал</span>
+          <span class="tag">1324 строк</span>
+        </div>
+        <span class="open">Открыть →</span>
+      </div>
+    </a>
+
+    <a class="card" href="02_hermes_lime.html">
+      <div class="preview">
+        <div class="logo" style="background: linear-gradient(135deg, #C6FF3D, #5DDCF5);">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" fill="#0a1a00"/>
+            <text x="12" y="16" text-anchor="middle" fill="#C6FF3D" font-size="12" font-weight="700" font-family="Inter">Q</text>
+          </svg>
+        </div>
+      </div>
+      <div class="body">
+        <div class="num">02 · HERMES LIME</div>
+        <div class="title">Шартрез-лайм + мятный</div>
+        <div class="palette">
+          <span class="swatches">
+            <span style="background:#C6FF3D"></span>
+            <span style="background:#5DDCF5"></span>
+            <span style="background:#84E25D"></span>
+          </span>
+          #C6FF3D · #5DDCF5 · #84E25D
+        </div>
+        <div class="desc">Энергичный шартрез-лайм как основной акцент, мятный — в градиентах. Тёмный текст на яркой кнопке для контраста.</div>
+        <div class="tags">
+          <span class="tag accent">lime</span>
+          <span class="tag">fresh</span>
+          <span class="tag">1324 строк</span>
+        </div>
+        <span class="open">Открыть →</span>
+      </div>
+    </a>
+
+    <a class="card" href="03_hermes_amber.html">
+      <div class="preview">
+        <div class="logo" style="background: linear-gradient(135deg, #FFB703, #FF5290);">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" fill="#1a1100"/>
+            <text x="12" y="16" text-anchor="middle" fill="#FFB703" font-size="12" font-weight="700" font-family="Inter">Q</text>
+          </svg>
+        </div>
+      </div>
+      <div class="body">
+        <div class="num">03 · HERMES AMBER</div>
+        <div class="title">Янтарь + розовый</div>
+        <div class="palette">
+          <span class="swatches">
+            <span style="background:#FFB703"></span>
+            <span style="background:#FF5290"></span>
+            <span style="background:#84E25D"></span>
+          </span>
+          #FFB703 · #FF5290 · #84E25D
+        </div>
+        <div class="desc">Тёплый янтарь — самый уютный вариант. Розовый в градиентах как 2-й цвет. Текстура бумаги с примесью красного, не синего.</div>
+        <div class="tags">
+          <span class="tag accent">amber</span>
+          <span class="tag">warm</span>
+          <span class="tag">1324 строк</span>
+        </div>
+        <span class="open">Открыть →</span>
+      </div>
+    </a>
+
+    <a class="card" href="04_hermes_violet.html">
+      <div class="preview">
+        <div class="logo" style="background: linear-gradient(135deg, #B026FF, #5DDCF5);">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" fill="#fff"/>
+            <text x="12" y="16" text-anchor="middle" fill="#B026FF" font-size="12" font-weight="700" font-family="Inter">Q</text>
+          </svg>
+        </div>
+      </div>
+      <div class="body">
+        <div class="num">04 · HERMES VIOLET</div>
+        <div class="title">Пурпур + мятный</div>
+        <div class="palette">
+          <span class="swatches">
+            <span style="background:#B026FF"></span>
+            <span style="background:#5DDCF5"></span>
+            <span style="background:#FF2A6D"></span>
+          </span>
+          #B026FF · #5DDCF5 · #FF2A6D
+        </div>
+        <div class="desc">Глубокий пурпур с мятным live — самый «киберпанковый». Розовый в radial-gradient снизу для акцента. Белый текст на кнопке.</div>
+        <div class="tags">
+          <span class="tag accent">violet</span>
+          <span class="tag">cyberpunk</span>
+          <span class="tag">1324 строк</span>
+        </div>
+        <span class="open">Открыть →</span>
+      </div>
+    </a>
+
+    <a class="card" href="05_hermes_coral.html">
+      <div class="preview">
+        <div class="logo" style="background: linear-gradient(135deg, #FF2A6D, #FFB703);">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" fill="#fff"/>
+            <text x="12" y="16" text-anchor="middle" fill="#FF2A6D" font-size="12" font-weight="700" font-family="Inter">Q</text>
+          </svg>
+        </div>
+      </div>
+      <div class="body">
+        <div class="num">05 · HERMES CORAL</div>
+        <div class="title">Коралл + янтарный</div>
+        <div class="palette">
+          <span class="swatches">
+            <span style="background:#FF2A6D"></span>
+            <span style="background:#FFB703"></span>
+            <span style="background:#5DDCF5"></span>
+          </span>
+          #FF2A6D · #FFB703 · #5DDCF5
+        </div>
+        <div class="desc">Горячий коралл-маджента как яркий эмоциональный акцент + янтарный для контрастных градиентов. Самый выразительный.</div>
+        <div class="tags">
+          <span class="tag accent">coral</span>
+          <span class="tag">vivid</span>
+          <span class="tag">1324 строк</span>
+        </div>
+        <span class="open">Открыть →</span>
+      </div>
+    </a>
+
+  </section>
+
+  <footer class="footer">
+    <span>папка </span><span class="accent">D:\Projekts\Quistant\Quistant_UI\hermes\</span>
+    <span> · 6 html · ~430 KB</span>
+  </footer>
+
+</main>
+
+</body>
+</html>
