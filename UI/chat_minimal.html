@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Quistan — Chat</title>
+<title>Quistan вЂ” Chat</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,7 +48,7 @@ body {
   overflow: hidden;
 }
 
-/* ════════════ APP GRID ════════════ */
+/* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ APP GRID в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
 .app {
   display: grid;
   grid-template-columns: 0 1fr 0;
@@ -64,38 +64,37 @@ body {
 .app.is-capture-open.is-sessions-open,
 .app.is-sources-open.is-windows-open,
 .app.is-capture-open.is-windows-open { grid-template-columns: 260px 1fr 320px; }
-/* bottom panel: row 2 — закрыта (0), открыта (90) */
+/* bottom panel: row 2 вЂ” Р·Р°РєСЂС‹С‚Р° (0), РѕС‚РєСЂС‹С‚Р° (90) */
 .app { grid-template-rows: 1fr 0; }
 .app.is-bottom-open { grid-template-rows: 1fr 90px; }
 
-/* в закрытом состоянии панель полностью скрыта */
+/* РІ Р·Р°РєСЂС‹С‚РѕРј СЃРѕСЃС‚РѕСЏРЅРёРё РїР°РЅРµР»СЊ РїРѕР»РЅРѕСЃС‚СЊСЋ СЃРєСЂС‹С‚Р° */
 .panel--bottom { display: none; }
 .app.is-bottom-open .panel--bottom { display: flex; }
 
-/* кнопка-переключатель: вертикальная пилюля у левого края чата,
-   той же высоты что и composer__box (padding 12+10 + send 34 = 56px) */
+/* РєРЅРѕРїРєР°-РїРµСЂРµРєР»СЋС‡Р°С‚РµР»СЊ: РІРµСЂС‚РёРєР°Р»СЊРЅР°СЏ РїРёР»СЋР»СЏ Сѓ РџР РђР’РћР“Рћ РєСЂР°СЏ С‡Р°С‚Р°
+   (РѕС‚РєСЂС‹РІР°РµС‚ bottom-panel СЃ РїСЂРѕС„РёР»РµРј/С‚Р°СЂРёС„РѕРј/Sign out).
+   Р’С‹СЃРѕС‚Р° = composer__box (padding 12+10 + send 34 = 56px) */
 .bottom-toggle {
   position: fixed;
   bottom: 18px;
-  left: 0;
+  right: 0;
   z-index: 60;
   width: 18px; height: 56px;
   display: flex; align-items: center; justify-content: center;
   background: var(--bg-2);
   border: 1px solid var(--border);
-  border-left: none;
+  border-right: none;
   color: var(--muted);
   cursor: pointer;
-  transition: left .25s ease, bottom .25s ease, background .15s, color .15s, border-color .15s;
-  border-radius: 0 8px 8px 0;
+  transition: right .25s ease, bottom .25s ease, background .15s, color .15s, border-color .15s;
+  border-radius: 8px 0 0 8px;
 }
 
-/* FAB play/pause — снаружи, плавающий над composer'ом (чуть выше) */
+/* FAB play/pause вЂ” РІРЅСѓС‚СЂРё chat-panel__controls (flex-item, СЃРїСЂР°РІР° РІ РІРµСЂС…РЅРµРј СЂСЏРґСѓ РїР°РЅРµР»Рё).
+   РљРѕРіРґР° РїР°РЅРµР»СЊ Р·Р°РєСЂС‹С‚Р° вЂ” FAB СЃРєСЂС‹РІР°РµС‚СЃСЏ РІРјРµСЃС‚Рµ СЃ РЅРµР№ (overflow:hidden РЅР° chat-panel). */
 .fab-play {
-  position: absolute;
-  bottom: 110px;
-  right: 28px;
-  z-index: 55;
+  position: relative;
   width: 52px; height: 52px;
   border-radius: 50%;
   background: var(--accent);
@@ -105,6 +104,7 @@ body {
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 6px 20px rgba(132,132,214,.35), 0 0 0 1px rgba(132,132,214,.2);
   transition: all .15s;
+  flex-shrink: 0;
 }
 .fab-play:hover {
   background: var(--accent-2);
@@ -116,18 +116,17 @@ body {
 .fab-play[data-state="live"] { background: var(--live); box-shadow: 0 6px 20px rgba(148,208,122,.35), 0 0 0 1px rgba(148,208,122,.2); }
 .fab-play[data-state="live"]:hover { background: #84c46b; box-shadow: 0 8px 24px rgba(148,208,122,.5), 0 0 0 1px var(--live); }
 
-/* микрофоны слева от FAB, выровнены по центру FAB по вертикали */
+/* РјРёРєСЂРѕС„РѕРЅС‹ СЃР»РµРІР° РѕС‚ FAB вЂ” С‚РѕР¶Рµ flex-item РІРЅСѓС‚СЂРё chat-panel__controls.
+   Р Р°СЃРїРѕР»РѕР¶РµРЅС‹ РїРѕ С†РµРЅС‚СЂСѓ FAB РїРѕ РІРµСЂС‚РёРєР°Р»Рё (С‡РµСЂРµР· align-items:center СЂРѕРґРёС‚РµР»СЏ). */
 .fab-meters {
-  position: absolute;
-  bottom: 121px;
-  right: 92px;
-  z-index: 54;
+  position: relative;
   display: flex; align-items: center; gap: 8px;
   padding: 6px 10px;
   background: var(--bg-1);
   border: 1px solid var(--border);
   border-radius: 999px;
   box-shadow: 0 4px 16px rgba(0,0,0,.4);
+  flex-shrink: 0;
 }
 .fab-meters .meter {
   padding: 0;
@@ -141,10 +140,10 @@ body {
 .fab-meters .meter--out .meter__icon { color: var(--live); }
 .fab-meters .meter__db { display: none; }
 
-/* .window — родитель для абсолютного позиционирования FAB */
+/* .window вЂ” РєРѕСЂРЅРµРІР°СЏ РєРѕР»РѕРЅРєР° (FAB/meters С‚РµРїРµСЂСЊ РІРЅСѓС‚СЂРё composer, СЃРј. РЅРёР¶Рµ) */
 .window { position: relative; }
 
-/* когда сессия на паузе: метры замирают, счётчик замирает, иконки тусклые */
+/* РєРѕРіРґР° СЃРµСЃСЃРёСЏ РЅР° РїР°СѓР·Рµ: РјРµС‚СЂС‹ Р·Р°РјРёСЂР°СЋС‚, СЃС‡С‘С‚С‡РёРє Р·Р°РјРёСЂР°РµС‚, РёРєРѕРЅРєРё С‚СѓСЃРєР»С‹Рµ */
 .app.is-paused .fab-meters .meter { opacity: .35; filter: grayscale(.7); }
 .app.is-paused .meter__bar.is-on { background: var(--muted-2) !important; box-shadow: none !important; }
 .app.is-paused .profile-usage__bar span { animation-play-state: paused; }
@@ -160,33 +159,33 @@ body {
   border-radius: 4px;
 }
 .app.is-paused .profile-paused-badge { display: inline-block; }
-/* левая панель открыта — отступаем на её ширину */
-.app.is-sources-open .bottom-toggle,
-.app.is-capture-open .bottom-toggle { left: 260px; }
-/* нижняя панель открыта — поднимаемся НАД ней, чтобы не сидеть внутри */
+/* РїСЂР°РІР°СЏ РїР°РЅРµР»СЊ РѕС‚РєСЂС‹С‚Р° вЂ” РѕС‚СЃС‚СѓРїР°РµРј РЅР° РµС‘ С€РёСЂРёРЅСѓ (РєР°Рє Сѓ panel-toggle--right) */
+.app.is-sessions-open .bottom-toggle,
+.app.is-windows-open .bottom-toggle { right: 320px; }
+/* РЅРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ РѕС‚РєСЂС‹С‚Р° вЂ” РїРѕРґРЅРёРјР°РµРјСЃСЏ РќРђР” РЅРµР№, С‡С‚РѕР±С‹ РЅРµ СЃРёРґРµС‚СЊ РІРЅСѓС‚СЂРё */
 .app.is-bottom-open .bottom-toggle { bottom: 108px; }
-.bottom-toggle:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); border-left-color: var(--bg-3); }
-.bottom-toggle svg { width: 11px; height: 11px; transition: transform .2s; }
+.bottom-toggle:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); border-right-color: var(--bg-3); }
+.bottom-toggle svg { width: 13px; height: 13px; transition: transform .2s; }
 .app.is-bottom-open .bottom-toggle {
   background: var(--accent);
   color: var(--bg);
   border-color: var(--accent);
-  border-left-color: var(--accent);
+  border-right-color: var(--accent);
   width: 26px;
-  box-shadow: -4px 0 18px rgba(132,132,214,.65), 0 0 0 1px var(--accent-2) inset;
+  box-shadow: 4px 0 18px rgba(132,132,214,.65), 0 0 0 1px var(--accent-2) inset;
 }
 .app.is-bottom-open .bottom-toggle::before {
   content: '';
   position: absolute;
-  left: 5px; top: 50%; transform: translateY(-50%);
+  right: 5px; top: 50%; transform: translateY(-50%);
   width: 4px; height: 18px;
   background: #fff;
   border-radius: 2px;
   box-shadow: 0 0 10px rgba(255,255,255,.9);
 }
-.app.is-bottom-open .bottom-toggle svg { transform: rotate(180deg); color: var(--bg); }
+.app.is-bottom-open .bottom-toggle svg { color: var(--bg); }
 
-/* ════════════ PANEL TOGGLES (плавающие, на гранях) ════════════ */
+/* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ PANEL TOGGLES (РїР»Р°РІР°СЋС‰РёРµ, РЅР° РіСЂР°РЅСЏС…) в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
 .panel-toggle {
   position: fixed;
   top: 50%;
@@ -205,7 +204,7 @@ body {
   color: var(--accent-2);
   border-color: var(--accent);
 }
-/* когда панель открыта — лёгкая подсветка через .is-open */
+/* РєРѕРіРґР° РїР°РЅРµР»СЊ РѕС‚РєСЂС‹С‚Р° вЂ” Р»С‘РіРєР°СЏ РїРѕРґСЃРІРµС‚РєР° С‡РµСЂРµР· .is-open */
 .panel-toggle.is-open,
 .bottom-toggle.is-open {
   background: var(--accent-soft) !important;
@@ -213,9 +212,9 @@ body {
   border-color: var(--accent) !important;
   box-shadow: 0 0 8px rgba(132,132,214,.25) !important;
 }
-.panel-toggle--left.is-open,
+.panel-toggle--right.is-open,
 .bottom-toggle.is-open {
-  border-left-color: var(--accent) !important;
+  border-right-color: var(--accent) !important;
 }
 .panel-toggle--right.is-open {
   border-right-color: var(--accent) !important;
@@ -226,7 +225,7 @@ body {
   transform: scaleX(1) !important;
 }
 .panel-toggle--bottom.is-open svg { transform: rotate(180deg) !important; }
-/* едва заметная внутренняя полоска-индикатор */
+/* РµРґРІР° Р·Р°РјРµС‚РЅР°СЏ РІРЅСѓС‚СЂРµРЅРЅСЏСЏ РїРѕР»РѕСЃРєР°-РёРЅРґРёРєР°С‚РѕСЂ */
 .panel-toggle.is-open::before,
 .bottom-toggle.is-open::before {
   content: '';
@@ -238,10 +237,10 @@ body {
 }
 .panel-toggle--left.is-open::before { left: 4px; }
 .panel-toggle--right.is-open::before { right: 4px; }
-.bottom-toggle.is-open::before { left: 4px; }
+.bottom-toggle.is-open::before { right: 4px; }
 .panel-toggle svg { width: 13px; height: 13px; }
 
-/* left toggle — сидит у левого края экрана, при открытой панели сдвигается к её правому краю */
+/* left toggle вЂ” СЃРёРґРёС‚ Сѓ Р»РµРІРѕРіРѕ РєСЂР°СЏ СЌРєСЂР°РЅР°, РїСЂРё РѕС‚РєСЂС‹С‚РѕР№ РїР°РЅРµР»Рё СЃРґРІРёРіР°РµС‚СЃСЏ Рє РµС‘ РїСЂР°РІРѕРјСѓ РєСЂР°СЋ */
 .panel-toggle--left {
   left: 0;
   border-left: none;
@@ -273,7 +272,7 @@ body {
   color: var(--bg);
 }
 
-/* два левых тоггла стекаются вертикально */
+/* РґРІР° Р»РµРІС‹С… С‚РѕРіРіР»Р° СЃС‚РµРєР°СЋС‚СЃСЏ РІРµСЂС‚РёРєР°Р»СЊРЅРѕ */
 .panel-toggle--left[data-side="sources"] { top: calc(50% - 32px); }
 .panel-toggle--left[data-side="capture"] { top: calc(50% + 32px); }
 .app.is-sources-open .panel-toggle--left[data-side="sources"] { top: calc(50% - 32px); }
@@ -308,7 +307,7 @@ body {
 .app.is-windows-open .panel-toggle--right[data-side="windows"] svg {
   color: var(--bg);
 }
-/* два правых стекаются по вертикали (зеркально левым) */
+/* РґРІР° РїСЂР°РІС‹С… СЃС‚РµРєР°СЋС‚СЃСЏ РїРѕ РІРµСЂС‚РёРєР°Р»Рё (Р·РµСЂРєР°Р»СЊРЅРѕ Р»РµРІС‹Рј) */
 .panel-toggle--right[data-side="sessions"] { top: calc(50% - 32px); }
 .panel-toggle--right[data-side="windows"]  { top: calc(50% + 32px); }
 
@@ -334,8 +333,28 @@ body {
 .panel-toggle--left::after  { left: calc(100% + 10px); }
 .panel-toggle--right::after { right: calc(100% + 10px); }
 .panel-toggle:hover::after { opacity: 1; }
+/* tooltip РґР»СЏ bottom-toggle (С‚РѕР¶Рµ СЃРїСЂР°РІР° вЂ” РїРѕСЏРІР»СЏРµС‚СЃСЏ СЃР»РµРІР°) */
+.bottom-toggle::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: calc(100% + 10px);
+  padding: 4px 8px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 11px;
+  font-family: 'Geist Mono', monospace;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s;
+}
+.bottom-toggle:hover::after { opacity: 1; }
 
-/* ════════════ SIDE PANELS ════════════ */
+/* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ SIDE PANELS в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
 .panel {
   background: var(--bg-1);
   border-right: 1px solid var(--border);
@@ -348,7 +367,7 @@ body {
   border-left: 1px solid var(--border);
 }
 
-/* bottom panel: full-width, узкая полоска снизу */
+/* bottom panel: full-width, СѓР·РєР°СЏ РїРѕР»РѕСЃРєР° СЃРЅРёР·Сѓ */
 .panel--bottom {
   grid-column: 1 / -1;
   grid-row: 2;
@@ -375,10 +394,11 @@ body {
   font-size: 12.5px;
 }
 
-/* bottom panel — профиль */
+/* bottom panel вЂ” РїСЂРѕС„РёР»СЊ */
 .profile-card {
   display: flex; align-items: center; gap: 10px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 .profile-card__avatar {
   width: 32px; height: 32px;
@@ -456,8 +476,13 @@ body {
   flex-shrink: 0;
 }
 .profile-btn:hover { background: var(--bg-3); border-color: var(--border-2); color: var(--text); }
+.profile-btn--signout:hover {
+  background: rgba(210,128,121,.12);
+  border-color: rgba(210,128,121,.4);
+  color: var(--danger);
+}
 
-/* bottom-tab: маленькая пилюля по центру */
+/* bottom-tab: РјР°Р»РµРЅСЊРєР°СЏ РїРёР»СЋР»СЏ РїРѕ С†РµРЅС‚СЂСѓ */
 .bottom-tab {
   height: 22px;
   padding: 0 14px;
@@ -486,18 +511,18 @@ body {
 .app.is-bottom-open .bottom-tab svg { transform: rotate(180deg); }
 .panel--bottom .panel__head { display: flex; justify-content: center; }
 
-/* (legacy — оставлено для совместимости, но не используется) */
-/* явное размещение в grid */
+/* (legacy вЂ” РѕСЃС‚Р°РІР»РµРЅРѕ РґР»СЏ СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚Рё, РЅРѕ РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ) */
+/* СЏРІРЅРѕРµ СЂР°Р·РјРµС‰РµРЅРёРµ РІ grid */
 .panel--sources   { grid-column: 1; grid-row: 1; }
 .panel--capture   { grid-column: 1; grid-row: 1; }
 .window           { grid-column: 2; grid-row: 1; }
 .panel--sessions  { grid-column: 3; grid-row: 1; }
 .panel--windows   { grid-column: 3; grid-row: 1; }
-/* переключаемость левых */
+/* РїРµСЂРµРєР»СЋС‡Р°РµРјРѕСЃС‚СЊ Р»РµРІС‹С… */
 .panel--capture { display: none; }
 .app.is-capture-open .panel--capture { display: flex; }
 .app.is-capture-open .panel--sources { display: none; }
-/* переключаемость правых */
+/* РїРµСЂРµРєР»СЋС‡Р°РµРјРѕСЃС‚СЊ РїСЂР°РІС‹С… */
 .panel--windows { display: none; }
 .app.is-windows-open .panel--windows { display: flex; }
 .app.is-windows-open .panel--sessions { display: none; }
@@ -541,7 +566,7 @@ body {
 .panel__empty svg { width: 36px; height: 36px; opacity: .5; }
 .panel__empty p { margin: 0; font-size: 12.5px; }
 
-/* ════════════ CENTER WINDOW ════════════ */
+/* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ CENTER WINDOW в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
 .window {
   display: flex;
   flex-direction: column;
@@ -549,7 +574,7 @@ body {
   min-width: 0;
 }
 
-/* ════════════ HEADER ════════════ */
+/* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ HEADER в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
 .header {
   display: flex; align-items: center; gap: 14px;
   padding: 10px 16px;
@@ -653,7 +678,7 @@ body {
 .gear--push { margin-left: auto; }
 .gear:not(.gear--push):hover { transform: none; }
 
-/* window controls (Windows-style, крайне справа) */
+/* window controls (Windows-style, РєСЂР°Р№РЅРµ СЃРїСЂР°РІР°) */
 .window-ctl {
   display: flex;
   margin-left: 8px;
@@ -661,7 +686,7 @@ body {
   border-left: 1px solid var(--border);
 }
 
-/* (legacy .meter-toggle удалён — микрофоны теперь висят у FAB) */
+/* (legacy .meter-toggle СѓРґР°Р»С‘РЅ вЂ” РјРёРєСЂРѕС„РѕРЅС‹ С‚РµРїРµСЂСЊ РІРёСЃСЏС‚ Сѓ FAB) */
 .win-btn {
   width: 34px; height: 34px;
   display: flex; align-items: center; justify-content: center;
@@ -675,11 +700,11 @@ body {
 
 @keyframes pulse-soft { 0%,100% { opacity: 1 } 50% { opacity: .3 } }
 
-/* ════════════ FEED ════════════ */
+/* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ FEED в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
 .feed {
   flex: 1;
   overflow-y: auto;
-  padding: 24px 28px 96px; /* bottom отступ чтобы последние пузыри не лезли под FAB */
+  padding: 24px 28px 96px; /* bottom РѕС‚СЃС‚СѓРї С‡С‚РѕР±С‹ РїРѕСЃР»РµРґРЅРёРµ РїСѓР·С‹СЂРё РЅРµ Р»РµР·Р»Рё РїРѕРґ FAB */
 }
 .feed::-webkit-scrollbar { width: 8px; }
 .feed::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
@@ -829,15 +854,84 @@ body {
 .typing span:nth-child(2) { animation-delay: .2s; }
 .typing span:nth-child(3) { animation-delay: .4s; }
 
-/* ════════════ COMPOSER ════════════ */
+/* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ CHAT PANEL (РЅР°Рґ composer'РѕРј, РїРѕРґ feed'РѕРј) в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
+
+/* РєРЅРѕРїРєР°-С‚Р°Р±: РјР°Р»РµРЅСЊРєР°СЏ РїРёР»СЋР»СЏ РїРѕ С†РµРЅС‚СЂСѓ, РєР°Рє Сѓ bottom-panel */
+.chat-panel-toggle {
+  flex-shrink: 0;
+  height: 22px;
+  padding: 0 14px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+  margin: 0 auto;
+  background: var(--bg-2);
+  color: var(--muted);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  transition: all .15s;
+}
+.chat-panel-toggle:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); }
+.chat-panel-toggle svg { width: 11px; height: 11px; transition: transform .2s; }
+.chat-panel-toggle.is-open {
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  border-color: var(--accent);
+}
+.chat-panel-toggle.is-open svg { transform: rotate(180deg); }
+
+/* СЃР°РјР° РїР°РЅРµР»СЊ: РІ Р·Р°РєСЂС‹С‚РѕРј РІРёРґРµ flex-basis:0 + overflow:hidden (РЅРµ РІРёРґРЅР° Рё РЅРµ Р·Р°РЅРёРјР°РµС‚),
+   РІ РѕС‚РєСЂС‹С‚РѕРј вЂ” flex-basis:auto + max-height РґР»СЏ СЃРєСЂРѕР»Р»Р° РґР»РёРЅРЅРѕРіРѕ РєРѕРЅС‚РµРЅС‚Р°.
+   Feed СѓР¶РёРјР°РµС‚СЃСЏ СЃРІРµСЂС…Сѓ (РѕРЅ flex:1), composer РѕСЃС‚Р°С‘С‚СЃСЏ РЅР° РјРµСЃС‚Рµ. */
+.chat-panel {
+  flex: 0 0 0;
+  min-height: 0;
+  overflow: hidden;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: flex-basis .25s ease, border-color .25s ease;
+}
+.chat-panel.is-open {
+  flex: 0 0 auto;
+  max-height: 140px;
+  overflow-y: auto;
+}
+.chat-panel__inner {
+  padding: 8px 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.chat-panel__controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+.chat-panel__empty {
+  color: var(--muted-2);
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ COMPOSER в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
 .composer {
+  position: relative;
   padding: 14px 20px 18px;
   flex-shrink: 0;
 }
 .composer__box {
   display: flex; align-items: flex-end; gap: 10px;
   background: var(--bg-2);
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
   border-radius: var(--radius-lg);
   padding: 12px 12px 10px;
   transition: all .15s;
@@ -944,7 +1038,7 @@ body {
 }
 .src-item__score { color: var(--live); }
 
-/* Floating-windows meta: цветная точка + модель + N */
+/* Floating-windows meta: С†РІРµС‚РЅР°СЏ С‚РѕС‡РєР° + РјРѕРґРµР»СЊ + N */
 .win-dot {
   width: 6px; height: 6px;
   border-radius: 50%;
@@ -1122,9 +1216,9 @@ body {
 .sess-model--fast  { background: rgba(132,191,214,.12); color: var(--kb); border: 1px solid rgba(132,191,214,.3); }
 .sess-model--heavy { background: var(--accent-soft); color: var(--accent-2); border: 1px solid rgba(132,132,214,.35); }
 
-/* compact play/pause button удалён — заменён на per-row кнопку с shimmer при загрузке */
+/* compact play/pause button СѓРґР°Р»С‘РЅ вЂ” Р·Р°РјРµРЅС‘РЅ РЅР° per-row РєРЅРѕРїРєСѓ СЃ shimmer РїСЂРё Р·Р°РіСЂСѓР·РєРµ */
 
-/* shimmer на кнопке во время загрузки сессии */
+/* shimmer РЅР° РєРЅРѕРїРєРµ РІРѕ РІСЂРµРјСЏ Р·Р°РіСЂСѓР·РєРё СЃРµСЃСЃРёРё */
 @keyframes shimmer {
   0%   { background-position: -100% 0; }
   100% { background-position: 200% 0; }
@@ -1136,7 +1230,7 @@ body {
   color: var(--accent-2) !important;
 }
 
-/* глобальный прогресс-бар загрузки сессии — висит внизу экрана */
+/* РіР»РѕР±Р°Р»СЊРЅС‹Р№ РїСЂРѕРіСЂРµСЃСЃ-Р±Р°СЂ Р·Р°РіСЂСѓР·РєРё СЃРµСЃСЃРёРё вЂ” РІРёСЃРёС‚ РІРЅРёР·Сѓ СЌРєСЂР°РЅР° */
 .load-progress {
   position: fixed;
   left: 0; right: 0; bottom: 0;
@@ -1228,6 +1322,80 @@ body {
   color: var(--muted);
 }
 .cap-btn--primary .cap-btn__kbd { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.25); color: rgba(255,255,255,.85); }
+
+/* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ CAP-FLOATING (3 С‡РёСЃС‚С‹Рµ РєРЅРѕРїРєРё-РґРµР№СЃС‚РІРёСЏ РЅР° Р»РµРІРѕРј РєСЂР°СЋ) в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
+.cap-floating {
+  position: fixed;
+  left: 10px;
+  bottom: 100px;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cap-floating-btn {
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  position: relative;
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+.cap-floating-btn:hover {
+  background: var(--bg-3);
+  color: var(--accent-2);
+  border-color: var(--accent);
+  transform: scale(1.06);
+  box-shadow: 0 4px 14px rgba(132,132,214,.25);
+}
+.cap-floating-btn.is-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(132,132,214,.4);
+}
+.cap-floating-btn.is-primary:hover {
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+  box-shadow: 0 6px 20px rgba(132,132,214,.55);
+}
+.cap-floating-btn.is-set {
+  color: var(--live);
+  border-color: var(--live);
+}
+.cap-floating-btn.is-picking {
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  border-color: var(--accent);
+  animation: pulse-soft 1.2s ease-in-out infinite;
+}
+.cap-floating-btn svg { width: 14px; height: 14px; }
+/* tooltip */
+.cap-floating-btn::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 8px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 11px;
+  font-family: 'Geist Mono', monospace;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s;
+}
+.cap-floating-btn:hover::after { opacity: 1; }
+
 </style>
 </head>
 
@@ -1307,7 +1475,7 @@ body {
   <!-- CENTER -->
   <div class="window">
 
-    <!-- HEADER (теперь только brand + meters + settings) -->
+    <!-- HEADER (С‚РµРїРµСЂСЊ С‚РѕР»СЊРєРѕ brand + meters + settings) -->
     <header class="header">
       <div class="brand">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -1324,7 +1492,7 @@ body {
         <div class="header__center-name" id="sessName" contenteditable="false" spellcheck="false">Coding Helper</div>
       </div>
 
-      <button class="gear" title="Knowledge sources">
+      <button class="gear" title="Knowledge sources" onclick="window.open('kb_picker.html','kb-picker','width=720,height=720,resizable=yes,scrollbars=no')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
       </button>
       <button class="gear" title="Floating windows">
@@ -1352,7 +1520,7 @@ body {
       <div class="day">Today · 26 Aug</div>
 
       <div class="bubble bubble--system">
-        ⚙ Context activated: <code>System-Design-Primer/06-twitter.md</code> · N=10 · Claude Sonnet 4
+        вљ™ Context activated: <code>System-Design-Primer/06-twitter.md</code> · N=10 · Claude Sonnet 4
       </div>
 
       <div class="msg">
@@ -1373,7 +1541,7 @@ body {
           <div class="hint">
             <div class="hint__head">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
-              System Design — Event-driven architecture
+              System Design вЂ” Event-driven architecture
             </div>
             <h4>Answer building blocks:</h4>
             <ol>
@@ -1396,7 +1564,7 @@ body {
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
             <b>microphone</b> · 13:55:38
           </div>
-          <div class="bubble bubble--user">I'd start by separating <code>write-path</code> and <code>read-path</code>. For writes — Kafka with partitioning by user_id, for reads — pre-computed timelines in Cassandra.</div>
+          <div class="bubble bubble--user">I'd start by separating <code>write-path</code> and <code>read-path</code>. For writes вЂ” Kafka with partitioning by user_id, for reads вЂ” pre-computed timelines in Cassandra.</div>
         </div>
         <div class="avatar-sm avatar-sm--user">U</div>
       </div>
@@ -1405,7 +1573,7 @@ body {
         <div class="avatar-sm avatar-sm--other">I</div>
         <div class="msg__col">
           <div class="msg__meta"><b>Interviewer</b> · 13:56:04</div>
-          <div class="bubble bubble--other">Good. What about fan-out — push or pull?</div>
+          <div class="bubble bubble--other">Good. What about fan-out вЂ” push or pull?</div>
         </div>
       </div>
 
@@ -1433,8 +1601,8 @@ body {
               Hybrid fan-out (push + pull)
             </div>
             <ul>
-              <li><b>Push</b> for regular users (≤ 10k followers) — fan-out-on-write in timeline</li>
-              <li><b>Pull</b> for celebrities — fan-out-on-read, merge on the fly</li>
+              <li><b>Push</b> for regular users (в‰¤ 10k followers) вЂ” fan-out-on-write in timeline</li>
+              <li><b>Pull</b> for celebrities вЂ” fan-out-on-read, merge on the fly</li>
               <li>Consistency: <code>eventual</code> for feeds, <code>strong</code> only for likes/follows</li>
             </ul>
             <div class="hint__src">
@@ -1451,7 +1619,7 @@ body {
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
             <b>microphone</b> · 13:56:58
           </div>
-          <div class="bubble bubble--user">I'd go hybrid: push for regular users, pull for celebrities. Consistency — eventual for feeds, strong only for likes and follows.</div>
+          <div class="bubble bubble--user">I'd go hybrid: push for regular users, pull for celebrities. Consistency вЂ” eventual for feeds, strong only for likes and follows.</div>
         </div>
         <div class="avatar-sm avatar-sm--user">U</div>
       </div>
@@ -1475,13 +1643,41 @@ body {
       </div>
     </main>
 
+    <!-- РўР°Р±-РєРЅРѕРїРєР° + СЂР°СЃРєСЂС‹РІР°СЋС‰Р°СЏСЃСЏ РїР°РЅРµР»СЊ РќРђР” composer'РѕРј (С‡Р°С‚ СѓР¶РёРјР°РµС‚СЃСЏ СЃРІРµСЂС…Сѓ).
+         РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РћРўРљР Р«РўРђ вЂ” РІРЅСѓС‚СЂРё Р¶РёРІСѓС‚ FAB play/pause Рё РјРµС‚СЂС‹. -->
+    <button class="chat-panel-toggle is-open" id="chatPanelToggle" onclick="toggleChatPanel()" data-tip="Toggle panel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      Panel
+    </button>
+
+    <div class="chat-panel is-open" id="chatPanel">
+      <div class="chat-panel__inner">
+        <div class="chat-panel__controls">
+          <div class="fab-meters" id="fabMeters">
+            <div class="meter meter--in" title="Incoming audio">
+              <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <div class="meter__bars" id="meterIn"></div>
+            </div>
+            <div class="meter meter--out" title="Outgoing audio">
+              <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
+              <div class="meter__bars" id="meterOut"></div>
+            </div>
+          </div>
+          <button class="fab-play" id="fabPlay" data-state="live" title="Start / stop">
+            <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+          </button>
+        </div>
+        <div class="chat-panel__empty">Panel content вЂ” РїРѕРєР° РїСѓСЃС‚Рѕ</div>
+      </div>
+    </div>
+
     <!-- COMPOSER -->
     <footer class="composer">
       <div class="composer__box">
         <button class="attach-btn" title="Attach file">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m21.4 11-8.8 8.8a5 5 0 0 1-7-7l8.8-8.8a3.5 3.5 0 1 1 5 5l-8.8 8.8a2 2 0 1 1-2.8-2.8l8.5-8.5"/></svg>
         </button>
-        <textarea class="composer__input" rows="1" placeholder="Write to Quistan…"></textarea>
+        <textarea class="composer__input" rows="1" placeholder="Write to Quistan..."></textarea>
         <button class="composer__send" title="Send">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
         </button>
@@ -1490,53 +1686,7 @@ body {
 
   </div>
 
-  <!-- LEFT PANEL: SCREEN CAPTURE -->
-  <aside class="panel panel--left panel--capture" id="capturePanel">
-    <div class="panel__head">
-      <span>Screen capture</span>
-      <button class="panel__close" onclick="togglePanel('capture')" title="Hide">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
-      </button>
-    </div>
-    <div class="panel__body">
-
-      <div class="src-list__head"><span>Region</span></div>
-
-      <button class="cap-region" id="capRegion" title="Select screen region">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 8V6a2 2 0 0 1 2-2h2"/>
-          <path d="M20 8V6a2 2 0 0 0-2-2h-2"/>
-          <path d="M4 16v2a2 2 0 0 0 2 2h2"/>
-          <path d="M20 16v2a2 2 0 0 1-2 2h-2"/>
-          <path d="M4 12h16"/>
-        </svg>
-        <span>Select region</span>
-        <span class="cap-region__hint" id="capRegionHint">not set</span>
-      </button>
-
-      <div class="src-divider"></div>
-      <div class="src-list__head"><span>Capture</span></div>
-
-      <button class="cap-btn cap-btn--primary" id="capShotRegion">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 7h3l2-2h4l2 2h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
-          <circle cx="12" cy="13" r="3.5"/>
-        </svg>
-        <span>Screenshot region</span>
-        <span class="cap-btn__kbd">Ctrl+Shift+4</span>
-      </button>
-
-      <button class="cap-btn" id="capShotFull">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="13" rx="2"/>
-          <path d="M8 21h8M12 17v4"/>
-        </svg>
-        <span>Screenshot full screen</span>
-        <span class="cap-btn__kbd">Ctrl+Shift+3</span>
-      </button>
-
-    </div>
-  </aside>
+  <!-- (capture-panel СѓРґР°Р»С‘РЅ РёР· DOM вЂ” РєРЅРѕРїРєРё РІС‹РЅРµСЃРµРЅС‹ РІ РїР»Р°РІР°СЋС‰РёРµ РїРёР»СЋР»Рё СЃР»РµРІР°, СЃРј. .cap-floating) -->
 
   <!-- RIGHT PANEL: SESSIONS -->
   <aside class="panel panel--right panel--sessions" id="sessionsPanel">
@@ -1693,24 +1843,16 @@ body {
     </div>
   </aside>
 
-  <!-- BOTTOM PANEL (узкая полоска) -->
+  <!-- BOTTOM PANEL (СѓР·РєР°СЏ РїРѕР»РѕСЃРєР°) -->
   <aside class="panel panel--bottom" id="bottomPanel">
     <div class="panel__body">
-
-      <div class="profile-card">
-        <div class="profile-card__avatar">K</div>
-        <div class="profile-card__info">
-          <div class="profile-card__name">quistant_user</div>
-          <div class="profile-card__email">svbel85@gmail.com</div>
-        </div>
-      </div>
-
-      <div class="profile-divider"></div>
 
       <div class="profile-tariff">
         <span class="profile-tariff__label">Until</span>
         <span class="profile-tariff__plan">02 Sep 2026</span>
       </div>
+
+      <div class="profile-divider"></div>
 
       <div class="profile-usage">
         <div class="profile-usage__head">
@@ -1720,19 +1862,33 @@ body {
         <div class="profile-usage__bar"><span style="width:30%"></span></div>
       </div>
 
-      <button class="profile-btn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+      <div class="profile-divider"></div>
+
+      <button class="profile-btn profile-btn--signout" title="Sign out of account">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
         Sign out
       </button>
+
+      <div class="profile-card">
+        <div class="profile-card__avatar">K</div>
+        <div class="profile-card__info">
+          <div class="profile-card__name">quistant_user</div>
+          <div class="profile-card__email">svbel85@gmail.com</div>
+        </div>
+      </div>
 
     </div>
   </aside>
 
 </div>
 
-<!-- ════════ PANEL TOGGLES (плавающие на гранях экрана) ════════ -->
+<!-- в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ PANEL TOGGLES (РїР»Р°РІР°СЋС‰РёРµ РЅР° РіСЂР°РЅСЏС… СЌРєСЂР°РЅР°) в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ -->
 
-<!-- Левая верхняя: иконка книжки (Knowledge sources) -->
+<!-- Р›РµРІР°СЏ РІРµСЂС…РЅСЏСЏ: РёРєРѕРЅРєР° РєРЅРёР¶РєРё (Knowledge sources) -->
 <button class="panel-toggle panel-toggle--left" data-side="sources" onclick="togglePanel('sources')" data-tip="Knowledge sources">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
@@ -1740,23 +1896,17 @@ body {
   </svg>
 </button>
 
-<!-- Левая нижняя: иконка фотоаппарата (Screen capture) -->
-<button class="panel-toggle panel-toggle--left" data-side="capture" onclick="togglePanel('capture')" data-tip="Screen capture">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
-    <circle cx="12" cy="13" r="3.5"/>
-  </svg>
-</button>
+<!-- (capture-toggle СѓРґР°Р»С‘РЅ вЂ” РєРЅРѕРїРєРё РІС‹РЅРµСЃРµРЅС‹ РІ РїР»Р°РІР°СЋС‰РёРµ РїРёР»СЋР»Рё СЃР»РµРІР°, СЃРј. .cap-floating) -->
 
-<!-- Правая: иконка "sidebar-right" — рамка с подсвеченной ПРАВОЙ стороной -->
-<!-- Правая верхняя: иконка чата (Sessions) -->
+<!-- РџСЂР°РІР°СЏ: РёРєРѕРЅРєР° "sidebar-right" вЂ” СЂР°РјРєР° СЃ РїРѕРґСЃРІРµС‡РµРЅРЅРѕР№ РџР РђР’РћР™ СЃС‚РѕСЂРѕРЅРѕР№ -->
+<!-- РџСЂР°РІР°СЏ РІРµСЂС…РЅСЏСЏ: РёРєРѕРЅРєР° С‡Р°С‚Р° (Sessions) -->
 <button class="panel-toggle panel-toggle--right" data-side="sessions" onclick="togglePanel('sessions')" data-tip="Sessions">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
   </svg>
 </button>
 
-<!-- Правая нижняя: иконка окошек (Floating windows) -->
+<!-- РџСЂР°РІР°СЏ РЅРёР¶РЅСЏСЏ: РёРєРѕРЅРєР° РѕРєРѕС€РµРє (Floating windows) -->
 <button class="panel-toggle panel-toggle--right" data-side="windows" onclick="togglePanel('windows')" data-tip="Floating windows">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3" y="3" width="13" height="13" rx="2"/>
@@ -1764,35 +1914,41 @@ body {
   </svg>
 </button>
 
-<!-- Нижняя-левая: маленькая кнопка (Bottom panel) -->
-<button class="bottom-toggle" onclick="togglePanel('bottom')" data-tip="Bottom panel">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 15 6-6 6 6"/></svg>
+<!-- РќРёР¶РЅСЏСЏ-РїСЂР°РІР°СЏ: РїРёР»СЋР»СЏ-СЋР·РµСЂ (РѕС‚РєСЂС‹РІР°РµС‚ bottom-panel СЃ РїСЂРѕС„РёР»РµРј Рё Sign out) -->
+<button class="bottom-toggle" onclick="togglePanel('bottom')" data-tip="Account">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+    <circle cx="12" cy="7" r="4"/>
+  </svg>
 </button>
 
-<!-- Плавающая круглая FAB play/pause (правый-нижний угол) -->
-<!-- Глобальный прогресс-бар загрузки сессии (висит внизу экрана) -->
+<!-- Р“Р»РѕР±Р°Р»СЊРЅС‹Р№ РїСЂРѕРіСЂРµСЃСЃ-Р±Р°СЂ Р·Р°РіСЂСѓР·РєРё СЃРµСЃСЃРёРё (РІРёСЃРёС‚ РІРЅРёР·Сѓ СЌРєСЂР°РЅР°) -->
 <div class="load-progress" id="loadProgress">
   <div class="load-progress__bar" id="loadBar"></div>
-  <span class="load-progress__label" id="loadLabel">Loading…</span>
+  <span class="load-progress__label" id="loadLabel">Loading...</span>
 </div>
 
-<!-- FAB play/pause + meters — снаружи, плавающие над composer'ом -->
-<button class="fab-play" id="fabPlay" data-state="live" title="Start / stop">
-  <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
-</button>
-<div class="fab-meters" id="fabMeters">
-  <div class="meter meter--in" title="Incoming audio">
-    <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <div class="meter__bars" id="meterIn"></div>
-  </div>
-  <div class="meter meter--out" title="Outgoing audio">
-    <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
-    <div class="meter__bars" id="meterOut"></div>
-  </div>
+<!-- РџР»Р°РІР°СЋС‰РёРµ РїРёР»СЋР»Рё Capture РЅР° Р»РµРІРѕРј РєСЂР°СЋ СЌРєСЂР°РЅР° (2 РєРЏРїРєРё РІРµСЂС‚РёРєР°Р»СЊРЅРѕ) -->
+<div class="cap-floating" id="capFloating">
+  <button class="cap-floating-btn" id="capRegion" data-tip="Select region · not set" title="Select screen region">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 8V6a2 2 0 0 1 2-2h2"/>
+      <path d="M20 8V6a2 2 0 0 0-2-2h-2"/>
+      <path d="M4 16v2a2 2 0 0 0 2 2h2"/>
+      <path d="M20 16v2a2 2 0 0 1-2 2h-2"/>
+      <path d="M4 12h16"/>
+    </svg>
+  </button>
+  <button class="cap-floating-btn is-primary" id="capShotRegion" data-tip="Screenshot region · Ctrl+Shift+4" title="Screenshot region">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 7h3l2-2h4l2 2h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
+      <circle cx="12" cy="13" r="3.5"/>
+    </svg>
+  </button>
 </div>
 
 <script>
-  // ─── panel toggle ───
+  // в”Ђв”Ђв”Ђ panel toggle в”Ђв”Ђв”Ђ
   function togglePanel(side) {
     const app = document.getElementById('app');
     if (side === 'sources' || side === 'capture' || side === 'sessions' || side === 'windows') {
@@ -1800,11 +1956,11 @@ body {
                     side === 'sessions' || side === 'windows' ? ['sessions', 'windows'] : [side];
       const wasOpen = app.classList.contains('is-' + side + '-open');
       group.forEach(s => app.classList.remove('is-' + s + '-open'));
-      // снимаем подсветку со ВСЕХ toggle-кнопок этой группы
+      // СЃРЅРёРјР°РµРј РїРѕРґСЃРІРµС‚РєСѓ СЃРѕ Р’РЎР•РҐ toggle-РєРЅРѕРїРѕРє СЌС‚РѕР№ РіСЂСѓРїРїС‹
       document.querySelectorAll('.panel-toggle').forEach(b => b.classList.remove('is-open'));
       if (!wasOpen) {
         app.classList.add('is-' + side + '-open');
-        // подсвечиваем соответствующую кнопку
+        // РїРѕРґСЃРІРµС‡РёРІР°РµРј СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ РєРЅРѕРїРєСѓ
         const btn = document.querySelector('.panel-toggle[data-side="' + side + '"]');
         if (btn) btn.classList.add('is-open');
       }
@@ -1817,7 +1973,7 @@ body {
     }
   }
 
-  // ─── audio meters ───
+  // в”Ђв”Ђв”Ђ audio meters в”Ђв”Ђв”Ђ
   function buildMeter(el, count) {
     el.innerHTML = '';
     for (let i = 0; i < count; i++) {
@@ -1840,7 +1996,7 @@ body {
       b.style.height = (30 + Math.random() * 70) + '%';
     });
     const db = -60 + (lvl / bars.length) * 50;
-    dbEl.textContent = (db > -60 ? Math.round(db) : '−∞') + ' dB';
+    dbEl.textContent = (db > -60 ? Math.round(db) : 'в€’в€ћ') + ' dB';
   }
 
   let meterIntIn  = setInterval(() => tickMeter(inBars,  dbIn),  120);
@@ -1852,15 +2008,15 @@ body {
     if (paused) {
       inBars.forEach(b  => { b.classList.remove('is-on'); b.style.height = '20%'; });
       outBars.forEach(b => { b.classList.remove('is-on'); b.style.height = '20%'; });
-      dbIn.textContent  = '−∞ dB';
-      dbOut.textContent = '−∞ dB';
+      dbIn.textContent  = 'в€’в€ћ dB';
+      dbOut.textContent = 'в€’в€ћ dB';
     } else {
       meterIntIn  = setInterval(() => tickMeter(inBars,  dbIn),  120);
       meterIntOut = setInterval(() => tickMeter(outBars, dbOut), 90);
     }
   }
 
-  // ─── sessions ───
+  // в”Ђв”Ђв”Ђ sessions в”Ђв”Ђв”Ђ
   const sessName = document.getElementById('sessName');
   const sessDot  = document.getElementById('sessDot');
 
@@ -1873,7 +2029,7 @@ body {
     const s = item.dataset.status;
     stat.className = 'sess-item__status is-' + s;
     stat.innerHTML = '<span class="d"></span>' + s.toUpperCase();
-    // иконка и подсказка action-кнопки: pause для LIVE, play для остальных
+    // РёРєРѕРЅРєР° Рё РїРѕРґСЃРєР°Р·РєР° action-РєРЅРѕРїРєРё: pause РґР»СЏ LIVE, play РґР»СЏ РѕСЃС‚Р°Р»СЊРЅС‹С…
     if (actBtn) {
       if (s === 'live') {
         actBtn.innerHTML = ICON_PAUSE;
@@ -1886,7 +2042,7 @@ body {
   }
 
   function setActiveSession(item) {
-    // просто подсвечиваем выбранную — статус и заголовок НЕ меняем
+    // РїСЂРѕСЃС‚Рѕ РїРѕРґСЃРІРµС‡РёРІР°РµРј РІС‹Р±СЂР°РЅРЅСѓСЋ вЂ” СЃС‚Р°С‚СѓСЃ Рё Р·Р°РіРѕР»РѕРІРѕРє РќР• РјРµРЅСЏРµРј
     document.querySelectorAll('.sess-item').forEach(s => s.classList.remove('is-active'));
     item.classList.add('is-active');
   }
@@ -1895,7 +2051,7 @@ body {
     item.addEventListener('click', () => setActiveSession(item));
   });
 
-  // ─── загрузка сессии (имитация с прогресс-ом и shimmer на кнопке) ───
+  // в”Ђв”Ђв”Ђ Р·Р°РіСЂСѓР·РєР° СЃРµСЃСЃРёРё (РёРјРёС‚Р°С†РёСЏ СЃ РїСЂРѕРіСЂРµСЃСЃ-РѕРј Рё shimmer РЅР° РєРЅРѕРїРєРµ) в”Ђв”Ђв”Ђ
   const loadProgress = document.getElementById('loadProgress');
   const loadBar      = document.getElementById('loadBar');
   const loadLabel    = document.getElementById('loadLabel');
@@ -1906,12 +2062,12 @@ body {
     if (btn) btn.classList.add('is-loading');
     loadProgress.classList.add('is-on');
     let pct = 0;
-    loadLabel.textContent = 'Loading ' + item.dataset.name + '… 0%';
+    loadLabel.textContent = 'Loading ' + item.dataset.name + '... 0%';
     loadBar.style.width = '0%';
     loadTimer = setInterval(() => {
       pct = Math.min(100, pct + Math.random() * 14 + 4);
       loadBar.style.width = pct + '%';
-      loadLabel.textContent = 'Loading ' + item.dataset.name + '… ' + Math.round(pct) + '%';
+      loadLabel.textContent = 'Loading ' + item.dataset.name + '... ' + Math.round(pct) + '%';
       if (pct >= 100) {
         clearInterval(loadTimer); loadTimer = null;
         if (btn) btn.classList.remove('is-loading');
@@ -1920,24 +2076,24 @@ body {
     }, 90);
   }
 
-  // клик по per-row action-кнопке (Freeze / Resume)
+  // РєР»РёРє РїРѕ per-row action-РєРЅРѕРїРєРµ (Freeze / Resume)
   document.querySelectorAll('.sess-item').forEach(item => {
     const actBtn = item.querySelector('.sess-act:not(.sess-act--danger)');
     if (!actBtn) return;
     actBtn.addEventListener('click', e => {
       e.stopPropagation();
-      // делаем сессию активной визуально
+      // РґРµР»Р°РµРј СЃРµСЃСЃРёСЋ Р°РєС‚РёРІРЅРѕР№ РІРёР·СѓР°Р»СЊРЅРѕ
       setActiveSession(item);
 
       const cur = item.dataset.status;
       if (cur === 'live') {
-        // пауза: LIVE → IDLE
+        // РїР°СѓР·Р°: LIVE в†’ IDLE
         item.dataset.status = 'idle';
         syncSessionRowUI(item);
         sessDot.className = 'header__center-dot is-idle';
         refreshFabState();
       } else {
-        // запуск: IDLE/FROZEN → LIVE (с эксклюзивностью и shimmer-загрузкой)
+        // Р·Р°РїСѓСЃРє: IDLE/FROZEN в†’ LIVE (СЃ СЌРєСЃРєР»СЋР·РёРІРЅРѕСЃС‚СЊСЋ Рё shimmer-Р·Р°РіСЂСѓР·РєРѕР№)
         document.querySelectorAll('.sess-item').forEach(other => {
           if (other !== item && other.dataset.status === 'live') {
             other.dataset.status = 'frozen';
@@ -1946,7 +2102,7 @@ body {
         });
         item.dataset.status = 'live';
         syncSessionRowUI(item);
-        // ТОЛЬКО при реальном старте обновляем заголовок
+        // РўРћР›Р¬РљРћ РїСЂРё СЂРµР°Р»СЊРЅРѕРј СЃС‚Р°СЂС‚Рµ РѕР±РЅРѕРІР»СЏРµРј Р·Р°РіРѕР»РѕРІРѕРє
         sessName.textContent = item.dataset.name;
         sessDot.className = 'header__center-dot is-live';
         loadSession(item, actBtn);
@@ -1955,7 +2111,7 @@ body {
     });
   });
 
-  // ─── синхронизация FAB play/pause с активной сессией ───
+  // в”Ђв”Ђв”Ђ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ FAB play/pause СЃ Р°РєС‚РёРІРЅРѕР№ СЃРµСЃСЃРёРµР№ в”Ђв”Ђв”Ђ
   function refreshFabState() {
     const fab = document.getElementById('fabPlay');
     const active = document.querySelector('.sess-item.is-active');
@@ -1968,7 +2124,7 @@ body {
     if (state === 'live') pauseMeters(false); else pauseMeters(true);
   }
 
-  // редактирование заголовка сессии прямо в header
+  // СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РіРѕР»РѕРІРєР° СЃРµСЃСЃРёРё РїСЂСЏРјРѕ РІ header
   sessName.addEventListener('click', () => {
     sessName.setAttribute('contenteditable', 'true');
     sessName.dataset.last = sessName.textContent;
@@ -1997,26 +2153,25 @@ body {
     }
   });
 
-  // ─── screen capture demo ───
+  // в”Ђв”Ђв”Ђ screen capture demo (РїР»Р°РІР°СЋС‰РёРµ РїРёР»СЋР»Рё СЃР»РµРІР°) в”Ђв”Ђв”Ђ
   const capRegion = document.getElementById('capRegion');
-  const capRegionHint = document.getElementById('capRegionHint');
   if (capRegion) {
     capRegion.addEventListener('click', () => {
       if (capRegion.classList.contains('is-picking')) {
         capRegion.classList.remove('is-picking');
         capRegion.classList.add('is-set');
-        capRegionHint.textContent = '1920 × 1080';
+        capRegion.dataset.tip = 'Region set · 1920x1080';
       } else if (!capRegion.classList.contains('is-set')) {
         capRegion.classList.add('is-picking');
-        capRegionHint.textContent = 'pick…';
+        capRegion.dataset.tip = 'Pick region...';
       } else {
         capRegion.classList.remove('is-set');
-        capRegionHint.textContent = 'not set';
+        capRegion.dataset.tip = 'Select region · not set';
       }
     });
   }
 
-  // ─── FAB play/pause — синхронизирован с активной сессией ───
+  // в”Ђв”Ђв”Ђ FAB play/pause вЂ” СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅ СЃ Р°РєС‚РёРІРЅРѕР№ СЃРµСЃСЃРёРµР№ в”Ђв”Ђв”Ђ
   const fabPlay = document.getElementById('fabPlay');
   const FAB_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
   const FAB_PLAY  = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
@@ -2036,20 +2191,20 @@ body {
   }
   if (fabPlay) {
     fabPlay.addEventListener('click', () => {
-      // если есть активная сессия — кликаем её per-row кнопку (логика та же)
+      // РµСЃР»Рё РµСЃС‚СЊ Р°РєС‚РёРІРЅР°СЏ СЃРµСЃСЃРёСЏ вЂ” РєР»РёРєР°РµРј РµС‘ per-row РєРЅРѕРїРєСѓ (Р»РѕРіРёРєР° С‚Р° Р¶Рµ)
       const active = document.querySelector('.sess-item.is-active');
       if (active) {
         active.querySelector('.sess-act:not(.sess-act--danger)').click();
         return;
       }
-      // нет активной — fallback к старой логике
+      // РЅРµС‚ Р°РєС‚РёРІРЅРѕР№ вЂ” fallback Рє СЃС‚Р°СЂРѕР№ Р»РѕРіРёРєРµ
       const cur = fabPlay.dataset.state;
       const next = cur === 'live' ? 'paused' : 'live';
       refreshFab(next);
     });
   }
 
-  // ─── sources & windows checkboxes ───
+  // в”Ђв”Ђв”Ђ sources & windows checkboxes в”Ђв”Ђв”Ђ
   document.querySelectorAll('.src-item').forEach(item => {
     item.addEventListener('click', e => {
       e.preventDefault();
@@ -2063,7 +2218,7 @@ body {
     });
   });
 
-  // ─── composer ───
+  // в”Ђв”Ђв”Ђ composer в”Ђв”Ђв”Ђ
   const ta = document.querySelector('.composer__input');
   const feed = document.querySelector('.feed');
   if (ta) {
@@ -2076,7 +2231,22 @@ body {
     ta.focus();
   }
   window.addEventListener('load', () => { if (feed) feed.scrollTop = feed.scrollHeight; });
+
+  // в”Ђв”Ђв”Ђ chat panel toggle (РЅР°Рґ composer'РѕРј, С‡Р°С‚ СѓР¶РёРјР°РµС‚СЃСЏ СЃРІРµСЂС…Сѓ) в”Ђв”Ђв”Ђ
+  function toggleChatPanel() {
+    const panel = document.getElementById('chatPanel');
+    const btn   = document.getElementById('chatPanelToggle');
+    if (!panel || !btn) return;
+    panel.classList.toggle('is-open');
+    btn.classList.toggle('is-open');
+    // РїРѕСЃР»Рµ СЂР°СЃРєСЂС‹С‚РёСЏ вЂ” РїСЂРѕРєСЂСѓС‚РёС‚СЊ feed Рє РЅРёР·Сѓ, С‡С‚РѕР±С‹ РїРѕСЃР»РµРґРЅРёР№ РїСѓР·С‹СЂСЊ Р±С‹Р» РІРёРґРµРЅ
+    if (panel.classList.contains('is-open') && feed) {
+      requestAnimationFrame(() => { feed.scrollTop = feed.scrollHeight; });
+    }
+  }
 </script>
+
+
 
 </body>
 </html>
