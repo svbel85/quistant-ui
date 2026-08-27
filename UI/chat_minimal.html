@@ -11,24 +11,27 @@
 
 <style>
 :root {
-  --bg:         #0B0B0E;
-  --bg-1:       #141419;
-  --bg-2:       #1E1E24;
-  --bg-3:       #27272F;
-  --border:     #2D2D38;
-  --border-2:   #38384A;
-  --text:       #DBDBE0;
-  --text-2:     #B0B0BD;
-  --muted:      #9090A1;
-  --muted-2:    #5E5E70;
-  --accent:     #8484D6;
-  --accent-2:   #9C9CE0;
-  --accent-soft:rgba(132,132,214,.12);
-  --live:       #94D07A;
-  --solo:       #B497D7;
-  --kb:         #84BFD6;
-  --warn:       #D6BC84;
-  --danger:     #D28079;
+  /* ОБСИДИАН v4: глубокий фиолет, НЕ ядрёный */
+  --bg:         #0A0A10;   /* HSL(248, 22%,  4%) — НЕ ТРОГАЕМ */
+  --bg-1:       #111119;
+  --bg-2:       #1B1B25;
+  --bg-3:       #25252F;
+  --border:     #2D2D3A;
+  --border-2:   #3A3A4C;
+  /* Тексты: cool gray, не белый жжёт */
+  --text:       #A8A8B5;   /* HSL(248,  7%, 68%) */
+  --text-2:     #8C8C99;   /* HSL(248,  7%, 57%) */
+  --muted:      #6F6F7A;
+  --muted-2:    #4A4A55;
+  /* Акценты: DEEP violet, не candy */
+  --accent:     #54548F;   /* HSL(245, 32%, 45%) */
+  --accent-2:   #6868A2;   /* HSL(245, 32%, 52%) */
+  --accent-soft:rgba(84,84,143,.18);
+  --live:       #6E9C5E;
+  --solo:       #7E73AA;
+  --kb:         #669AB2;
+  --warn:       #B89A6A;
+  --danger:     #A86E68;
   --radius-sm:  6px;
   --radius-md:  10px;
   --radius-lg:  14px;
@@ -37,8 +40,19 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; height: 100%; }
 body {
-  background: var(--bg) url('obsidian.png') center / cover no-repeat fixed;
-  background-blend-mode: luminosity;
+  background-color: #0A0A10;
+  background-image:
+    url('1-obsidian.png?v=4'),
+    radial-gradient(ellipse 70% 55% at 25% 15%, rgba(84,84,143,.10) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 78% 78%, rgba(126,115,170,.08) 0%, transparent 65%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(70,70,110,.12) 0%, transparent 75%),
+    radial-gradient(circle at 15% 90%, rgba(50,80,140,.07) 0%, transparent 50%),
+    radial-gradient(circle at 85% 10%, rgba(140,120,180,.05) 0%, transparent 45%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: normal, screen, screen, screen, screen, screen;
   color: var(--text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 14px;
@@ -95,37 +109,37 @@ body {
    РљРѕРіРґР° РїР°РЅРµР»СЊ Р·Р°РєСЂС‹С‚Р° вЂ” FAB СЃРєСЂС‹РІР°РµС‚СЃСЏ РІРјРµСЃС‚Рµ СЃ РЅРµР№ (overflow:hidden РЅР° chat-panel). */
 .fab-play {
   position: relative;
-  width: 52px; height: 52px;
+  width: 28px; height: 28px;
   border-radius: 50%;
   background: var(--accent);
   color: var(--bg);
   border: none;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 20px rgba(132,132,214,.35), 0 0 0 1px rgba(132,132,214,.2);
+  box-shadow: 0 3px 10px rgba(84,84,143,.35), 0 0 0 1px rgba(84,84,143,.2);
   transition: all .15s;
   flex-shrink: 0;
 }
 .fab-play:hover {
   background: var(--accent-2);
   transform: scale(1.05);
-  box-shadow: 0 8px 24px rgba(132,132,214,.45), 0 0 0 1px var(--accent);
+  box-shadow: 0 6px 18px rgba(84,84,143,.45), 0 0 0 1px var(--accent);
 }
 .fab-play:active { transform: scale(.97); }
-.fab-play svg { width: 18px; height: 18px; transition: transform .2s; }
-.fab-play[data-state="live"] { background: var(--live); box-shadow: 0 6px 20px rgba(148,208,122,.35), 0 0 0 1px rgba(148,208,122,.2); }
-.fab-play[data-state="live"]:hover { background: #84c46b; box-shadow: 0 8px 24px rgba(148,208,122,.5), 0 0 0 1px var(--live); }
+.fab-play svg { width: 12px; height: 12px; transition: transform .2s; }
+.fab-play[data-state="live"] { background: var(--live); box-shadow: 0 6px 20px rgba(110,156,94,.35), 0 0 0 1px rgba(110,156,94,.2); }
+.fab-play[data-state="live"]:hover { background: #6E9C5E; box-shadow: 0 8px 24px rgba(110,156,94,.5), 0 0 0 1px var(--live); }
 
 /* РјРёРєСЂРѕС„РѕРЅС‹ СЃР»РµРІР° РѕС‚ FAB вЂ” С‚РѕР¶Рµ flex-item РІРЅСѓС‚СЂРё chat-panel__controls.
    Р Р°СЃРїРѕР»РѕР¶РµРЅС‹ РїРѕ С†РµРЅС‚СЂСѓ FAB РїРѕ РІРµСЂС‚РёРєР°Р»Рё (С‡РµСЂРµР· align-items:center СЂРѕРґРёС‚РµР»СЏ). */
 .fab-meters {
   position: relative;
-  display: flex; align-items: center; gap: 8px;
-  padding: 6px 10px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 2px 8px;
   background: var(--bg-1);
   border: 1px solid var(--border);
   border-radius: 999px;
-  box-shadow: 0 4px 16px rgba(0,0,0,.4);
+  box-shadow: 0 2px 10px rgba(0,0,0,.4);
   flex-shrink: 0;
 }
 .fab-meters .meter {
@@ -133,8 +147,8 @@ body {
   background: transparent;
   border: none;
 }
-.fab-meters .meter__icon { width: 11px; height: 11px; }
-.fab-meters .meter__bars { height: 10px; gap: 1px; }
+.fab-meters .meter__icon { width: 9px; height: 9px; }
+.fab-meters .meter__bars { height: 8px; gap: 1px; }
 .fab-meters .meter__bar { width: 1.5px; }
 .fab-meters .meter--in  .meter__icon { color: var(--kb); }
 .fab-meters .meter--out .meter__icon { color: var(--live); }
@@ -155,7 +169,7 @@ body {
   color: var(--warn);
   margin-left: 6px;
   padding: 1px 6px;
-  border: 1px solid rgba(212,177,106,.4);
+  border: 1px solid rgba(184,154,106,.4);
   border-radius: 4px;
 }
 .app.is-paused .profile-paused-badge { display: inline-block; }
@@ -165,14 +179,14 @@ body {
 /* РЅРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ РѕС‚РєСЂС‹С‚Р° вЂ” РїРѕРґРЅРёРјР°РµРјСЃСЏ РќРђР” РЅРµР№, С‡С‚РѕР±С‹ РЅРµ СЃРёРґРµС‚СЊ РІРЅСѓС‚СЂРё */
 .app.is-bottom-open .bottom-toggle { bottom: 108px; }
 .bottom-toggle:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); border-right-color: var(--bg-3); }
-.bottom-toggle svg { width: 13px; height: 13px; transition: transform .2s; }
+.bottom-toggle svg { width: 16px; height: 16px; transition: transform .2s; }
 .app.is-bottom-open .bottom-toggle {
   background: var(--accent);
   color: var(--bg);
   border-color: var(--accent);
   border-right-color: var(--accent);
   width: 26px;
-  box-shadow: 4px 0 18px rgba(132,132,214,.65), 0 0 0 1px var(--accent-2) inset;
+  box-shadow: 4px 0 18px rgba(84,84,143,.65), 0 0 0 1px var(--accent-2) inset;
 }
 .app.is-bottom-open .bottom-toggle::before {
   content: '';
@@ -210,7 +224,7 @@ body {
   background: var(--accent-soft) !important;
   color: var(--accent-2) !important;
   border-color: var(--accent) !important;
-  box-shadow: 0 0 8px rgba(132,132,214,.25) !important;
+  box-shadow: 0 0 8px rgba(84,84,143,.25) !important;
 }
 .panel-toggle--right.is-open,
 .bottom-toggle.is-open {
@@ -252,7 +266,7 @@ body {
   background: var(--accent);
   color: var(--bg);
   border-color: var(--accent);
-  box-shadow: -4px 0 18px rgba(132,132,214,.65), 0 0 0 1px var(--accent-2) inset;
+  box-shadow: -4px 0 18px rgba(84,84,143,.65), 0 0 0 1px var(--accent-2) inset;
   width: 26px;
 }
 .app.is-sources-open .panel-toggle--left[data-side="sources"]::before,
@@ -290,7 +304,7 @@ body {
   background: var(--accent);
   color: var(--bg);
   border-color: var(--accent);
-  box-shadow: 4px 0 18px rgba(132,132,214,.65), 0 0 0 1px var(--accent-2) inset;
+  box-shadow: 4px 0 18px rgba(84,84,143,.65), 0 0 0 1px var(--accent-2) inset;
   width: 26px;
 }
 .app.is-sessions-open .panel-toggle--right[data-side="sessions"]::before,
@@ -356,7 +370,9 @@ body {
 
 /* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ SIDE PANELS в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
 .panel {
-  background: var(--bg-1);
+  background: rgba(17,17,25,.42);
+  backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -374,7 +390,9 @@ body {
   border-right: none;
   border-left: none;
   border-top: 1px solid var(--border);
-  background: var(--bg-1);
+  background: rgba(17,17,25,.62);
+  backdrop-filter: blur(32px) saturate(160%);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
   display: flex;
   flex-direction: column;
 }
@@ -477,8 +495,8 @@ body {
 }
 .profile-btn:hover { background: var(--bg-3); border-color: var(--border-2); color: var(--text); }
 .profile-btn--signout:hover {
-  background: rgba(210,128,121,.12);
-  border-color: rgba(210,128,121,.4);
+  background: rgba(168,110,104,.12);
+  border-color: rgba(168,110,104,.4);
   color: var(--danger);
 }
 
@@ -577,9 +595,11 @@ body {
 /* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ HEADER в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
 .header {
   display: flex; align-items: center; gap: 14px;
-  padding: 10px 16px;
+  padding: 4px 14px;
   border-bottom: 1px solid var(--border);
-  background: var(--bg-2);
+  background: rgba(27,27,37,.45);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
   flex-shrink: 0;
 }
 .brand {
@@ -607,7 +627,7 @@ body {
   background: var(--muted);
   flex-shrink: 0;
 }
-.header__center-dot.is-live   { background: var(--live); box-shadow: 0 0 8px rgba(148,208,122,.6); animation: pulse-soft 1.6s ease-in-out infinite; }
+.header__center-dot.is-live   { background: var(--live); box-shadow: 0 0 8px rgba(110,156,94,.6); animation: pulse-soft 1.6s ease-in-out infinite; }
 .header__center-dot.is-frozen { background: var(--kb); }
 .header__center-dot.is-idle   { background: var(--muted); }
 .header__center-name {
@@ -666,7 +686,7 @@ body {
 }
 
 .gear {
-  width: 30px; height: 30px;
+  width: 26px; height: 26px;
   display: flex; align-items: center; justify-content: center;
   background: transparent; border: none;
   color: var(--muted);
@@ -688,7 +708,7 @@ body {
 
 /* (legacy .meter-toggle СѓРґР°Р»С‘РЅ вЂ” РјРёРєСЂРѕС„РѕРЅС‹ С‚РµРїРµСЂСЊ РІРёСЃСЏС‚ Сѓ FAB) */
 .win-btn {
-  width: 34px; height: 34px;
+  width: 28px; height: 28px;
   display: flex; align-items: center; justify-content: center;
   background: transparent; border: none;
   color: var(--muted);
@@ -704,7 +724,7 @@ body {
 .feed {
   flex: 1;
   overflow-y: auto;
-  padding: 24px 28px 96px; /* bottom РѕС‚СЃС‚СѓРї С‡С‚РѕР±С‹ РїРѕСЃР»РµРґРЅРёРµ РїСѓР·С‹СЂРё РЅРµ Р»РµР·Р»Рё РїРѕРґ FAB */
+  padding: 14px 24px 72px; /* bottom отступ чтобы последние пузыри не лезли под FAB */
 }
 .feed::-webkit-scrollbar { width: 8px; }
 .feed::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
@@ -724,12 +744,12 @@ body {
 }
 
 .msg {
-  display: flex; gap: 12px;
+  display: flex; gap: 10px;
   align-items: flex-start;
-  margin-bottom: 14px;
+  margin-bottom: 6px;
 }
 .msg--user { justify-content: flex-end; }
-.msg__col { flex: 1; min-width: 0; max-width: 78%; }
+.msg__col { flex: 1; min-width: 0; max-width: 88%; }
 .msg--user .msg__col { display: flex; flex-direction: column; align-items: flex-end; }
 
 .msg__meta {
@@ -745,26 +765,29 @@ body {
 .msg__meta b { font-weight: 500; }
 
 .bubble {
-  padding: 12px 16px;
+  padding: 8px 12px;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.45;
   border-radius: var(--radius-md);
   max-width: 100%;
   word-wrap: break-word;
   border: 1px solid transparent;
 }
 .bubble--user {
-  background: var(--accent);
-  color: #fff;
+  background: rgba(84,84,143,.82);
+  color: #EAEAF2;
+  border: 1px solid rgba(84,84,143,.35);
   border-bottom-right-radius: 4px;
 }
 .bubble--user-kb {
-  background: var(--text);
+  background: rgba(168,168,181,.78);
   color: var(--bg);
   border-bottom-right-radius: 4px;
 }
 .bubble--other {
-  background: var(--bg-2);
+  background: rgba(27,27,37,.62);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
   color: var(--text);
   border: 1px solid var(--border);
   border-bottom-left-radius: 4px;
@@ -775,12 +798,12 @@ body {
   font-size: 12.5px;
   text-align: center;
   border: none;
-  padding: 4px 0;
+  padding: 2px 0;
 }
 .bubble--system code {
   font-family: 'Geist Mono', monospace;
   color: var(--accent-2);
-  background: rgba(132,132,214,.08);
+  background: rgba(84,84,143,.08);
   padding: 1px 6px;
   border-radius: 4px;
 }
@@ -806,8 +829,10 @@ body {
 .hint {
   margin-top: 6px;
   padding: 14px 16px;
-  background: linear-gradient(180deg, rgba(132,132,214,.06), transparent), var(--bg-2);
-  border: 1px solid rgba(132,132,214,.30);
+  background: linear-gradient(180deg, rgba(84,84,143,.10), transparent), rgba(27,27,37,.65);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(84,84,143,.28);
   border-left: 3px solid var(--accent);
   border-radius: var(--radius-md);
   font-size: 13.5px;
@@ -867,21 +892,19 @@ body {
   background: var(--bg-2);
   color: var(--muted);
   cursor: pointer;
-  border: 1px solid var(--border);
-  border-bottom: none;
-  border-radius: 8px 8px 0 0;
+  border: none;
+  border-radius: 999px;
   font-family: 'Geist Mono', monospace;
   font-size: 10px;
   letter-spacing: .06em;
   text-transform: uppercase;
   transition: all .15s;
 }
-.chat-panel-toggle:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); }
+.chat-panel-toggle:hover { background: var(--bg-3); color: var(--accent-2); }
 .chat-panel-toggle svg { width: 11px; height: 11px; transition: transform .2s; }
 .chat-panel-toggle.is-open {
   background: var(--accent-soft);
   color: var(--accent-2);
-  border-color: var(--accent);
 }
 .chat-panel-toggle.is-open svg { transform: rotate(180deg); }
 
@@ -898,42 +921,39 @@ body {
 }
 .chat-panel.is-open {
   flex: 0 0 auto;
-  max-height: 140px;
+  max-height: 34px;
   overflow-y: auto;
 }
 .chat-panel__inner {
-  padding: 8px 24px;
+  padding: 0 14px;
   color: var(--muted);
   font-size: 13px;
 }
 .chat-panel__controls {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 12px;
-  padding-bottom: 8px;
-  margin-bottom: 8px;
-}
-.chat-panel__empty {
-  color: var(--muted-2);
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  text-align: center;
-  padding: 8px 0;
+  gap: 10px;
 }
 
 /* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ COMPOSER в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
 .composer {
   position: relative;
-  padding: 14px 20px 18px;
+  padding: 4px 8px 6px;
   flex-shrink: 0;
 }
 .composer__box {
   display: flex; align-items: flex-end; gap: 10px;
-  background: var(--bg-2);
-  border: 1px solid transparent;
+  background: rgba(27,27,37,.55);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(84,84,143,.22);
   border-radius: var(--radius-lg);
-  padding: 12px 12px 10px;
+  padding: 8px 10px 8px;
+  max-width: 90%;
+  margin: 0 auto;
   transition: all .15s;
 }
 .composer__box:focus-within {
@@ -954,12 +974,12 @@ body {
 }
 .composer__input::placeholder { color: var(--muted-2); }
 .composer__send {
-  width: 34px; height: 34px;
+  width: 30px; height: 30px;
   display: flex; align-items: center; justify-content: center;
   background: var(--accent); color: var(--bg);
   border: none; border-radius: var(--radius-md);
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(132,132,214,.25);
+  box-shadow: 0 0 8px rgba(84,84,143,.25);
   transition: all .15s;
   flex-shrink: 0;
 }
@@ -1075,7 +1095,7 @@ body {
   width: 14px; height: 14px; border-radius: 50%;
   background: var(--accent); border: 2px solid var(--bg-1);
   cursor: pointer;
-  box-shadow: 0 0 0 2px rgba(132,132,214,.15);
+  box-shadow: 0 0 0 2px rgba(84,84,143,.15);
 }
 .range::-moz-range-thumb {
   width: 14px; height: 14px; border-radius: 50%;
@@ -1112,7 +1132,7 @@ body {
 .sess-item:hover { background: var(--bg-2); }
 .sess-item.is-active {
   background: var(--accent-soft);
-  outline: 1px solid rgba(132,132,214,.35);
+  outline: 1px solid rgba(84,84,143,.35);
 }
 .sess-item.is-active .sess-item__name { color: var(--accent-2); }
 .sess-item__icon {
@@ -1123,7 +1143,7 @@ body {
   flex-shrink: 0;
   color: var(--muted);
 }
-.sess-item.is-active .sess-item__icon { background: rgba(132,132,214,.18); color: var(--accent-2); }
+.sess-item.is-active .sess-item__icon { background: rgba(84,84,143,.18); color: var(--accent-2); }
 .sess-item__icon svg { width: 14px; height: 14px; }
 .sess-item__body { flex: 1; min-width: 0; }
 .sess-item__name {
@@ -1147,7 +1167,7 @@ body {
   width: 6px; height: 6px; border-radius: 50%;
 }
 .sess-item__status.is-live   { color: var(--live); }
-.sess-item__status.is-live   .d { background: var(--live); box-shadow: 0 0 6px rgba(148,208,122,.5); }
+.sess-item__status.is-live   .d { background: var(--live); box-shadow: 0 0 6px rgba(110,156,94,.5); }
 .sess-item__status.is-frozen { color: var(--kb); }
 .sess-item__status.is-frozen .d { background: var(--kb); }
 .sess-item__status.is-idle   { color: var(--muted); }
@@ -1168,7 +1188,7 @@ body {
   cursor: pointer;
 }
 .sess-act:hover { background: var(--bg-3); color: var(--text); }
-.sess-act--danger:hover { background: rgba(210,128,121,.15); color: var(--danger); }
+.sess-act--danger:hover { background: rgba(168,110,104,.15); color: var(--danger); }
 .sess-act svg { width: 12px; height: 12px; }
 
 .new-sess-btn {
@@ -1196,7 +1216,7 @@ body {
   margin-right: 6px;
   vertical-align: middle;
 }
-.sess-tag--dev   { background: var(--live); box-shadow: 0 0 6px rgba(148,208,122,.5); }
+.sess-tag--dev   { background: var(--live); box-shadow: 0 0 6px rgba(110,156,94,.5); }
 .sess-tag--beh   { background: var(--solo); }
 .sess-tag--sal   { background: var(--warn); }
 .sess-tag--lec   { background: var(--kb); }
@@ -1213,8 +1233,8 @@ body {
   border-radius: 4px;
   vertical-align: middle;
 }
-.sess-model--fast  { background: rgba(132,191,214,.12); color: var(--kb); border: 1px solid rgba(132,191,214,.3); }
-.sess-model--heavy { background: var(--accent-soft); color: var(--accent-2); border: 1px solid rgba(132,132,214,.35); }
+.sess-model--fast  { background: rgba(102,154,178,.12); color: var(--kb); border: 1px solid rgba(102,154,178,.3); }
+.sess-model--heavy { background: var(--accent-soft); color: var(--accent-2); border: 1px solid rgba(84,84,143,.35); }
 
 /* compact play/pause button СѓРґР°Р»С‘РЅ вЂ” Р·Р°РјРµРЅС‘РЅ РЅР° per-row РєРЅРѕРїРєСѓ СЃ shimmer РїСЂРё Р·Р°РіСЂСѓР·РєРµ */
 
@@ -1224,7 +1244,7 @@ body {
   100% { background-position: 200% 0; }
 }
 .sess-act.is-loading {
-  background: linear-gradient(90deg, transparent 0%, rgba(132,132,214,.4) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(84,84,143,.4) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 1.2s linear infinite;
   color: var(--accent-2) !important;
@@ -1256,7 +1276,7 @@ body {
   color: var(--accent-2);
   background: var(--bg-1);
   padding: 2px 8px;
-  border: 1px solid rgba(132,132,214,.3);
+  border: 1px solid rgba(84,84,143,.3);
   border-radius: 4px;
   display: none;
 }
@@ -1277,7 +1297,7 @@ body {
   font-size: 13px;
   text-align: left;
 }
-.cap-region:hover { border-color: var(--accent); color: var(--accent-2); background: rgba(132,132,214,.04); }
+.cap-region:hover { border-color: var(--accent); color: var(--accent-2); background: rgba(84,84,143,.04); }
 .cap-region.is-picking { border-style: solid; border-color: var(--accent); background: var(--accent-soft); color: var(--accent-2); }
 .cap-region__hint {
   margin-left: auto;
@@ -1327,7 +1347,7 @@ body {
 .cap-floating {
   position: fixed;
   left: 10px;
-  bottom: 100px;
+  bottom: 8px;
   z-index: 55;
   display: flex;
   flex-direction: column;
@@ -1351,18 +1371,18 @@ body {
   color: var(--accent-2);
   border-color: var(--accent);
   transform: scale(1.06);
-  box-shadow: 0 4px 14px rgba(132,132,214,.25);
+  box-shadow: 0 4px 14px rgba(84,84,143,.25);
 }
 .cap-floating-btn.is-primary {
   background: var(--accent);
   color: #fff;
   border-color: var(--accent);
-  box-shadow: 0 4px 16px rgba(132,132,214,.4);
+  box-shadow: 0 4px 16px rgba(84,84,143,.4);
 }
 .cap-floating-btn.is-primary:hover {
   background: var(--accent-2);
   border-color: var(--accent-2);
-  box-shadow: 0 6px 20px rgba(132,132,214,.55);
+  box-shadow: 0 6px 20px rgba(84,84,143,.55);
 }
 .cap-floating-btn.is-set {
   color: var(--live);
@@ -1479,7 +1499,7 @@ body {
     <header class="header">
       <div class="brand">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#8484D6"/>
+          <circle cx="12" cy="12" r="10" fill="#54548F"/>
           <text x="12" y="16" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="Inter">Q</text>
         </svg>
       </div>
@@ -1520,14 +1540,14 @@ body {
       <div class="day">Today · 26 Aug</div>
 
       <div class="bubble bubble--system">
-        вљ™ Context activated: <code>System-Design-Primer/06-twitter.md</code> · N=10 · Claude Sonnet 4
+        ⛔ Контекст активирован: <code>1c-dev/optimization-queries.md</code> · N=8 · Claude Sonnet 4
       </div>
 
       <div class="msg">
-        <div class="avatar-sm avatar-sm--other">I</div>
+        <div class="avatar-sm avatar-sm--other">А</div>
         <div class="msg__col">
-          <div class="msg__meta"><b>Interviewer</b> · 13:55:12 · Google Meet</div>
-          <div class="bubble bubble--other">Tell me, how would you design an event processing system for a Twitter-like service?</div>
+          <div class="msg__meta"><b>Антон · 1С-разработчик</b> · 14:05:12 · Telegram</div>
+          <div class="bubble bubble--other">Слушай, у меня отчёт по остаткам на складах в УТ 11 крутится почти 40 секунд на боевой базе. Уже неделю бьюсь — куда копать в первую очередь?</div>
         </div>
       </div>
 
@@ -1536,23 +1556,23 @@ body {
         <div class="msg__col">
           <div class="msg__meta msg__meta--accent">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>
-            <b>Quistan · hint</b> · 13:55:08
+            <b>Quistan · подсказка</b> · 14:05:08
           </div>
           <div class="hint">
             <div class="hint__head">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
-              System Design вЂ” Event-driven architecture
+              Оптимизация запроса к регистру накопления
             </div>
-            <h4>Answer building blocks:</h4>
+            <h4>На что смотреть:</h4>
             <ol>
-              <li><code>Kafka</code> as event queue (feed, likes, follows)</li>
-              <li>Fan-out services by event type</li>
-              <li>Materialized view in <code>Cassandra</code> for timeline</li>
-              <li>Cache layer <code>Redis</code> for hot timelines</li>
+              <li>Используй виртуальную таблицу <code>Остатки</code>, а не <code>Движения</code> с условием по периоду</li>
+              <li>Условия по измерениям — в <code>Параметры</code> виртуальной таблицы, не в <code>ГДЕ</code></li>
+              <li>Выбирай только нужные поля, никаких <code>*</code> и лишних соединений</li>
+              <li>Проверь, не считается ли итог сразу по всем разделам учёта</li>
             </ol>
             <div class="hint__src">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-              found in System-Design-Primer/06-twitter.md · line 142
+              найдено в 1c-dev/optimization-queries.md · строка 87
             </div>
           </div>
         </div>
@@ -1562,18 +1582,18 @@ body {
         <div class="msg__col">
           <div class="msg__meta msg__meta--mic" style="justify-content:flex-end">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
-            <b>microphone</b> · 13:55:38
+            <b>микрофон</b> · 14:05:38
           </div>
-          <div class="bubble bubble--user">I'd start by separating <code>write-path</code> and <code>read-path</code>. For writes вЂ” Kafka with partitioning by user_id, for reads вЂ” pre-computed timelines in Cassandra.</div>
+          <div class="bubble bubble--user">Переписал на виртуальную таблицу <code>Остатки</code> с параметрами по складу и периоду, убрал лишние соединения и вложенные подзапросы. Стало 4 секунды вместо 40 — уже норм.</div>
         </div>
         <div class="avatar-sm avatar-sm--user">U</div>
       </div>
 
       <div class="msg">
-        <div class="avatar-sm avatar-sm--other">I</div>
+        <div class="avatar-sm avatar-sm--other">А</div>
         <div class="msg__col">
-          <div class="msg__meta"><b>Interviewer</b> · 13:56:04</div>
-          <div class="bubble bubble--other">Good. What about fan-out вЂ” push or pull?</div>
+          <div class="msg__meta"><b>Антон · 1С-разработчик</b> · 14:06:04</div>
+          <div class="bubble bubble--other">Огонь, поздравляю. Только смотри — у нас же ещё RLS включён по подразделениям, и я подозреваю, что он добавляет тормозов на ровном месте. Ты это как-то учитывал?</div>
         </div>
       </div>
 
@@ -1581,9 +1601,9 @@ body {
         <div class="msg__col">
           <div class="msg__meta msg__meta--kb" style="justify-content:flex-end">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
-            <b>keyboard</b> · 13:56:31
+            <b>клавиатура</b> · 14:06:31
           </div>
-          <div class="bubble bubble--user-kb">What to answer about consistency?</div>
+          <div class="bubble bubble--user-kb">Что ответить про RLS и производительность?</div>
         </div>
         <div class="avatar-sm avatar-sm--user">U</div>
       </div>
@@ -1593,21 +1613,22 @@ body {
         <div class="msg__col">
           <div class="msg__meta msg__meta--accent">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>
-            <b>Quistan · quick answer</b> · 13:56:33
+            <b>Quistan · быстрый ответ</b> · 14:06:33
           </div>
           <div class="hint">
             <div class="hint__head">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.2-8.55"/></svg>
-              Hybrid fan-out (push + pull)
+              RLS в 1С — где тормозит и что с этим делать
             </div>
             <ul>
-              <li><b>Push</b> for regular users (в‰¤ 10k followers) вЂ” fan-out-on-write in timeline</li>
-              <li><b>Pull</b> for celebrities вЂ” fan-out-on-read, merge on the fly</li>
-              <li>Consistency: <code>eventual</code> for feeds, <code>strong</code> only for likes/follows</li>
+              <li><b>RLS</b> накладывается как доп. условие в <code>ГДЕ</code> к каждой виртуальной таблице — запрос выполняется дольше</li>
+              <li>Для отчётов используй <code>ПривилегированныйРежим</code> с проверкой безопасности</li>
+              <li>Кешируй результаты в <code>РегистрыСведений</code> с обновлением по подписке на события</li>
+              <li>Оптимизируй шаблоны RLS — никаких вложенных подзапросов в <code>ГДЕ</code></li>
             </ul>
             <div class="hint__src">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.5-4.5"/></svg>
-              3 relevant chunks from System-Design-Primer + 1 from HighScalability
+              4 релевантных чанка из 1c-dev + 2 из best-practices-rls.md
             </div>
           </div>
         </div>
@@ -1617,27 +1638,99 @@ body {
         <div class="msg__col">
           <div class="msg__meta msg__meta--mic" style="justify-content:flex-end">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
-            <b>microphone</b> · 13:56:58
+            <b>микрофон</b> · 14:06:58
           </div>
-          <div class="bubble bubble--user">I'd go hybrid: push for regular users, pull for celebrities. Consistency вЂ” eventual for feeds, strong only for likes and follows.</div>
+          <div class="bubble bubble--user">С RLS есть нюанс: он добавляется в <code>ГДЕ</code> и заметно бьёт по скорости. Я бы вынес тяжёлый отчёт в <code>ПривилегированныйРежим</code>, а для типовых — настроил кеш в регистре сведений. И шаблоны RLS надо оптимизировать, без вложенных подзапросов.</div>
         </div>
         <div class="avatar-sm avatar-sm--user">U</div>
       </div>
 
       <div class="msg">
-        <div class="avatar-sm avatar-sm--other">I</div>
+        <div class="avatar-sm avatar-sm--other">А</div>
         <div class="msg__col">
-          <div class="msg__meta"><b>Interviewer</b> · 13:57:24</div>
-          <div class="bubble bubble--other">Ok, last question. How will you count metrics and monitor latencies?</div>
+          <div class="msg__meta"><b>Антон · 1С-разработчик</b> · 14:07:24</div>
+          <div class="bubble bubble--other">Логично. А как замерить, что после всех оптимизаций реально стало быстрее? В конфигураторе же нормального профайлера нет — я обычно только в консоли запросов план смотрю.</div>
+        </div>
+      </div>
+
+      <div class="msg msg--user">
+        <div class="msg__col">
+          <div class="msg__meta msg__meta--kb" style="justify-content:flex-end">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+            <b>клавиатура</b> · 14:07:45
+          </div>
+          <div class="bubble bubble--user-kb">Чем мерить производительность запросов в 1С?</div>
+        </div>
+        <div class="avatar-sm avatar-sm--user">U</div>
+      </div>
+
+      <div class="msg">
+        <div class="avatar-sm avatar-sm--ai">Q</div>
+        <div class="msg__col">
+          <div class="msg__meta msg__meta--accent">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>
+            <b>Quistan · подсказка</b> · 14:07:48
+          </div>
+          <div class="hint">
+            <div class="hint__head">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+              Замер производительности запросов в 1С
+            </div>
+            <ol>
+              <li><code>ЗамерПроизводительности</code> из конфигуратора — самый простой способ</li>
+              <li>В консоли запросов: <code>ПоказатьВременнуюТаблицу</code> + замер SQL-трассы</li>
+              <li>Технологический журнал (<code>logcfg.xml</code>) для боевой базы</li>
+              <li>ЦУП (Центр управления производительностью) для серьёзных случаев</li>
+            </ol>
+            <div class="hint__src">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              найдено в 1c-dev/performance-profiling.md · строка 23
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg msg--user">
+        <div class="msg__col">
+          <div class="msg__meta msg__meta--mic" style="justify-content:flex-end">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
+            <b>микрофон</b> · 14:08:10
+          </div>
+          <div class="bubble bubble--user">В конфигураторе есть <code>ЗамерПроизводительности</code>, в консоли запросов можно посмотреть план и время. На проде — технологический журнал через <code>logcfg.xml</code>. Этого обычно хватает, ЦУП — это уже для серьёзных случаев.</div>
+        </div>
+        <div class="avatar-sm avatar-sm--user">U</div>
+      </div>
+
+      <div class="msg">
+        <div class="avatar-sm avatar-sm--other">А</div>
+        <div class="msg__col">
+          <div class="msg__meta"><b>Антон · 1С-разработчик</b> · 14:08:35</div>
+          <div class="bubble bubble--other">Понял, спасибо. Пойду переписывать отчёт и настраивать технологический журнал. Если что — ещё напишу.</div>
         </div>
       </div>
 
       <div class="msg">
         <div class="avatar-sm avatar-sm--ai">Q</div>
         <div class="msg__col">
-          <div class="msg__meta msg__meta--accent"><b>Quistan</b> is thinking</div>
-          <div class="bubble bubble--other typing">
-            <span></span><span></span><span></span>
+          <div class="msg__meta msg__meta--accent">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>
+            <b>Quistan · быстрый ответ</b> · 14:08:40
+          </div>
+          <div class="hint">
+            <div class="hint__head">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.2-8.55"/></svg>
+              Резюме по оптимизации отчётов в 1С
+            </div>
+            <ul>
+              <li>Сначала — виртуальные таблицы + параметры, это даёт x5–x10</li>
+              <li>Потом — кеш в регистре сведений для отчётов с тяжёлыми соединениями</li>
+              <li>RLS выноси в <code>ПривилегированныйРежим</code> для отчётов, не для документов</li>
+              <li>Замеряй через <code>ЗамерПроизводительности</code> и ТЖ, не на глаз</li>
+            </ul>
+            <div class="hint__src">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.5-4.5"/></svg>
+              сводка из 1c-dev + 2 файлов best-practices
+            </div>
           </div>
         </div>
       </div>
@@ -1647,7 +1740,6 @@ body {
          РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РћРўРљР Р«РўРђ вЂ” РІРЅСѓС‚СЂРё Р¶РёРІСѓС‚ FAB play/pause Рё РјРµС‚СЂС‹. -->
     <button class="chat-panel-toggle is-open" id="chatPanelToggle" onclick="toggleChatPanel()" data-tip="Toggle panel">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-      Panel
     </button>
 
     <div class="chat-panel is-open" id="chatPanel">
@@ -1667,7 +1759,6 @@ body {
             <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
           </button>
         </div>
-        <div class="chat-panel__empty">Panel content вЂ” РїРѕРєР° РїСѓСЃС‚Рѕ</div>
       </div>
     </div>
 
