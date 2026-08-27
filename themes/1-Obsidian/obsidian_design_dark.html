@@ -11,27 +11,32 @@
 
 <style>
 :root {
-  --bg:         #0B0B0E;
-  --bg-1:       #141419;
-  --bg-2:       #1E1E24;
-  --bg-3:       #27272F;
-  --sidebar:    #0B0B0E;
-  --sidebar-2:  #141419;
-  --border:     #2D2D38;
-  --border-2:   #38384A;
-  /* тексты по правилу HSL (Base_Hue=240° обсидиан) */
-  --text:       #DBDBE0;   /* HSL(240, 7%, 87%) — text-main: основной + заголовки (правило: одно значение) */
-  --text-2:     #B0B0BD;   /* HSL(240, 8%, 75%) — промежуточный */
-  --muted:      #9090A1;   /* HSL(240, 8%, 60%) — text-muted: второстепенный, подсказки, иконки */
-  --muted-2:    #5E5E70;
-  --accent:     #8484D6;
-  --accent-2:   #9C9CE0;
-  --accent-soft:rgba(132,132,214,.12);
-  --live:       #94D07A;
-  --solo:       #B497D7;
-  --kb:         #84BFD6;
-  --warn:       #D6BC84;
-  --danger:     #D28079;
+  /* ОБСИДИАН: Base_Hue=248° (нейтральный холодный, баланс синего и фиолета).
+     Поверхности — низкая S = «вулканическое стекло» сливается с фоном.
+     Акцент — глубже (L=64%, не пастель), это «отблеск обсидиана», не леденец. */
+  --bg:         #0A0A10;   /* HSL(248, 22%, 4%)  — Canvas */
+  --bg-1:       #111119;   /* HSL(248, 14%, 8%)  — карточки */
+  --bg-2:       #1B1B25;   /* HSL(248, 11%, 13%) — вложенные блоки */
+  --bg-3:       #25252F;   /* HSL(248, 10%, 17%) — ховер / инпуты */
+  --sidebar:    #0A0A10;
+  --sidebar-2:  #111119;
+  --border:     #2D2D3A;   /* HSL(248, 12%, 20%) */
+  --border-2:   #3A3A4C;   /* HSL(248, 12%, 26%) */
+  /* Тексты (правило: один общий hue, низкая S) */
+  --text:       #DBDBE3;   /* HSL(248, 6%, 87%) — основной + заголовки */
+  --text-2:     #B2B2BC;   /* HSL(248, 6%, 74%) — промежуточный */
+  --muted:      #92929D;   /* HSL(248, 6%, 60%) — подсказки, иконки */
+  --muted-2:    #5C5C6A;   /* HSL(248, 7%, 39%) */
+  /* Акцент (правило: S 45-55%, L 65-72% → ставим чуть глубже) */
+  --accent:     #7C7CC8;   /* HSL(248, 48%, 64%) — глубже, не леденцовая лаванда */
+  --accent-2:   #9595D3;   /* HSL(248, 50%, 71%) */
+  --accent-soft:rgba(124,124,200,.14);
+  /* Функциональные статусы (правило: приглушённая пастель) */
+  --live:       #93C277;   /* HSL(100, 40%, 62%) — успех/активность */
+  --solo:       #B39AD5;   /* HSL(270, 38%, 72%) — solo/info (фиолетовый из правил 260-275°) */
+  --kb:         #84BFDB;   /* HSL(200, 42%, 67%) — клавиатура/cyan */
+  --warn:       #D2B57D;   /* HSL( 40, 48%, 66%) */
+  --danger:     #CC827A;   /* HSL(  5, 42%, 63%) */
   --shadow-sm:  0 1px 2px rgba(0,0,0,.5);
   --shadow-md:  0 4px 16px rgba(0,0,0,.45);
   --shadow-lg:  0 12px 40px rgba(0,0,0,.55);
@@ -44,9 +49,21 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
+html, body { height: 100%; }
 body {
-  background: #0B0B0E url('obsidian.png') center / cover no-repeat fixed;
-  background-blend-mode: luminosity;
+  background-color: #0A0A10;
+  background-image:
+    url('1-obsidian.png?v=4'),
+    radial-gradient(ellipse 70% 55% at 25% 15%, rgba(124,124,200,.08) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 78% 78%, rgba(180,155,215,.06) 0%, transparent 65%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(70,70,110,.10) 0%, transparent 75%),
+    radial-gradient(circle at 15% 90%, rgba(50,80,140,.06) 0%, transparent 50%),
+    radial-gradient(circle at 85% 10%, rgba(140,120,180,.04) 0%, transparent 45%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: normal, screen, screen, screen, screen, screen;
   color: var(--text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 14px;
@@ -56,12 +73,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-body::before {
-  content: ''; position: fixed; inset: 0; pointer-events: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><g stroke='%23e8e1d2' stroke-width='0.3' opacity='0.015'><line x1='-20' y1='40' x2='80' y2='-10'/><line x1='60' y1='120' x2='180' y2='80'/><line x1='150' y1='200' x2='260' y2='150'/><line x1='220' y1='280' x2='340' y2='240'/><line x1='-20' y1='180' x2='60' y2='140'/><line x1='100' y1='40' x2='200' y2='-10'/><line x1='250' y1='90' x2='340' y2='60'/></g></svg>");
-  z-index: 0;
-}
-body > * { position: relative; z-index: 1; }
 section { scroll-margin-top: 90px; }
 a { color: inherit; text-decoration: none; }
 
@@ -208,9 +219,9 @@ a { color: inherit; text-decoration: none; }
   background: var(--accent);
   border-color: var(--accent);
   color: var(--bg);
-  box-shadow: 0 0 12px rgba(123,168,217,.25);
+  box-shadow: 0 0 12px rgba(124,124,200,.25);
 }
-.btn--primary:hover { background: var(--accent-2); border-color: var(--accent-2); box-shadow: 0 0 16px rgba(123,168,217,.35); }
+.btn--primary:hover { background: var(--accent-2); border-color: var(--accent-2); box-shadow: 0 0 16px rgba(124,124,200,.35); }
 .btn--ghost { background: transparent; color: var(--text-2); border-color: transparent; }
 .btn--ghost:hover { background: var(--bg-2); }
 .btn--danger { background: var(--danger); border-color: var(--danger); color: #fff; }
@@ -242,8 +253,8 @@ a { color: inherit; text-decoration: none; }
   padding: 22px;
 }
 .card--accent {
-  border-color: rgba(123,168,217,.30);
-  background: linear-gradient(180deg, rgba(79,124,255,.06), transparent), var(--bg-1);
+  border-color: rgba(124,124,200,.30);
+  background: linear-gradient(180deg, rgba(124,124,200,.06), transparent), var(--bg-1);
 }
 .card--soft {
   background: var(--bg-2);
@@ -261,7 +272,7 @@ a { color: inherit; text-decoration: none; }
 }
 .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .input--err  { border-color: var(--danger); }
-.input--err:focus { box-shadow: 0 0 0 3px rgba(201,123,123,.15); }
+.input--err:focus { box-shadow: 0 0 0 3px rgba(204,130,122,.15); }
 .input[disabled] { opacity: .5; cursor: not-allowed; }
 .input::placeholder { color: var(--muted-2); }
 .input--mono { font-family: 'Geist Mono', monospace; font-size: 12.5px; }
@@ -282,14 +293,14 @@ a { color: inherit; text-decoration: none; }
   border-radius: 999px;
   border: 1px solid transparent;
 }
-.tag--live { color: var(--live); background: rgba(74,222,128,.1); border-color: rgba(143,191,110,.25); }
-.tag--solo { color: var(--solo); background: rgba(192,132,252,.1); border-color: rgba(184,156,212,.25); }
-.tag--kb   { color: var(--kb);   background: rgba(56,189,248,.1); border-color: rgba(127,191,212,.25); }
-.tag--accent { color: var(--accent-2); background: var(--accent-soft); border-color: rgba(123,168,217,.30); }
+.tag--live { color: var(--live); background: rgba(147,194,119,.10); border-color: rgba(147,194,119,.25); }
+.tag--solo { color: var(--solo); background: rgba(179,154,213,.10); border-color: rgba(179,154,213,.25); }
+.tag--kb   { color: var(--kb);   background: rgba(132,191,219,.10); border-color: rgba(132,191,219,.25); }
+.tag--accent { color: var(--accent-2); background: var(--accent-soft); border-color: rgba(124,124,200,.30); }
 .tag--muted { color: var(--muted); background: var(--bg-2); border-color: var(--border); }
-.tag--warn { color: var(--warn); background: rgba(251,191,36,.1); border-color: rgba(251,191,36,.25); }
-.tag--danger { color: var(--danger); background: rgba(248,113,113,.1); border-color: rgba(201,123,123,.25); }
-.tag--success { color: var(--live); background: rgba(74,222,128,.1); border-color: rgba(143,191,110,.25); }
+.tag--warn { color: var(--warn); background: rgba(210,181,125,.10); border-color: rgba(210,181,125,.25); }
+.tag--danger { color: var(--danger); background: rgba(204,130,122,.10); border-color: rgba(204,130,122,.25); }
+.tag--success { color: var(--live); background: rgba(147,194,119,.10); border-color: rgba(147,194,119,.25); }
 
 .dot {
   width: 6px; height: 6px; border-radius: 50%;
@@ -299,7 +310,7 @@ a { color: inherit; text-decoration: none; }
 .dot--live {
   width: 8px; height: 8px; border-radius: 50%;
   background: var(--live);
-  box-shadow: 0 0 0 0 rgba(143,191,110,.4);
+  box-shadow: 0 0 0 0 rgba(147,194,119,.4);
   animation: pulse-soft 1.6s ease-in-out infinite;
 }
 
@@ -344,7 +355,7 @@ a { color: inherit; text-decoration: none; }
   width: 16px; height: 16px; border-radius: 50%;
   background: var(--accent); border: 2px solid var(--bg);
   cursor: pointer;
-  box-shadow: 0 0 0 3px rgba(123,168,217,.15);
+  box-shadow: 0 0 0 3px rgba(124,124,200,.15);
 }
 .range::-moz-range-thumb {
   width: 16px; height: 16px; border-radius: 50%;
@@ -432,7 +443,7 @@ a { color: inherit; text-decoration: none; }
   background: linear-gradient(135deg, var(--accent), var(--solo));
   display: flex; align-items: center; justify-content: center;
   font-size: 22px; font-weight: 700; color: #fff;
-  box-shadow: 0 6px 24px rgba(123,168,217,.18);
+  box-shadow: 0 6px 24px rgba(124,124,200,.18);
 }
 .hero__title {
   font-size: 38px; font-weight: 600;
@@ -499,10 +510,10 @@ a { color: inherit; text-decoration: none; }
   background: var(--accent); color: var(--bg);
   border: none; border-radius: var(--radius-md);
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(123,168,217,.22);
+  box-shadow: 0 0 8px rgba(124,124,200,.22);
   transition: all .15s;
 }
-.composer__send:hover { background: var(--accent-2); box-shadow: 0 0 12px rgba(123,168,217,.35); }
+.composer__send:hover { background: var(--accent-2); box-shadow: 0 0 12px rgba(124,124,200,.35); }
 .composer__send:disabled { opacity: .4; cursor: not-allowed; }
 
 /* ───────── grid helpers ───────── */
@@ -585,7 +596,7 @@ a { color: inherit; text-decoration: none; }
     <div class="sidebar__brand">
       <div class="sidebar__logo">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#8484D6"/>
+          <circle cx="12" cy="12" r="10" fill="#7C7CC8"/>
           <text x="12" y="16" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="Inter">Q</text>
         </svg>
         Куистант
@@ -741,35 +752,35 @@ a { color: inherit; text-decoration: none; }
 
       <h3 class="section-title">Цветовая палитра</h3>
       <div class="grid grid-5 mb-10">
-        <div class="swatch"><div class="swatch__chip" style="background:#0B0B0E"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-warm</div><div class="font-mono" style="font-size:11px">#0B0B0E</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#141419"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-1</div><div class="font-mono" style="font-size:11px">#141419</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#1E1E24"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-2</div><div class="font-mono" style="font-size:11px">#1E1E24</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#27272F"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-3</div><div class="font-mono" style="font-size:11px">#27272F</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#27272F"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">border</div><div class="font-mono" style="font-size:11px">#27272F</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#0A0A10"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-warm</div><div class="font-mono" style="font-size:11px">#0A0A10</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#111119"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-1</div><div class="font-mono" style="font-size:11px">#111119</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#1B1B25"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-2</div><div class="font-mono" style="font-size:11px">#1B1B25</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#25252F"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-3</div><div class="font-mono" style="font-size:11px">#25252F</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#25252F"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">border</div><div class="font-mono" style="font-size:11px">#25252F</div></div></div>
 
-        <div class="swatch"><div class="swatch__chip" style="background:#8484D6"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">accent</div><div class="font-mono text-accent" style="font-size:11px">#8484D6</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#94D07A"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">live</div><div class="font-mono text-live" style="font-size:11px">#94D07A</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#B497D7"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">solo</div><div class="font-mono text-solo" style="font-size:11px">#B497D7</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#7FBFD4"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">keyboard</div><div class="font-mono text-kb" style="font-size:11px">#7FBFD4</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#D28079"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">danger</div><div class="font-mono text-danger" style="font-size:11px">#D28079</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#7C7CC8"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">accent</div><div class="font-mono text-accent" style="font-size:11px">#7C7CC8</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#93C277"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">live</div><div class="font-mono text-live" style="font-size:11px">#93C277</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#B39AD5"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">solo</div><div class="font-mono text-solo" style="font-size:11px">#B39AD5</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#84BFDB"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">keyboard</div><div class="font-mono text-kb" style="font-size:11px">#84BFDB</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#CC827A"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">danger</div><div class="font-mono text-danger" style="font-size:11px">#CC827A</div></div></div>
       </div>
 
       <h3 class="section-title">Mode-индикаторы</h3>
       <div class="grid grid-3 mb-10">
         <div class="card text-center">
           <span class="tag tag--live" style="font-size:13px;padding:5px 12px"><span class="dot--live"></span>LIVE</span>
-          <div class="font-mono mt-6" style="font-size:11px;color:var(--live)">#94D07A · идёт созвон</div>
+          <div class="font-mono mt-6" style="font-size:11px;color:var(--live)">#93C277 · идёт созвон</div>
         </div>
         <div class="card text-center">
           <span class="tag tag--solo" style="font-size:13px;padding:5px 12px"><span class="dot"></span>SOLO</span>
-          <div class="font-mono mt-6" style="font-size:11px;color:var(--solo)">#B497D7 · без собеседника</div>
+          <div class="font-mono mt-6" style="font-size:11px;color:var(--solo)">#B39AD5 · без собеседника</div>
         </div>
         <div class="card text-center">
           <span class="tag tag--kb" style="font-size:13px;padding:5px 12px">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
             KEYBOARD
           </span>
-          <div class="font-mono mt-6" style="font-size:11px;color:var(--kb)">#7FBFD4 · ввод с клавы</div>
+          <div class="font-mono mt-6" style="font-size:11px;color:var(--kb)">#84BFDB · ввод с клавы</div>
         </div>
       </div>
 
@@ -1153,7 +1164,7 @@ a { color: inherit; text-decoration: none; }
       <h3 class="section-title">Toast / SnackBar</h3>
       <div class="col mb-8" style="gap:10px;max-width:480px">
         <div class="toast toast--ok">
-          <div style="width:24px;height:24px;border-radius:50%;background:rgba(74,222,128,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(147,194,119,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--live)" stroke-width="3" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg>
           </div>
           <div style="flex:1;font-size:13.5px">
@@ -1163,7 +1174,7 @@ a { color: inherit; text-decoration: none; }
           <button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px">×</button>
         </div>
         <div class="toast toast--err">
-          <div style="width:24px;height:24px;border-radius:50%;background:rgba(201,123,123,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(204,130,122,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
           </div>
           <div style="flex:1;font-size:13.5px">
@@ -1172,7 +1183,7 @@ a { color: inherit; text-decoration: none; }
           </div>
         </div>
         <div class="toast toast--warn">
-          <div style="width:24px;height:24px;border-radius:50%;background:rgba(212,177,106,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(210,181,125,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2.5" stroke-linecap="round"><path d="M10 3 2 18h20z"/><path d="M12 9v4M12 17h.01"/></svg>
           </div>
           <div style="flex:1;font-size:13.5px">
@@ -1280,7 +1291,7 @@ a { color: inherit; text-decoration: none; }
         <div>
           <h3 class="section-title">Empty State</h3>
           <div class="card text-center" style="padding:40px 24px">
-            <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#B497D7);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(123,168,217,.12)">
+            <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#B39AD5);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(124,124,200,.12)">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             </div>
             <div style="font-weight:600;font-size:17px;margin-bottom:6px">Нет реплик</div>
@@ -1294,8 +1305,8 @@ a { color: inherit; text-decoration: none; }
 
         <div>
           <h3 class="section-title">Error State</h3>
-          <div class="card text-center" style="padding:40px 24px;border-color:rgba(201,123,123,.4)">
-            <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:50%;background:rgba(201,123,123,.15);display:flex;align-items:center;justify-content:center">
+          <div class="card text-center" style="padding:40px 24px;border-color:rgba(204,130,122,.4)">
+            <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:50%;background:rgba(204,130,122,.15);display:flex;align-items:center;justify-content:center">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
             </div>
             <div style="font-weight:600;font-size:17px;margin-bottom:6px">Не удалось подключиться</div>
