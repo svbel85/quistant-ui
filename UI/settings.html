@@ -44,11 +44,6 @@ html, body {
 
 body {
   background-color: var(--bg);
-  background-image:
-    var(--bg-texture, url('1-obsidian.png?v=4')),
-    radial-gradient(ellipse 70% 55% at 25% 15%, var(--bg-glow-1, rgba(84,84,143,.10)) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 50% at 78% 78%, var(--bg-glow-2, rgba(126,115,170,.08)) 0%, transparent 65%),
-    radial-gradient(ellipse 90% 70% at 50% 50%, var(--bg-glow-3, rgba(70,70,110,.12)) 0%, transparent 75%);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -65,41 +60,48 @@ body {
 }
 
 /* PER-THEME BACKGROUND TEXTURES + PALETTE
-   Each theme has its own PNG/WebP texture placed next to 1-obsidian.png.
-   Files expected: bg-obsidian.png, bg-midnight.png, bg-forest.png,
-   bg-ember.png, bg-paper.png, bg-carbon.png.
-   Use PNG (transparency supported) or JPEG (no transparency).
-   The base color and glow tints are tuned per theme for cohesion. */
+   Each theme has its own PNG texture placed in themes/{N}-{Name}/{N}-{name}.png
+   (relative to the workspace root). Files expected:
+     themes/1-Obsidian/1-obsidian.png  - default dark Obsidian texture
+     themes/2-Midnight/2-midnight.png  - blueish night
+     themes/3-Forest/3-forest.png      - green moss
+     themes/4-Ember/4-ember.png        - warm orange/red
+     themes/5-Paper/5-paper.png        - light paper
+     themes/6-Carbon/6-carbon.png      - neutral grey-black
+   The ?v=4 query string is cache-busting: drop a new file with the same
+   name and bump the version (v5, v6...) to force the browser to reload.
+   If a theme's PNG is missing the texture layer is silently empty -
+   you still see the base color and glow gradients for that theme. */
 body.theme-obsidian {
-  --bg-texture: url('1-obsidian.png?v=4');
+  --bg-texture: url('../themes/1-Obsidian/1-obsidian.png?v=4');
   --bg:         #0A0A10;
   --bg-glow-1: rgba(84,84,143,.10);
   --bg-glow-2: rgba(126,115,170,.08);
   --bg-glow-3: rgba(70,70,110,.12);
 }
 body.theme-midnight {
-  --bg-texture: url('bg-midnight.png');
+  --bg-texture: url('../themes/2-Midnight/2-midnight.png?v=4');
   --bg:         #08080F;
   --bg-glow-1: rgba(61,111,181,.10);
   --bg-glow-2: rgba(96,165,206,.08);
   --bg-glow-3: rgba(40,80,120,.12);
 }
 body.theme-forest {
-  --bg-texture: url('bg-forest.png');
+  --bg-texture: url('../themes/3-Forest/3-forest.png?v=4');
   --bg:         #0A130D;
   --bg-glow-1: rgba(58,124,79,.10);
   --bg-glow-2: rgba(94,154,110,.08);
   --bg-glow-3: rgba(40,90,55,.12);
 }
 body.theme-ember {
-  --bg-texture: url('bg-ember.png');
+  --bg-texture: url('../themes/4-Ember/4-ember.png?v=4');
   --bg:         #150B0B;
   --bg-glow-1: rgba(178,94,72,.10);
   --bg-glow-2: rgba(216,177,158,.08);
   --bg-glow-3: rgba(120,60,45,.12);
 }
 body.theme-paper {
-  --bg-texture: url('bg-paper.png');
+  --bg-texture: url('../themes/5-Paper/5-paper.png?v=4');
   --bg:         #F5F2EA;
   --bg-glow-1: rgba(110,98,72,.10);
   --bg-glow-2: rgba(150,135,100,.06);
@@ -118,11 +120,21 @@ body.theme-paper {
   --accent-soft:rgba(142,115,68,.15);
 }
 body.theme-carbon {
-  --bg-texture: url('bg-carbon.png');
+  --bg-texture: url('../themes/6-Carbon/6-carbon.png?v=4');
   --bg:         #0F0F11;
   --bg-glow-1: rgba(94,94,104,.10);
   --bg-glow-2: rgba(184,184,192,.06);
   --bg-glow-3: rgba(60,60,68,.12);
+}
+
+/* BG MODE: --bg-mode-layer controls whether the PNG texture is composited.
+   Set by JS applyBg(): 'none' for Solid only, 'var(--bg-texture)' for Show texture. */
+body {
+  background-image:
+    var(--bg-mode-layer, var(--bg-texture, none)),
+    radial-gradient(ellipse 70% 55% at 25% 15%, var(--bg-glow-1, rgba(84,84,143,.10)) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 78% 78%, var(--bg-glow-2, rgba(126,115,170,.08)) 0%, transparent 65%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, var(--bg-glow-3, rgba(70,70,110,.12)) 0%, transparent 75%);
 }
 
 /* ======= TOPBAR ======= */
@@ -405,32 +417,44 @@ body.theme-carbon {
   margin-bottom: 14px;
   position: relative;
 }
+.field[data-help],
+.field.has-help,
+.field:has(> .field__help) { cursor: help; }
 .field__help {
   display: none;
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 10px);
   left: 0;
   right: 0;
   z-index: 50;
-  padding: 10px 12px;
-  background: var(--bg-2);
-  border: 1px solid var(--border-2);
-  border-radius: 8px;
-  font-size: 11.5px;
-  color: var(--text-2);
-  line-height: 1.5;
-  box-shadow: 0 12px 28px rgba(0,0,0,.55);
+  padding: 14px 16px;
+  background: var(--bg-1);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  font-size: 12.5px;
+  color: var(--text);
+  line-height: 1.6;
+  box-shadow: 0 16px 40px rgba(0,0,0,.7), 0 0 0 4px rgba(255,255,255,.04);
   pointer-events: none;
   animation: helpIn .14s ease;
+}
+.field__help b { color: var(--accent-2); font-weight: 600; }
+.field__help code {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--bg-2);
+  color: var(--accent-2);
 }
 .field__help::before {
   content: '';
   position: absolute;
   top: -5px; left: 16px;
   width: 8px; height: 8px;
-  background: var(--bg-2);
-  border-left: 1px solid var(--border-2);
-  border-top: 1px solid var(--border-2);
+  background: var(--bg-1);
+  border-left: 1px solid var(--accent);
+  border-top: 1px solid var(--accent);
   transform: rotate(45deg);
 }
 .field:hover > .field__help,
@@ -441,7 +465,62 @@ body.theme-carbon {
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.field__help b { color: var(--accent-2); font-weight: 500; }
+
+/* DEV NOTES PANEL (temporary, bottom of main) */
+.dev-panel {
+  margin: 32px 0 8px;
+  padding: 18px 20px 22px;
+  border: 1px dashed #d8a83a;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(216,168,58,.06), transparent 60%);
+}
+.dev-panel__head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap; gap: 8px;
+}
+.dev-panel__title {
+  font-size: 13px; font-weight: 600; letter-spacing: .04em;
+  text-transform: uppercase; color: #d8a83a;
+}
+.dev-panel__title small {
+  display: inline-block; margin-left: 8px;
+  font-size: 10.5px; font-weight: 400; letter-spacing: 0;
+  text-transform: none; color: var(--text-3); opacity: .8;
+}
+.dev-panel__sub { font-size: 11px; color: var(--text-3); }
+.dev-panel__sub code {
+  background: var(--bg-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 10.5px;
+  color: var(--accent-2);
+}
+.dev-lookup { margin-top: 4px; }
+.dev-lookup .input { width: 100%; }
+.dev-note {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-2);
+  min-height: 64px;
+}
+.dev-note__placeholder { color: var(--text-3); opacity: .8; }
+.dev-note b { color: #d8a83a; font-weight: 600; }
+.dev-note__key {
+  display: inline-block;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  padding: 1px 6px;
+  margin-right: 6px;
+  border-radius: 4px;
+  background: rgba(216,168,58,.12);
+  color: #d8a83a;
+}
 .field__label {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 6px;
@@ -1120,15 +1199,10 @@ body.theme-carbon {
           <div class="theme-grid" id="themeGrid"></div>
         </div>
         <div class="field">
-          <div class="field__label"><span>Accent color</span><span class="field__hint">primary tint</span></div>
-          <div class="accent-row" id="accentRow"></div>
-        </div>
-        <div class="field">
           <div class="field__label"><span>Background</span></div>
-          <div class="seg" id="segBg">
-            <button class="seg__btn" data-val="obsidian">Obsidian texture</button>
-            <button class="seg__btn is-on" data-val="solid">Solid dark</button>
-            <button class="seg__btn" data-val="auto">Auto (system)</button>
+<div class="seg" id="segBg">
+            <button class="seg__btn" data-val="texture">Show texture</button>
+            <button class="seg__btn is-on" data-val="solid">Solid only</button>
           </div>
         </div>
         <div class="field">
@@ -1137,13 +1211,6 @@ body.theme-carbon {
             <input type="range" class="range" id="fScale" min="80" max="140" step="5" value="100">
             <div class="range__val" id="fScaleVal">100%</div>
           </div>
-        </div>
-        <div class="field">
-          <label class="switch">
-            <input type="checkbox" id="fReduceMotion" checked>
-            <span class="switch__track"><span class="switch__thumb"></span></span>
-            <span class="switch__label">Reduce motion (accessibility)</span>
-          </label>
         </div>
       </div>
 
@@ -1228,24 +1295,30 @@ body.theme-carbon {
           <div>You bring your own API keys. Quistan only routes requests  -  <b>you pay the providers directly</b> and choose Fast and Heavy models yourself. Quistan does not cover usage costs.</div>
         </div>
 
-        <div id="modeSubExtras">
-          <div class="field">
+<div id="modeSubExtras">
+          <div class="field" data-help="subPeriod">
+            <dl class="kv" style="margin-bottom:14px">
+              <div class="kv-row"><dt>Subscription ends</dt><dd>Sep 16, 2026</dd></div>
+              <div class="kv-row"><dt>Remaining this period</dt><dd><code>336 h</code></dd></div>
+            </dl>
+          </div>
+          <div class="field" data-help="usageApi">
             <div class="field__label"><span>API requests this month</span><span class="field__hint">quota</span></div>
             <div class="usage">
               <div class="usage__head"><b>1,247 / 5,000</b><span>25%</span></div>
               <div class="usage__bar"><div class="usage__bar-fill" style="width:25%"></div></div>
-              <div class="usage__sub">Resets in 9 days  -  Mar 1, 2026</div>
+              <div class="usage__sub">3,753 requests left</div>
             </div>
           </div>
-          <div class="field">
+          <div class="field" data-help="usageStt">
             <div class="field__label"><span>Audio minutes this month</span><span class="field__hint">stt quota</span></div>
             <div class="usage">
               <div class="usage__head"><b>48 / 120 min</b><span>40%</span></div>
               <div class="usage__bar"><div class="usage__bar-fill is-warn" style="width:40%"></div></div>
-              <div class="usage__sub">Resets in 9 days</div>
+              <div class="usage__sub">72 min left</div>
             </div>
           </div>
-          <div class="field">
+<div class="field" data-help="manageSub">
             <button class="topbar__btn topbar__btn--primary" onclick="manageSub()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
               Manage subscription
@@ -1260,7 +1333,7 @@ body.theme-carbon {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
           <div>Your license is bound to this machine. Changing major hardware (motherboard, CPU) will require re-activation. You can deactivate on this device to free up a seat.</div>
         </div>
-        <div class="field" style="margin-top:12px">
+<div class="field" style="margin-top:12px" data-help="hwid">
           <dl class="kv">
             <div class="kv-row"><dt>HWID</dt><dd><code id="hwid">a7f3-9c2b-4e81-...</code> <button class="topbar__btn" style="height:24px;padding:0 8px;font-size:11px;margin-left:6px" onclick="copyHwid()">Copy</button></dd></div>
             <div class="kv-row"><dt>Activated</dt><dd>Sep 14, 2025</dd></div>
@@ -1268,7 +1341,7 @@ body.theme-carbon {
             <div class="kv-row"><dt>Platform</dt><dd>Windows 11  -  x64</dd></div>
           </dl>
         </div>
-        <div class="field">
+<div class="field" data-help="deactivate">
           <button class="topbar__btn topbar__btn--danger" onclick="deactivate()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
             Deactivate on this device
@@ -1367,7 +1440,7 @@ body.theme-carbon {
               <div class="provider__status is-off">No key</div>
             </div>
           </div>
-          <div class="field" style="margin-top:10px">
+<div class="field" style="margin-top:10px" data-help="addProvider">
             <button class="topbar__btn" onclick="addProvider()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
               Add custom endpoint
@@ -1402,7 +1475,7 @@ body.theme-carbon {
               <span class="suf">Empty</span>
             </div>
           </div>
-          <div class="field">
+<div class="field" data-help="testKeys">
             <button class="topbar__btn" onclick="testKeys()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
               Test all keys
@@ -1435,31 +1508,158 @@ body.theme-carbon {
             <span class="switch__label">Stream responses token-by-token</span>
           </label>
         </div>
-        <div class="field">
-          <label class="switch">
-            <input type="checkbox" id="fFallback" checked>
-            <span class="switch__track"><span class="switch__thumb"></span></span>
-            <span class="switch__label">Auto-fallback to backup model on failure</span>
-          </label>
-        </div>
       </div>
 
       <!-- INDEXING -->
-      <div class="section">
-        <div class="section__head">Indexing & Embeddings <span class="section__hint">vector store</span></div>
-        <div class="info">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
-          <div>Quistan ships with a local embedding model in the program folder. It indexes your knowledge sources into the vector database. No setup or API key required  -  it runs locally.</div>
+    </section>
+
+    <!-- EMBEDDINGS & VECTOR STORE -->
+    <section class="tab-content" data-tab="embeddings">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="4" r="1.5"/><circle cx="12" cy="4" r="1.5"/><circle cx="20" cy="4" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="20" cy="12" r="1.5"/><circle cx="4" cy="20" r="1.5"/><circle cx="12" cy="20" r="1.5"/><circle cx="20" cy="20" r="1.5"/></svg></div>
+          Memory
         </div>
-        <div class="field" style="margin-top:14px">
+        <div class="tab-head__sub">How Quistan remembers what you teach it. Pick the brain model, run it on GPU if you have one, and rebuild the memory when files change.</div>
+      </header>
+
+      <!-- ACTIVE EMBEDDING MODEL -->
+      <div class="section">
+        <div class="section__head">Active Model <span class="section__hint">the brain that remembers</span></div>
+
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>Quistan turns every chunk of text into a vector using a local embedding model. The vector store (ChromaDB) then finds the closest chunks when you ask a question. Pick the model that fits your hardware and quality needs.</div>
+        </div>
+
+        <div class="field" data-help="fEmbModel">
+          <div class="field__label">
+            <span>Embedding model</span>
+            <span class="pill pill--live" id="embStatusPill"><span class="d"></span>Loaded</span>
+          </div>
+          <div class="input--suffix">
+            <select class="select" id="fEmbModel">
+              <option value="bge-small-en-v1.5">bge-small-en-v1.5  -  bundled  -  384 dim  -  ~33 MB  -  fast</option>
+              <option value="bge-base-en-v1.5">bge-base-en-v1.5  -  bundled  -  768 dim  -  ~110 MB  -  balanced</option>
+              <option value="bge-large-en-v1.5">bge-large-en-v1.5  -  bundled  -  1024 dim  -  ~335 MB  -  best quality</option>
+              <option value="nomic-embed-text-v1.5">nomic-embed-text-v1.5  -  download  -  768 dim  -  ~270 MB</option>
+              <option value="mxbai-embed-large-v1">mxbai-embed-large-v1  -  download  -  1024 dim  -  ~670 MB</option>
+              <option value="custom">Custom path</option>
+            </select>
+          </div>
+          <div class="input--suffix" id="embCustomRow" style="margin-top:8px;display:none">
+            <input class="input" id="fEmbCustomPath" type="text" placeholder="C:\path\to\my-embedding-model" value="">
+            <button class="topbar__btn" style="height:30px;padding:0 10px;position:absolute;right:6px;top:50%;transform:translateY(-50%)" onclick="pickEmbModel()">Browse</button>
+          </div>
+        </div>
+
+        <div class="field" data-help="embModel">
           <dl class="kv">
-            <div class="kv-row"><dt>Model</dt><dd>bge-small-en-v1.5  -  bundled</dd></div>
-            <div class="kv-row"><dt>Path</dt><dd><code>C:\Program Files\Quistan\models\bge-small-en-v1.5</code></dd></div>
-            <div class="kv-row"><dt>Vector DB</dt><dd>ChromaDB  -  <code>./data/vectors</code></dd></div>
-            <div class="kv-row"><dt>Dimensions</dt><dd>384</dd></div>
-            <div class="kv-row"><dt>Status</dt><dd><span class="pill pill--live"><span class="d"></span>Loaded</span></dd></div>
+            <div class="kv-row"><dt>Model</dt><dd id="embKvName">bge-small-en-v1.5  -  bundled</dd></div>
+            <div class="kv-row"><dt>Path</dt><dd><code id="embKvPath">C:\Program Files\Quistan\models\bge-small-en-v1.5</code></dd></div>
+            <div class="kv-row"><dt>Dimensions</dt><dd id="embKvDim">384</dd></div>
+            <div class="kv-row"><dt>Size</dt><dd id="embKvSize">~33 MB</dd></div>
+            <div class="kv-row"><dt>Status</dt><dd><span class="pill pill--live"><span class="d"></span><span id="embKvStatus">Loaded</span></span></dd></div>
           </dl>
         </div>
+
+        <div class="field" data-help="applyEmbModel">
+          <div class="btn-row">
+            <button class="topbar__btn topbar__btn--primary" onclick="applyEmbModel()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
+              Apply &amp; reload model
+            </button>
+            <button class="topbar__btn" onclick="unloadEmbModel()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+              Unload
+            </button>
+            <button class="topbar__btn" onclick="downloadEmbModel()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download missing
+            </button>
+          </div>
+          <div class="info info--warn" style="margin-top:10px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div>Changing the model <b>changes the vector dimensions</b>. A full reindex of all sources is required afterwards.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPUTE DEVICE / GPU -->
+      <div class="section">
+        <div class="section__head">Where It Runs <span class="section__hint">cpu or gpu</span></div>
+
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>
+          <div>The embedding model runs on the selected device. <b>GPU</b> is 5-20× faster than CPU, but requires compatible drivers and at least 2 GB of free VRAM for the bundled models.</div>
+        </div>
+
+        <div class="field" data-help="fEmbDevice">
+          <div class="field__label">
+            <span>Device</span>
+            <span class="pill pill--info" id="gpuDetectPill"><span class="d"></span><span id="gpuDetectText">Detecting</span></span>
+          </div>
+          <div class="seg" id="segEmbDevice">
+            <button class="seg__btn is-on" data-val="cpu">CPU  -  always works</button>
+            <button class="seg__btn" data-val="cuda">GPU (CUDA)  -  NVIDIA</button>
+            <button class="seg__btn" data-val="dml">GPU (DirectML)  -  any GPU</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fEmbGpu">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Enable GPU acceleration</span>
+          </label>
+        </div>
+
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fEmbFp16" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Use half precision (FP16)  -  halves VRAM, minor quality loss</span>
+          </label>
+        </div>
+
+        <div class="field" data-help="embGpuInfo">
+          <dl class="kv">
+            <div class="kv-row"><dt>GPU</dt><dd id="gpuKvName">None detected</dd></div>
+            <div class="kv-row"><dt>Driver</dt><dd id="gpuKvDriver">-</dd></div>
+            <div class="kv-row"><dt>VRAM</dt><dd id="gpuKvVram">-</dd></div>
+            <div class="kv-row"><dt>CUDA cores</dt><dd id="gpuKvCuda">-</dd></div>
+            <div class="kv-row"><dt>Runtime</dt><dd id="gpuKvRuntime">ONNX Runtime 1.18  -  CPU</dd></div>
+          </dl>
+        </div>
+
+        <div class="field" data-help="testEmbDevice">
+          <div class="btn-row">
+            <button class="topbar__btn" onclick="detectGpu()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Detect GPU again
+            </button>
+            <button class="topbar__btn" onclick="benchmarkEmb()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Benchmark device
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VECTOR DATABASE & INDEXING -->
+      <div class="section">
+        <div class="section__head">Memory Database <span class="section__hint">where remembered info is stored</span></div>
+
+        <div class="field" data-help="embVectorDb">
+          <dl class="kv">
+            <div class="kv-row"><dt>Engine</dt><dd>ChromaDB 0.5</dd></div>
+            <div class="kv-row"><dt>Path</dt><dd><code>./data/vectors</code></dd></div>
+            <div class="kv-row"><dt>Collections</dt><dd id="vecColCount">3  -  default, work, archive</dd></div>
+            <div class="kv-row"><dt>Total vectors</dt><dd id="vecTotalCount">48,217</dd></div>
+            <div class="kv-row"><dt>On disk</dt><dd id="vecDiskSize">214 MB</dd></div>
+          </dl>
+        </div>
+
         <div class="field">
           <label class="switch">
             <input type="checkbox" id="fReindexWatch" checked>
@@ -1497,11 +1697,21 @@ body.theme-carbon {
             <button class="seg__btn" data-val="8">8  -  fast</button>
           </div>
         </div>
-        <div class="field">
-          <button class="topbar__btn" onclick="reindexAll()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
-            Reindex all sources
-          </button>
+        <div class="field" data-help="reindexAll">
+          <div class="btn-row">
+            <button class="topbar__btn" onclick="reindexAll()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
+              Reindex all sources
+            </button>
+            <button class="topbar__btn" onclick="optimizeVectors()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+              Optimize index
+            </button>
+            <button class="topbar__btn" onclick="openVectorsFolder()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              Open vector folder
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -1518,7 +1728,7 @@ body.theme-carbon {
 
       <div class="section">
         <div class="section__head">Devices <span class="section__hint">wasapi  -  directsound</span></div>
-        <div class="field">
+<div class="field" data-help="micDev">
           <div class="field__label"><span>Microphone (your voice)</span><span class="field__hint">input</span></div>
           <div class="device-row">
             <div class="device-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg></div>
@@ -1529,7 +1739,7 @@ body.theme-carbon {
             <button class="topbar__btn" style="height:26px;padding:0 10px;font-size:11px" onclick="pickDevice('in')">Change</button>
           </div>
         </div>
-        <div class="field">
+        <div class="field" data-help="sysDev">
           <div class="field__label"><span>System audio (interlocutor)</span><span class="field__hint">loopback  -  wasapi</span></div>
           <div class="device-row">
             <div class="device-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></div>
@@ -1600,12 +1810,43 @@ body.theme-carbon {
             <button class="seg__btn" data-val="high">High  -  strict</button>
           </div>
         </div>
-        <div class="field">
-          <div class="field__label"><span>Transcription engine</span><span class="field__hint">stt</span></div>
-          <div class="seg" id="segStt">
-            <button class="seg__btn is-on" data-val="whisper-local">Whisper  -  local</button>
-            <button class="seg__btn" data-val="whisper-api">Whisper  -  API</button>
-            <button class="seg__btn" data-val="deepgram">Deepgram</button>
+        <div id="sttManaged" class="field">
+          <div class="field__label"><span>Transcription</span><span class="field__hint">stt</span></div>
+          <div class="info info--ok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            <div>STT is <b>managed by Quistan</b> under your Subscription. No setup needed - Quistan picks the engine.</div>
+          </div>
+        </div>
+        <div id="sttByok" style="display:none">
+          <div class="field">
+            <div class="field__label"><span>Transcription engine</span><span class="field__hint">stt</span></div>
+            <div class="seg" id="segSttMode">
+              <button class="seg__btn is-on" data-val="local">Local model</button>
+              <button class="seg__btn" data-val="api">Cloud API</button>
+              <button class="seg__btn" data-val="ollama">Ollama / custom</button>
+            </div>
+          </div>
+          <div id="sttByokLocal" class="field">
+            <div class="info">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M21 7V5a2 2 0 0 0-2-2h-2M3 17v2a2 2 0 0 0 2 2h2M21 17v2a2 2 0 0 1-2 2h-2"/></svg>
+              <div>Uses the bundled <b>bge-small-en-v1.5</b>... <b>Whisper</b> model that ships with the installer. No API key, fully offline. Slow on CPU; enable <b>GPU Whisper</b> in Advanced for a 5-10x speedup.</div>
+            </div>
+          </div>
+          <div id="sttByokApi" class="field" style="display:none">
+            <div class="field__label"><span>STT API key</span><span class="field__hint">Deepgram / OpenAI</span></div>
+            <input class="input" id="fSttApiKey" type="password" placeholder="paste Deepgram or OpenAI Whisper key">
+            <div class="info" style="margin-top:8px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <div>For Deepgram: paste the project key from <code>console.deepgram.com</code>. For OpenAI Whisper API: paste your <code>sk-...</code> key. Stored encrypted in Windows Credential Manager.</div>
+            </div>
+          </div>
+          <div id="sttByokOllama" class="field" style="display:none" data-help="fSttOllamaUrl">
+            <div class="field__label"><span>Ollama endpoint</span><span class="field__hint">http://localhost:11434</span></div>
+            <input class="input" id="fSttOllamaUrl" placeholder="http://localhost:11434">
+            <div class="info" style="margin-top:8px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+              <div>Point at any OpenAI-compatible STT server - Ollama, vLLM whisper, custom self-hosted. Must expose <code>/v1/audio/transcriptions</code>. Local Whisper model is <code>whisper</code> in Ollama.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1623,7 +1864,7 @@ body.theme-carbon {
 
       <div class="section">
         <div class="section__head">Region <span class="section__hint">screenshot target</span></div>
-        <div class="field">
+<div class="field" data-help="selectRegion">
           <div class="field__label">
             <span>Active region</span>
             <span class="pill pill--off"><span class="d"></span>Not set</span>
@@ -1640,7 +1881,7 @@ body.theme-carbon {
 <button class="topbar__btn" onclick="clearRegion()">Clear</button>
           </div>
         </div>
-        <div class="field">
+        <div class="field" data-help="takeScreenshot">
           <div class="field__label">
             <span>Trigger</span>
             <span class="field__hint">manual</span>
@@ -1714,50 +1955,50 @@ body.theme-carbon {
 
       <div class="section">
         <div class="section__head">Global <span class="section__hint">work anywhere</span></div>
-        <div class="shortcut-list">
-          <div class="shortcut">
+<div class="shortcut-list">
+          <div class="shortcut" data-help="hotkey_open">
             <div class="shortcut__body">
               <div class="shortcut__name">Open / refresh Control Panel</div>
               <div class="shortcut__hint">main window of Quistan</div>
             </div>
             <span class="hotkey-input" data-hotkey="open" tabindex="0">Ctrl+Shift+Q</span>
           </div>
-          <div class="shortcut">
+          <div class="shortcut" data-help="hotkey_pause">
             <div class="shortcut__body">
               <div class="shortcut__name">Pause / resume listening</div>
               <div class="shortcut__hint">toggle capture</div>
             </div>
             <span class="hotkey-input" data-hotkey="pause" tabindex="0">Ctrl+Shift+Space</span>
           </div>
-          <div class="shortcut">
+          <div class="shortcut" data-help="hotkey_region">
             <div class="shortcut__body">
               <div class="shortcut__name">Select capture region</div>
               <div class="shortcut__hint">drag-to-select screenshot area</div>
             </div>
             <span class="hotkey-input" data-hotkey="region" tabindex="0">Ctrl+Shift+A</span>
           </div>
-          <div class="shortcut">
+          <div class="shortcut" data-help="hotkey_snap">
             <div class="shortcut__body">
               <div class="shortcut__name">Take screenshot now</div>
               <div class="shortcut__hint">from current region</div>
             </div>
             <span class="hotkey-input" data-hotkey="snap" tabindex="0">Ctrl+Shift+S</span>
           </div>
-          <div class="shortcut">
+          <div class="shortcut" data-help="hotkey_refresh">
             <div class="shortcut__body">
               <div class="shortcut__name">Refresh all floating windows</div>
               <div class="shortcut__hint">re-fetch context</div>
             </div>
             <span class="hotkey-input" data-hotkey="refresh" tabindex="0">Ctrl+R</span>
           </div>
-          <div class="shortcut">
+          <div class="shortcut" data-help="hotkey_solo">
             <div class="shortcut__body">
               <div class="shortcut__name">Toggle solo mode</div>
               <div class="shortcut__hint">assistant without interlocutor</div>
             </div>
             <span class="hotkey-input" data-hotkey="solo" tabindex="0">Ctrl+Shift+M</span>
           </div>
-          <div class="shortcut">
+          <div class="shortcut" data-help="hotkey_send">
             <div class="shortcut__body">
               <div class="shortcut__name">Send current dialog to chat</div>
               <div class="shortcut__hint">manual capture</div>
@@ -1844,7 +2085,7 @@ body.theme-carbon {
           <div class="field__label"><span>Your chat ID</span><span class="field__hint">from @userinfobot</span></div>
           <input class="input" id="fTgChat" placeholder="987654321">
         </div>
-        <div class="field">
+<div class="field" data-help="testTg">
           <button class="topbar__btn" onclick="testTg()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             Send test message
@@ -1920,7 +2161,7 @@ body.theme-carbon {
           </div>
         </div>
 
-        <div class="field">
+<div class="field" data-help="dbStats">
           <dl class="kv">
             <div class="kv-row"><dt>Schema version</dt><dd><code>v14</code>  -  up to date</dd></div>
             <div class="kv-row"><dt>Last integrity check</dt><dd>2 hours ago  -  <span class="pill pill--live"><span class="d"></span>ok</span></dd></div>
@@ -1929,7 +2170,7 @@ body.theme-carbon {
           </dl>
         </div>
 
-        <div class="field">
+<div class="field" data-help="dbMaintenance">
           <div class="field__label"><span>Maintenance</span><span class="field__hint">sqlite ops</span></div>
           <div class="btn-row">
             <button class="topbar__btn" onclick="dbVacuum()" title="Rebuild DB file to reclaim space">
@@ -1951,7 +2192,7 @@ body.theme-carbon {
           </div>
         </div>
 
-        <div class="field">
+        <div class="field" data-help="dbBackup">
           <div class="field__label"><span>Backup &amp; restore</span></div>
           <div class="btn-row">
             <button class="topbar__btn" onclick="dbBackup()" title="Save a copy of the active database">
@@ -1973,7 +2214,7 @@ body.theme-carbon {
           </div>
         </div>
 
-        <div class="field">
+        <div class="field" data-help="dbCleanup">
           <div class="field__label"><span>Cleanup</span><span class="field__hint">active db only</span></div>
           <div class="btn-row">
             <button class="topbar__btn" onclick="dbClearVectors()" title="Wipe vector index (KB must be reindexed)">
@@ -2039,7 +2280,7 @@ body.theme-carbon {
           </div>
           <div class="update__act"><span class="pill pill--live"><span class="d"></span>Up to date</span></div>
         </div>
-        <div class="field">
+<div class="field" data-help="checkUpdate">
           <button class="topbar__btn topbar__btn--primary" onclick="checkUpdate()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
             Check for updates
@@ -2108,7 +2349,7 @@ body.theme-carbon {
             <span class="switch__label">Write logs to file (rotated, max 50 MB)</span>
           </label>
         </div>
-        <div class="field">
+<div class="field" data-help="logsTools">
           <div class="btn-row">
             <button class="topbar__btn" onclick="openLogs()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -2157,7 +2398,7 @@ body.theme-carbon {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           <div>Export includes all settings, floating window configs, shortcuts, KB sources. <b>API keys are NOT included</b>  -  re-enter them after import.</div>
         </div>
-        <div class="field" style="margin-top:12px">
+<div class="field" style="margin-top:12px" data-help="configIO">
           <div class="btn-row">
             <button class="topbar__btn" onclick="exportConfig()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -2186,15 +2427,27 @@ body.theme-carbon {
               <span class="switch__label" style="color:var(--danger)">Also wipe all dialog history</span>
             </label>
           </div>
+<div class="field" data-help="factoryReset">
           <div class="btn-row">
             <button class="topbar__btn topbar__btn--danger" onclick="factoryReset()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
               Factory reset
             </button>
+</div>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- DEV NOTES (temporary, remove when shipping) -->
+    <div class="dev-panel" aria-label="Developer notes">
+      <div class="dev-panel__head">
+        <div class="dev-panel__title">Dev notes</div>
+      </div>
+      <div class="dev-note" id="devNote">
+        <span class="dev-note__placeholder">Наведи курсор на поле выше — заметка появится здесь.</span>
+      </div>
+    </div>
 
   </main>
 </div>
@@ -2210,6 +2463,7 @@ const CATEGORIES = [
   { id: 'general',   name: 'General',     icon: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>' },
   { id: 'account',   name: 'Account',     icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
   { id: 'ai',        name: 'AI & Models', icon: '<path d="M12 2a4 4 0 0 0-4 4v2a4 4 0 0 0-4 4v2a4 4 0 0 0 4 4v0a4 4 0 0 0 4 4 4 4 0 0 0 4-4v0a4 4 0 0 0 4-4v-2a4 4 0 0 0-4-4V6a4 4 0 0 0-4-4z"/>' },
+  { id: 'embeddings',name: 'Memory', icon: '<circle cx="4" cy="4" r="1.5"/><circle cx="12" cy="4" r="1.5"/><circle cx="20" cy="4" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="20" cy="12" r="1.5"/><circle cx="4" cy="20" r="1.5"/><circle cx="12" cy="20" r="1.5"/><circle cx="20" cy="20" r="1.5"/>' },
   { id: 'audio',     name: 'Audio',       icon: '<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
   { id: 'capture',   name: 'Capture',     icon: '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>' },
   { id: 'shortcuts', name: 'Shortcuts',   icon: '<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>' },
@@ -2221,112 +2475,513 @@ const CATEGORIES = [
 
 // -- HELP TEXT (hover tooltip for every setting) --
 const HELP = {
-  // General
-  fLang:        'Language for all Quistan interface text and dialogs. Switches app-wide; window content stays in its own language.',
-  theme:        'Visual theme preset. Controls the background texture (PNG/WebP file you provide), accent glow colors and overall mood.',
-  accent:       'Primary accent color used for highlights, selected states, focus rings and primary action buttons. Picked on top of the theme palette.',
-  bg:           'How the background renders. <b>Solid</b> uses only the theme color, <b>Texture</b> overlays your themed PNG on top, <b>Auto</b> follows Windows dark/light mode.',
-  fScale:       'UI zoom level. 100% is normal; 80% makes everything compact for small screens. Affects the main app only, not OS scaling.',
-  fReduceMotion:'Disables fade/slide animations for accessibility (vestibular disorders, focus). Tooltips and tab switches become instant.',
-  fAutoStart:    'Launch Quistan when you sign in to Windows. Disabled by default to avoid slowing boot.',
-  fStartMinimized:'Start in the system tray instead of the main window. Useful for "always-on" setups where you trigger Quistan only when needed.',
-  fTrayIcon:     'Show Quistan icon in the notification area. Required to access the menu when the main window is closed.',
-  fStartMode:    'What to show on launch: <b>Pre-flight</b> (start dialog), <b>Resume</b> (last session) or <b>Stay in tray</b> (hidden until summoned).',
+  // ===== General =====
+  fLang: 'The language every label, button, menu and error message in this window shows up in. Change it and the whole UI instantly retranslates. <b>Practical use:</b> pick the language you actually read - everything stays the same, just translated.',
 
-  // Account
-  fMode:         'How Quistan routes your AI requests. <b>Subscription</b> = Quistan provides all models under one bill, you do not choose which model runs. <b>BYOK</b> = Bring Your Own Key, you pick Fast and Heavy models yourself and pay providers directly.',
+  theme: 'Pick a theme to change the overall mood of the app. <b>What you see change:</b> the body background color; the tint of the soft glow gradients in the corners; the color of the small dots before each section title; the color of "lit" elements like the live-status pills (Connected / Online). <b>Try this:</b> click Midnight - the whole backdrop goes blueish and the corner glows shift to cyan. <b>Vibe guide:</b> Obsidian = cool purple (default), Midnight = blue, Forest = green, Ember = orange/warm, Paper = light beige for daytime, Carbon = neutral grey-black.',
 
-  // AI
-  fModelFast:    'Lightweight model used for quick hints (naming entities, recognizing dialog turns, short rephrasing). Should be cheap and fast - usually a mini-class model.',
-  fModelHeavy:   'Powerful model used for deep reasoning (drafting answers, multi-step analysis, long context). Slower and more expensive - flagship class.',
-  fTemp:         'How creative vs deterministic the model is. <b>0</b> = strict, predictable. <b>0.7</b> = balanced. <b>2</b> = very creative, may hallucinate. Default 0.7.',
-  fMaxTok:       'Maximum length of each generated hint in tokens. More tokens = longer answers but slower and costlier. Default 120 fits a short paragraph.',
-  fStream:       'Show tokens as they arrive (faster perceived response) vs waiting for the full answer. Recommended ON.',
-  fFallback:     'If the chosen model fails (rate limit, error), automatically retry with the other role - Fast falls back to Heavy and vice versa.',
-  fKeyOpenAI:    'Your OpenAI API key (sk-...). Stored locally in the Windows Credential Manager. Used only to forward requests to api.openai.com.',
-  fKeyAnthropic: 'Your Anthropic API key (sk-ant-...). Stored locally in the Windows Credential Manager.',
-  fKeyOpenRouter:'Your OpenRouter API key (sk-or-...). Gives access to any model from any provider through one endpoint.',
+  themeGrid: 'Six theme tiles. Each tile has 3 small color squares that preview the theme\'s palette: the dark square is the background, the middle square is the accent/glow tint, the light square is the text color. Click any tile to switch the whole app to that theme. The currently active theme has a white border around its tile. Each theme can also load a custom background PNG if you put <code>bg-{theme}.png</code> next to this HTML file.',
 
-  // Indexing
-  fReindexWatch: 'Monitor knowledge source folders and reindex files automatically when they change. Uses OS file system events - no polling.',
-  fReindexVerify:'Run integrity check on the vector index when the app starts. Adds a few seconds to launch but catches corruption early.',
-  fChunk:        'Maximum tokens per chunk when splitting documents. 500 fits most embedding models and preserves enough context for retrieval.',
-  fOverlap:      'Tokens shared between adjacent chunks. Prevents sentences from being cut at boundaries. 50 is a safe default.',
-  fWorkers:      'How many chunks to embed in parallel. More = faster reindex but more CPU/RAM usage. 2-4 is a good balance.',
+  bg: 'How the background renders. <b>Show texture</b> = layered PNG image + theme color + soft corner glows. <b>Solid only</b> = just the theme color + glow gradients, no image. <b>When to flip to Solid:</b> if you find the image too busy, or for screen recording.',
 
-  // Audio
-  fGain:         'Boost the microphone signal. <b>100%</b> is unity; <b>200%</b> doubles the input. Increase if you speak quietly, decrease if the meter clips.',
-  fNoiseSup:     'Remove background noise (fans, typing, street) from your voice before STT. RNNoise runs locally. Recommended ON.',
-  fAec:          'Acoustic echo cancellation. Required when you have speakers open, otherwise Quistan hears itself and triggers double responses.',
-  fAgc:          'Auto-adjust mic level to your speaking volume. Off usually sounds more natural; ON helps if you vary distance from the mic.',
-  fVad:          'How aggressive voice-activity detection is. <b>Low</b> catches more speech (including breaths); <b>High</b> skips more noise.',
-  fStt:          'Speech-to-text engine. <b>Whisper local</b> runs offline, slow but free. <b>Whisper API</b> = OpenAI Whisper, faster but uses your quota. <b>Deepgram</b> = third-party, very fast.',
+  fScale: 'Zoom of the entire window. <b>Drag left</b> to make everything smaller and fit more on screen (good for 13" laptops). <b>Drag right</b> to make everything bigger (good if text feels too small). Changes take effect live as you drag.',
 
-  // Capture
-  fCompress:     'Convert PNG screenshots to JPEG before sending to the AI. Saves bandwidth and quota at minor quality cost.',
-  fJpeg:         'JPEG compression level. <b>70%</b> is a good balance; <b>100%</b> = lossless but huge files; <b>50%</b> = small, blurry.',
-  fWda:          'Windows Display API: exclude floating windows from screen capture. Hides the assistant from Zoom/Meet screen-share so interlocutors do not see it.',
-  fHideFrame:    'Hide the region-selection rectangle when the interlocutor shares their screen.',
-  fHideSelf:     'Hide your webcam self-view from the screen-share output.',
+  fAutoStart: 'ON = Quistan launches every time you sign in to Windows. <b>When to enable:</b> on a dedicated work machine where you want Quistan always ready. <b>When to disable:</b> on shared/gaming PCs where every second of boot matters.',
 
-  // Notifications
-  fNotifUpdate:   'Notify when a new version of Quistan is available for download.',
-  fNotifLicense:  'Notify 7 days before your subscription expires.',
-  fNotifKb:       'Notify when knowledge base reindexing completes (so you can switch back to using Quistan).',
-  fNotifError:    'Notify on API errors and quota warnings. Recommended ON to catch problems fast.',
-  fNotifWeekly:   'Send weekly summary of your usage stats (transcripts, prompts, suggestions).',
-  fSound:         'Sound played when a notification fires. Silent mutes audio but keeps on-screen alerts.',
-  fQuietFrom:     'Start of the daily quiet hours - no notification sounds during this window.',
-  fQuietTo:       'End of the daily quiet hours. Critical alerts still appear silently outside this window if the OS allows.',
-  fDoNotDisturb:  'Suppress all notifications when any app is in fullscreen mode (presentations, games, video calls).',
-  fTgToken:       'Telegram bot token from @BotFather. Allows notifications to be forwarded to your Telegram.',
-  fTgChat:        'Your Telegram chat ID. Get it from @userinfobot.',
+  fStartMinimized: 'ON = Quistan starts hidden in the system tray instead of opening the main window. Combine with <b>Auto-launch</b> to have it always-on but invisible.',
 
-  // Privacy / DB
-  fTelemetry:    'Send anonymous crash reports and feature-usage counts. Helps improve Quistan. No dialog text, screenshots or personal data are ever sent.',
-  fBeta:         'Get early access to experimental features. May be unstable.',
-  fActiveDb:     'Which database to use as the main workspace. You can have separate DBs for different projects/contexts (work, research, archive).',
-  fDbConnected:  'When OFF, the app runs read-only - no writes to the database. Use for safety, debugging, or sharing a screen.',
-  fEncryptDb:    'Encrypt database files with SQLCipher (AES-256). Requires app restart after toggling. Recommended ON for privacy.',
-  fRetention:    'Auto-delete dialog history older than N days. Useful to keep DB size bounded on long-running setups.',
-  fClearOnExit:  'Wipe all dialog history when the app shuts down. Use for sensitive conversations. Settings and vectors are kept.',
+  fTrayIcon: 'ON = a small Quistan icon stays in the Windows notification area. <b>Required</b> if you use Start minimized or Stay in tray - it\'s how you reach the menu when the main window is closed.',
 
-  // Updates
-  fAutoUpdate:   'Download new versions automatically in the background. You can still choose when to install.',
-  fAutoInstall:  'Apply updates on next app quit (skips the restart prompt).',
-  fPrerelease:   'Get notified about pre-release builds. May contain unfinished or unstable features.',
+  fStartMode: 'What happens when Quistan launches. <b>Pre-flight</b> = show the start dialog (pick what to do). <b>Resume</b> = open the last dialog you were in. <b>Stay in tray</b> = stay hidden until summoned. <b>Pick Resume</b> for daily use; <b>Pre-flight</b> if each session is a new context.',
 
-  // Advanced
-  fLogLevel:     'How verbose the app logs are. <b>Debug</b> is for troubleshooting; <b>Warn</b> is the recommended default; <b>Error</b> for clean logs.',
-  fLogToFile:    'Write logs to a rotating file (max 50 MB). Useful for support cases - copy a bundle when reporting a bug.',
-  fExpGpu:       'Use GPU acceleration for local Whisper. Requires compatible NVIDIA GPU and CUDA drivers. Significant speedup when supported.',
-  fExpMem:       'Persistent conversation memory: Quistan remembers facts from past sessions. May cause surprising answers.',
-  fExpMulti:     'Have 3 models answer in parallel and pick the consensus. Slow and expensive - leave OFF unless debugging.',
+  // ===== Account =====
+  fMode: 'Who pays the AI providers. <b>Subscription</b> = Quistan gives you all models under one monthly bill; you do not pick which model runs per request - Quistan does. <b>BYOK</b> = you paste API keys from OpenAI/Anthropic/OpenRouter and pay providers directly; you also pick Fast and Heavy models yourself. <b>Default Subscription</b> for most users; switch to BYOK if you want full control or run local models.',
 
-  // Segmented groups (whole-row explanations)
-  'segBg':         'How the background texture is composited. Solid = cleanest; Texture = warm; Auto follows OS.',
-  'segStartMode':  'What the app shows on launch. Choose Pre-flight to set up a new session, Resume to continue the last one, or Stay in tray for background operation.',
-  'segMode':       'Subscription vs BYOK. Subscription = Quistan handles all AI; BYOK = you pay providers directly.',
-  'segVad':        'Voice-activity detection sensitivity. Low catches more; high skips noise. Default Medium.',
-  'segStt':        'Speech-to-text engine. Pick Whisper local for offline privacy, API for speed, Deepgram for production.',
-  'segRetention':  'Auto-cleanup window. Dialog history older than this is removed on startup.',
-  'segWorkers':    'Parallel indexing workers. 2-4 is the sweet spot; higher needs a beefy CPU.',
-  'segLog':        'Log verbosity. Errors only is the cleanest; Debug is for support.',
-  'segChannels':   'Notification delivery channels. Multi-select. Tray + Sound is the recommended default.',
+  // ===== AI & Models =====
+  fModelFast: 'The small, cheap, fast model used for quick on-the-fly hints (entity names, dialog turn detection, short rephrasing). <b>How to choose:</b> any "mini" class - gpt-4o-mini, claude-haiku, gemini-flash. <b>What it affects:</b> response latency for everyday turns and your API bill.',
+
+  fModelHeavy: 'The big, slow, smart model used for hard reasoning (long answers, multi-step analysis, complex instructions). <b>How to choose:</b> flagship class - gpt-4o, claude-sonnet/opus, gemini-pro. <b>What it affects:</b> quality of deep analysis turns.',
+
+  fTemp: 'How "creative" vs "predictable" the model is. <b>Drag left</b> = strict, repeats itself, factual. <b>Drag right</b> = creative, varied, may go off-topic or invent. <b>0.3</b> for code/factual Q&A; <b>0.7</b> default for normal chat; <b>1.2+</b> for brainstorming and creative writing.',
+
+  fMaxTok: 'How long each suggestion can be, in tokens (~4 chars each). <b>Drag right</b> for longer multi-paragraph answers; <b>drag left</b> for short one-liners only. Default 120 ≈ one paragraph.',
+
+  fStream: 'ON = answer appears word-by-word as the model thinks (feels faster). OFF = answer pops in fully formed (better for copy-paste). <b>Keep ON</b> unless your PC freezes mid-stream.',
+
+  fKeyOpenAI: 'Paste your OpenAI key here (looks like <code>sk-proj-...</code>) to enable OpenAI models in BYOK mode. Stored encrypted in Windows Credential Manager; sent only to api.openai.com.',
+
+  fKeyAnthropic: 'Paste your Anthropic key (<code>sk-ant-...</code>) to enable Claude models in BYOK mode. Same security as OpenAI key.',
+
+  fKeyOpenRouter: 'Paste your OpenRouter key (<code>sk-or-...</code>) to enable any model from any provider through one endpoint. <b>Tip:</b> cheaper and simpler than juggling 5 separate provider keys.',
+
+  // ===== Indexing & Embeddings =====
+  fReindexWatch: 'ON = Quistan watches your KB folders and re-embeds files automatically when they change. <b>When to enable:</b> for active KBs that get updated often (notes, docs). <b>When to disable:</b> for static archives that never change.',
+
+  fReindexVerify: 'ON = at every launch Quistan runs an integrity check on the vector index (catches corruption, adds 1-3 sec to startup). <b>When to enable:</b> after power loss, crashes, or weird retrieval results. <b>When to disable:</b> on a stable SSD if you want faster boot.',
+
+  fChunk: 'Maximum tokens per piece when Quistan splits a document for indexing. <b>Drag right</b> to keep longer passages intact (better for research papers); <b>drag left</b> for fine-grained Q&A pieces. 500 is the safe default.',
+
+  fOverlap: 'Tokens shared between neighboring chunks - prevents sentences from being cut at chunk boundaries. <b>Drag right</b> for technical/legal text where mid-sentence cuts hurt; <b>drag left</b> for huge corpora where speed beats edge recall.',
+
+  fWorkers: 'How many chunks Quistan embeds in parallel during reindex. <b>Drag right</b> if you have many CPU cores and want faster reindex; <b>drag left</b> if reindex makes the UI sluggish.',
+
+  // ===== Embeddings & Vector Store =====
+  fEmbModel: 'Which local embedding model turns your text into vectors. <b>bge-small</b> (384d) is bundled and tiny - default for most. <b>bge-base</b> (768d) is twice the size and noticeably better retrieval. <b>bge-large</b> (1024d) is the best retrieval quality but 335 MB. <b>nomic</b> and <b>mxbai</b> are downloadable top-tier models - need internet on first use. <b>Custom</b> = any ONNX/HuggingFace model you point at. <b>Important:</b> switching the model changes vector dimensions and requires a full reindex.',
+
+  embModel: 'Read-only info card showing the currently active embedding model: its name, file path, dimensions and load status. Use the picker above to switch.',
+
+  applyEmbModel: 'Reload the embedding model after changing the picker. Quistan unloads the old model, loads the new one, and (because dimensions changed) starts a full reindex in the background.',
+
+  fEmbDevice: 'Where the embedding model runs. <b>CPU</b> = always works, slowest. <b>CUDA</b> = NVIDIA GPU, fastest, needs CUDA 12.x driver + the small CUDA redistributable that ships with Quistan. <b>DirectML</b> = any DirectX 12 GPU (AMD / Intel / NVIDIA), almost as fast as CUDA on NVIDIA, slower on AMD but still 5-10× over CPU. <b>If unsure</b>, leave on CPU; the bundled model is small enough.',
+
+  fEmbGpu: 'Enable GPU execution provider for embeddings. <b>Why:</b> 5-20x faster embedding on supported hardware. <b>When to enable:</b> you selected CUDA or DirectML as device and have a working GPU/driver setup. <b>When to disable:</b> if you see ONNX Runtime GPU crashes on startup.',
+
+  fEmbFp16: 'Use FP16 (half-precision) weights for the embedding model. <b>Why:</b> halves VRAM usage with negligible accuracy loss. <b>When to enable:</b> on GPU, recommended. <b>When to disable:</b> on CPU (slower without GPU tensor cores) or if you need exact float32 precision.',
+
+  embGpuInfo: 'Live info card about the GPU Quistan detected on this machine. Useful to verify that CUDA / DirectML is actually wired up before flipping the device picker.',
+
+  testEmbDevice: 'Re-scan the GPU and run a tiny embedding benchmark so you see real ms/chunk numbers before committing to a device in production.',
+
+  embVectorDb: 'Stats about the on-disk vector store: engine, folder, number of collections, total vectors and disk size. Updated whenever a reindex finishes.',
+
+  // ===== Audio =====
+  fGain: 'Boosts the microphone signal before STT. <b>Drag right</b> if you speak quietly and the meter barely moves; <b>drag left</b> if the meter pegs into red (clipped). 100% is unity.',
+
+  fNoiseSup: 'ON = background noise (fans, typing, street) gets stripped before STT using local RNNoise. <b>Keep ON</b> for normal rooms - it is the single biggest quality win. Turn OFF only for studio mics in dead-silent rooms.',
+
+  fAec: 'Acoustic Echo Cancellation. <b>Turn ON</b> if you use speakers (otherwise Quistan hears itself and triggers double responses). <b>Turn OFF</b> with headphones.',
+
+  fAgc: 'Auto-Gain Control. ON = mic level auto-adjusts as you move closer/farther from the mic. OFF = level stays fixed (usually more natural). Enable when you vary distance a lot.',
+
+  fVad: 'Voice-Activity Detection sensitivity - how aggressively Quistan decides "this is speech" vs "this is silence". <b>Low</b> catches every breath; <b>Medium</b> balanced; <b>High</b> skips noise but may cut soft speakers. <b>Pick Low</b> for quiet speakers, <b>High</b> for noisy cafés.',
+
+  fStt: 'STT is handled differently per mode. <b>Subscription:</b> Quistan picks the engine - no setup. <b>BYOK:</b> you choose between Cloud API (Deepgram / OpenAI Whisper), Local model (bundled Whisper, offline, free, slower on CPU), or Ollama / custom endpoint (any OpenAI-compatible STT server you run). Switch your mode in <b>Account</b> first.',
+
+  fSttMode: 'Which STT backend to use in BYOK mode. <b>Local model</b> = bundled Whisper, offline, free, slower on CPU. <b>Cloud API</b> = Deepgram or OpenAI Whisper over the network, fast, paid. <b>Ollama / custom</b> = your own OpenAI-compatible STT server (Ollama, vLLM whisper, self-hosted).',
+
+  fSttApiKey: 'API key for the cloud STT provider. <b>Deepgram:</b> project key from <code>console.deepgram.com</code>. <b>OpenAI Whisper API:</b> your <code>sk-...</code> key. Stored encrypted in Windows Credential Manager.',
+
+  fSttOllamaUrl: 'URL of your local Ollama (or other OpenAI-compatible) STT server. <b>Default:</b> <code>http://localhost:11434</code>. Must expose <code>/v1/audio/transcriptions</code>. Use <code>ollama pull whisper</code> to get a model.',
+
+  // ===== Capture =====
+  fCompress: 'ON = PNG screenshots get converted to JPEG before being sent to the AI. <b>Why:</b> PNG can be 2-5 MB; JPEG at 70% is 50-200 KB - 20x smaller, faster, cheaper. <b>Turn OFF</b> only for lossless text/OCR-critical screenshots.',
+
+  fJpeg: 'JPEG quality when compression is ON. <b>Drag right</b> for crystal-clear text; <b>drag left</b> for tiny blurry files. 70% is the sweet spot.',
+
+  fWda: 'Windows Display API - hides Quistan\'s floating windows from screen capture. <b>Why:</b> when you share screen on Zoom/Meet, the interlocutor should not see your private AI window. Keep ON during calls.',
+
+  fHideFrame: 'Hides the dashed region-pick rectangle from screen-share output. Keep ON during calls - otherwise the interlocutor sees you screenshotting.',
+
+  fHideSelf: 'Hides your self-view webcam preview from screen-share. Keep ON for max privacy.',
+
+  // ===== Notifications =====
+  fNotifUpdate: 'Get a notification when a new Quistan build is available. Keep ON unless updates annoy you.',
+
+  fNotifLicense: 'Get a notification 7 days before your subscription expires. Gives you time to renew.',
+
+  fNotifKb: 'Notify when KB reindex completes. Useful for big KBs that take hours to reindex - you know when it is ready.',
+
+  fNotifError: 'Notify on API errors and quota warnings (rate-limit, 5xx). Recommended ON - silent errors look like "thinking" and waste your time.',
+
+  fNotifWeekly: 'Weekly email summary of usage stats. Enable if you want transparency on how much you used.',
+
+  fSound: 'Sound played for notifications. <b>Default</b> soft chime, <b>Ping</b> short, <b>Chime</b> musical, <b>Silent</b> no sound (visual alerts still appear).',
+
+  fQuietFrom: 'Start time of your daily quiet hours - notification sounds suppressed between From and To.',
+
+  fQuietTo: 'End time of your daily quiet hours - sound restored after this.',
+
+  fDoNotDisturb: 'ON = suppress all Quistan notifications when any app is fullscreen (presentations, games, video calls). Prevents a toast popping over your slide.',
+
+  fTgToken: 'Telegram bot token from @BotFather. Allows notifications to be forwarded to your Telegram. <b>How:</b> create a bot via @BotFather, paste the token here.',
+
+  fTgChat: 'Your Telegram chat ID (get from @userinfobot). The bot needs to know where to send messages. Use <b>Send test message</b> to verify.',
+
+  // ===== Privacy / DB =====
+  fTelemetry: 'Send anonymous crash reports and feature-usage counts to Quistan. <b>What is NOT sent:</b> dialog text, screenshots, voice audio, KB content - ever. Keep ON to support dev; turn OFF for zero outbound traffic.',
+
+  fBeta: 'Enable experimental/beta features. Expect occasional bugs. <b>Enable</b> if you want to live on the edge; <b>disable</b> for production.',
+
+  fActiveDb: 'Which database Quistan uses as the main workspace. You can keep separate DBs for "work", "research", "archive" - each with its own KB and history. Switch at the start of a project for clean context isolation.',
+
+  fDbConnected: 'ON = Quistan writes dialog turns, KB vectors and settings. OFF = read-only mode (no new entries). <b>Turn OFF</b> during screen-share, while debugging, or when reviewing someone else\'s DB.',
+
+  fDbFolder: 'Read-only path to the folder where all Quistan .db files live. Use the buttons below to backup, open, or copy the path.',
+
+  fEncryptDb: 'Encrypt database files with SQLCipher (AES-256). <b>Recommended ON</b> for privacy. <b>Requires app restart</b> after toggling.',
+
+  fRetention: 'Auto-delete dialog turns older than N days on startup. <b>30 days</b> default; <b>7 days</b> for sensitive work; <b>Forever</b> for archives.',
+
+  fClearOnExit: 'Wipe all dialog history when the app shuts down. <b>Settings</b> and <b>KB vectors</b> are kept - only dialog turns clear. Enable for confidential material.',
+
+  fWipeHistory: 'When factory-resetting, also wipe all dialog history. <b>Unchecked</b> = only reset settings/shortcuts/KB sources. <b>Checked</b> = nuke everything. Choose before clicking Factory reset.',
+
+  // ===== Updates =====
+  fAutoUpdate: 'Download new Quistan versions in the background. <b>Keep ON</b> unless you are on metered internet.',
+
+  fAutoInstall: 'Apply downloaded updates on next app quit (no restart prompt). <b>Enable</b> if you always quit Quistan at end of session.',
+
+  fPrerelease: 'Get notified about pre-release builds. <b>Enable</b> for bleeding edge; <b>disable</b> for production (prereleases may be unstable).',
+
+  // ===== Advanced =====
+  fLogLevel: 'Verbosity of logs. <b>Error</b> = only crashes. <b>Warn</b> = errors + warnings (default). <b>Info</b> = adds lifecycle events. <b>Debug</b> = everything. <b>Switch to Debug only</b> when collecting a debug bundle for support.',
+
+  fLogToFile: 'Write logs to a rotating file in %AppData%\\Quistan\\logs (max 50 MB). <b>Keep ON</b> for support cases - in-app logs vanish on restart.',
+
+  fExpGpu: 'GPU acceleration for local Whisper (CUDA). <b>Enable</b> if you have NVIDIA GPU + CUDA; <b>disable</b> otherwise (causes Whisper crashes on launch).',
+
+  fExpMem: 'Persistent memory across sessions - Quistan remembers facts from past dialogs. <b>Enable</b> for long-term assistant feel; <b>disable</b> if "how did it know that" surprises bother you.',
+
+  fExpMulti: 'Have 3 models answer in parallel and pick the consensus. <b>Leave OFF</b> (3x cost, 3x latency); enable temporarily for prompt research.',
+
+  // ===== Segmented groups =====
+  'segBg': 'Background composition. <b>Show texture</b> = PNG + color + glows. <b>Solid only</b> = color + glows only (no PNG).',
+
+  'segStartMode': 'What shows at launch. <b>Pre-flight</b> = start dialog. <b>Resume</b> = last dialog. <b>Stay in tray</b> = hidden.',
+
+  'segMode': 'Subscription = Quistan handles all AI under one bill. BYOK = you pay providers directly.',
+
+  'segVad': 'Voice-Activity Detection sensitivity. Low = catch everything (breaths). Medium = balanced. High = strict (skip noise).',
+
+  'segSttMode': 'Pick the STT backend in BYOK mode. Local model = bundled Whisper, offline, free. Cloud API = Deepgram or OpenAI Whisper. Ollama = your own OpenAI-compatible STT server. Not visible in Subscription mode (Quistan handles it).',
+
+  'segRetention': 'Auto-delete dialog turns older than N days. 1/7/30 days or Forever.',
+
+  'segWorkers': 'Parallel reindex workers. 2 default. Raise to 4-8 on multi-core machines with lots of RAM.',
+
+  'segLog': 'Log verbosity. Error = quietest. Warn = default. Info/Debug = noisier (for support).',
+
+  'segChannels': 'How notifications are delivered. Pick any combination. <b>Tray + Sound</b> recommended.',
+
+  // ===== Buttons / actions =====
+  manageSub: 'Open the Quistan billing portal in your browser - change plan, view invoices, cancel. Changes sync on next launch.',
+
+  deactivate: 'Free this machine\'s license seat so you can sign in elsewhere. <b>Important:</b> does NOT cancel your subscription - it only frees this machine.',
+
+  addProvider: 'Add a custom OpenAI-compatible endpoint (Ollama, vLLM, LM Studio) and route Fast or Heavy to it.',
+
+  testKeys: 'Send a tiny ping through every configured API key and show latency + quota. <b>Use after</b> pasting a new key.',
+
+  reindexAll: 'Rebuild the entire vector index from scratch. <b>Use</b> after switching embedding model, after KB restructure, when retrieval is broken. Slow on big KBs.',
+
+  selectRegion: 'Click then drag a rectangle on any monitor to pick the capture region. Equivalent to hotkey Ctrl+Shift+A. <b>Tip:</b> keep the region tight - smaller = faster AI.',
+
+  takeScreenshot: 'Capture the active region right now and feed it through the AI pipeline. Equivalent to hotkey Ctrl+Shift+S. <b>Use</b> to verify the region is correct.',
+
+  testTg: 'Send a test message to your Telegram via the bot. <b>Use</b> after setting up the bot to verify token + chat ID.',
+
+  dbMaintenance: 'SQLite housekeeping. <b>Vacuum</b> reclaims space; <b>Integrity check</b> runs PRAGMA; <b>Migrations</b> applies schema changes; <b>Rebuild indexes</b> refreshes FTS.',
+
+  dbBackup: 'Snapshot DB to file, restore from snapshot, copy folder path, open in Explorer. <b>Backups are NOT encrypted</b> - store safely.',
+
+  dbCleanup: 'Destructive actions for active DB. <b>Clear vectors</b> wipes KB index (must reindex). <b>Clear history</b> wipes dialogs (KB kept). <b>Wipe DB</b> deletes everything.',
+
+  checkUpdate: 'Poll the update server right now. Shows version, size, changelog if an update is available.',
+
+  logsTools: 'Open logs folder, or copy redacted diagnostics bundle (logs + system info, no dialogs) to clipboard. <b>Use</b> when filing a support ticket.',
+
+  configIO: 'Export settings to portable JSON, import on another machine. <b>API keys are NOT exported</b> - re-enter after import.',
+
+  factoryReset: 'Irreversibly reset everything (settings, floating windows, KB, shortcuts, caches). <b>Cannot be undone.</b> Check <b>Wipe history</b> above first if you also want dialogs gone.',
+
+  micDev: 'Microphone input device. <b>Default</b> follows OS. Change if you have multiple mics (USB headset, webcam) and want a specific one. Verify with the Test button.',
+
+  sysDev: 'System-audio capture (WASAPI loopback) - records what your speakers play, i.e. interlocutor\'s voice during a call. <b>Without this, STT cannot hear the other side.</b>',
+
+  // ===== Hotkeys =====
+  hotkey_open: 'Global hotkey to summon or refresh the main window from any app. <b>Default</b> Ctrl+Shift+Q. Click the field and press your combo to rebind. <kbd>Esc</kbd> clears.',
+
+  hotkey_pause: 'Global hotkey to pause/resume the assistant. <b>Default</b> Ctrl+Shift+Space. Use when you step away or want to type without AI listening.',
+
+  hotkey_region: 'Global hotkey for region picker. <b>Default</b> Ctrl+Shift+A. Drag a rectangle on any monitor.',
+
+  hotkey_snap: 'Global hotkey - take screenshot now from active region. <b>Default</b> Ctrl+Shift+S.',
+
+  hotkey_refresh: 'Global hotkey - force-refresh all floating windows (re-read context, re-fetch suggestions). <b>Default</b> Ctrl+R.',
+
+  hotkey_solo: 'Global hotkey - toggle solo mode (mic only, no system audio). <b>Default</b> Ctrl+Shift+M. Good for practicing alone.',
+
+  hotkey_send: 'Global hotkey - send current pending dialog to chat. <b>Default</b> Ctrl+Enter.',
+
+  // ===== Read-only displays =====
+  usageApi: 'Subscription quota: requests used vs limit this billing period. Bar turns yellow >75%, red >90%. Resets at the date shown above.',
+
+  usageStt: 'Subscription quota: STT minutes used vs limit. Separate from API quota (priced per minute of audio). Resets at the same date as the API quota.',
+
+  subPeriod: 'Subscription timeline - when the current billing period ends and how many hours remain. Read-only - updates from the billing server.',
+
+  hwid: 'Hardware-bound ID. Send to support if activation fails after replacing motherboard or CPU.',
+
+  embModel: 'Read-only info: bge-small-en-v1.5 bundled embedding model. 384 dimensions. ChromaDB vector store. Runs offline, no API key needed.',
+
+  dbStats: 'Live DB health snapshot. Schema version, last integrity check, last vacuum, last backup timestamps.',
+};
+
+// -- DEV NOTES (Russian, for developer only — temporary panel) --
+const DEV = {
+  fLang: '<b>Краткое:</b> Локаль UI.<br><br><b>Зачем:</b> Перевод всех надписей и системных сообщений Куистана. Контент окон (Knowledge и т.п.) переводится отдельно.<br><b>Связано:</b> i18n-каталог, locale-флаг в OS, формат дат/чисел.<br><b>Размещение:</b> Самая первая настройка — задаёт язык всего приложения.',
+
+  theme: '<b>Краткое:</b> Пресет визуальной темы.<br><br><b>Зачем:</b> Переключает палитру + фоновую текстуру. Один клик — новая атмосфера.<br><b>Связано:</b> CSS-переменные body.theme-*, файл bg-{theme}.png рядом с HTML.<br><b>Размещение:</b> Appearance — стартовая секция визуальных настроек.',
+
+  themeGrid: '<b>Краткое:</b> Сетка пресетов тем.<br><br><b>Зачем:</b> Дать быстрый визуальный выбор вместо дроплиста.<br><b>Связано:</b> THEMES[], applyTheme(), bg-{theme}.png.<br><b>Размещение:</b> Сразу под Theme — выбор пресета.',
+
+  bg: '<b>Краткое:</b> Режим фона: Show texture / Solid only.<br><br><b>Зачем:</b> Контроль видимости PNG-текстуры. По умолчанию texture, чтобы твои тематические PNG подхватывались сразу при выборе темы.<br><b>Связано:</b> segBg, body.theme-*, CSS-переменная --bg-mode-layer (выставляется JS applyBg), --bg-texture.<br><b>Размещение:</b> Appearance — финальный штрих внешнего вида. PNG-файлы: themes/1-Obsidian/1-obsidian.png, themes/2-Midnight/2-midnight.png и т.д.',
+
+  fScale: '<b>Краткое:</b> Зум UI 80-140%.<br><br><b>Зачем:</b> Компактный режим для маленьких экранов и крупный для плохого зрения.<br><b>Связано:</b> CSS zoom на root, range-row.<br><b>Размещение:</b> Appearance — зум это визуал.',
+
+  fAutoStart: '<b>Краткое:</b> Автозапуск с Windows.<br><br><b>Зачем:</b> Запускать Куистан в фоне при логине (always-on сценарий).<br><b>Связано:</b> Реестр HKCU\\...\\Run, installer.<br><b>Размещение:</b> Startup & System — это и есть автозапуск.',
+
+  fStartMinimized: '<b>Краткое:</b> Стартовать в трей.<br><br><b>Зачем:</b> Не открывать окно каждый раз, оставаться инкогнито до вызова.<br><b>Связано:</b> fTrayIcon, fStartMode.<br><b>Размещение:</b> Startup & System.',
+
+  fTrayIcon: '<b>Краткое:</b> Иконка в трее.<br><br><b>Зачем:</b> Доступ к меню без открытого главного окна. Обязательно при fStartMinimized.<br><b>Связано:</b> Tray balloon (уведомления), системное меню.<br><b>Размещение:</b> Startup & System.',
+
+  fStartMode: '<b>Краткое:</b> Что показывать при запуске (Pre-flight/Resume/Tray).<br><br><b>Зачем:</b> Разные UX: настройка новой сессии vs продолжение прошлой vs скрытый режим.<br><b>Связано:</b> segStartMode, fStartMinimized.<br><b>Размещение:</b> Startup & System.',
+
+  fMode: '<b>Краткое:</b> Subscription или BYOK.<br><br><b>Зачем:</b> Главный роутер AI-запросов. Меняет UI в AI & Models.<br><b>Связано:</b> segMode, applyModeVisibility(), aiManagedSection/aiByokSection.<br><b>Размещение:</b> Account — это контракт пользователя.',
+
+  manageSub: '<b>Краткое:</b> Открыть биллинг-портал.<br><br><b>Зачем:</b> Смена плана, инвойсы, пауза.<br><b>Связано:</b> Внешний billing URL, квота usage.<br><b>Размещение:</b> Account — рядом с usage-барами.',
+
+  deactivate: '<b>Краткое:</b> Деактивировать лицензию на этом ПК.<br><br><b>Зачем:</b> Освободить seat, чтобы залогиниться на другом железе.<br><b>Связано:</b> HWID, сервер лицензий.<br><b>Размещение:</b> Hardware Binding.',
+
+  usageApi: '<b>Краткое:</b> Счётчик API-запросов за период.<br><br><b>Зачем:</b> Показать, сколько осталось до лимита.<br><b>Связано:</b> Сервер квот, billing cycle, subPeriod выше.<br><b>Размещение:</b> Account — usage виден только в Subscription.',
+
+  usageStt: '<b>Краткое:</b> Счётчик минут STT.<br><br><b>Зачем:</b> Отдельная квота на аудио.<br><b>Связано:</b> Сервер квот, subPeriod.<br><b>Размещение:</b> Account.',
+
+  subPeriod: '<b>Краткое:</b> Сроки подписки: дата конца периода и остаток часов.<br><br><b>Зачем:</b> Показать когда списается следующая оплата / закончится Trial.<br><b>Связано:</b> Сервер биллинга, usage-бары.<br><b>Размещение:</b> Account — рядом с usage.',
+
+  hwid: '<b>Краткое:</b> Hardware ID.<br><br><b>Зачем:</b> Привязка лицензии к машине, защита от шаринга.<br><b>Связано:</b> Сервер лицензий, deactivate.<br><b>Размещение:</b> Hardware Binding.',
+
+  fModelFast: '<b>Краткое:</b> Лёгкая модель для быстрых подсказок.<br><br><b>Зачем:</b> Naming entities, короткие репразы — должны быть дёшевы и быстры.<br><b>Связано:</b> fModelHeavy, BYOK-секция, per-window выбор роли.<br><b>Размещение:</b> AI & Models — BYOK, секция Models.',
+
+  fModelHeavy: '<b>Краткое:</b> Тяжёлая модель для рассуждений.<br><br><b>Зачем:</b> Длинный контекст, multi-step reasoning, драфты.<br><b>Связано:</b> fModelFast, fallback.<br><b>Размещение:</b> AI & Models — BYOK.',
+
+  fTemp: '<b>Краткое:</b> Temperature 0-2.<br><br><b>Зачем:</b> Баланс между строгостью и креативностью для всех ролей.<br><b>Связано:</b> Generation-параметры.<br><b>Размещение:</b> AI & Models — Generation.',
+
+  fMaxTok: '<b>Краткое:</b> Max output tokens.<br><br><b>Зачем:</b> Длина подсказки. Больше = дороже и медленнее.<br><b>Связано:</b> Cost, latency.<br><b>Размещение:</b> AI & Models — Generation.',
+
+  fStream: '<b>Краткое:</b> Стримить токены.<br><br><b>Зачем:</b> Быстрее воспринимается; UX-улучшение.<br><b>Связано:</b> Backend SSE.<br><b>Размещение:</b> AI & Models — Generation.',
+
+  fKeyOpenAI: '<b>Краткое:</b> OpenAI API key.<br><br><b>Зачем:</b> Авторизация запросов BYOK.<br><b>Связано:</b> Credential Manager, OpenAI endpoint.<br><b>Размещение:</b> AI & Models — BYOK, API Keys.',
+
+  fKeyAnthropic: '<b>Краткое:</b> Anthropic API key.<br><br><b>Зачем:</b> BYOK-доступ к Claude.<br><b>Связано:</b> Credential Manager, Anthropic endpoint.<br><b>Размещение:</b> AI & Models — BYOK, API Keys.',
+
+  fKeyOpenRouter: '<b>Краткое:</b> OpenRouter API key.<br><br><b>Зачем:</b> Один ключ для всех моделей всех провайдеров.<br><b>Связано:</b> OpenRouter endpoint, llama-* модели.<br><b>Размещение:</b> AI & Models — BYOK, API Keys.',
+
+  addProvider: '<b>Краткое:</b> Добавить кастомный OpenAI-совместимый endpoint.<br><br><b>Зачем:</b> Ollama, vLLM, LM Studio, self-hosted.<br><b>Связано:</b> providers[], routing config.<br><b>Размещение:</b> AI & Models — BYOK, Providers.',
+
+  testKeys: '<b>Краткое:</b> Пинг всех ключей.<br><br><b>Зачем:</b> Проверить latency, валидность, квоту.<br><b>Связано:</b> fKey*.<br><b>Размещение:</b> AI & Models — BYOK, API Keys.',
+
+  embModel: '<b>Краткое:</b> Read-only: модель эмбеддингов.<br><br><b>Зачем:</b> Показать пользователю что используется локально bge-small-en-v1.5.<br><b>Связано:</b> KB index, ChromaDB.<br><b>Размещение:</b> AI & Models — Indexing.',
+
+  fReindexWatch: '<b>Краткое:</b> Следить за файлами KB.<br><br><b>Зачем:</b> Авто-обновление индекса при изменении источников.<br><b>Связано:</b> OS file watcher (ReadDirectoryChangesW).<br><b>Размещение:</b> AI & Models — Indexing.',
+
+  fReindexVerify: '<b>Краткое:</b> Проверять целостность индекса при старте.<br><br><b>Зачем:</b> Ловить corruption рано, после крэшей.<br><b>Связано:</b> ChromaDB integrity, +время на старт.<br><b>Размещение:</b> AI & Models — Indexing.',
+
+  fChunk: '<b>Краткое:</b> Размер чанка 100-1500 токенов.<br><br><b>Зачем:</b> Баланс retrieval-гранулярности и контекста.<br><b>Связано:</b> Embedding model max length, точность поиска.<br><b>Размещение:</b> AI & Models — Indexing.',
+
+  fOverlap: '<b>Краткое:</b> Overlap чанков 0-300.<br><br><b>Зачем:</b> Не разрезать предложения на границах.<br><b>Связано:</b> fChunk, indexing time.<br><b>Размещение:</b> AI & Models — Indexing.',
+
+  fWorkers: '<b>Краткое:</b> Параллельные воркеры 1-8.<br><br><b>Зачем:</b> Ускорить reindex за счёт CPU/RAM.<br><b>Связано:</b> fChunk, machine load.<br><b>Размещение:</b> AI & Models — Indexing.',
+
+  reindexAll: '<b>Краткое:</b> Перестроить индекс с нуля.<br><br><b>Зачем:</b> Fix corruption, миграция embeddings.<br><b>Связано:</b> ChromaDB, CPU/RAM пик.<br><b>Размещение:</b> AI & Models — Indexing.',
+
+  fEmbModel: '<b>Краткое:</b> Какая модель эмбеддингов активна.<br><br><b>Зачем:</b> Quality vs размер. Small=384d быстрый, Large=1024d самый точный. Custom — любой ONNX.<br><b>Связано:</b> ChromaDB dim, fReindexAll (при смене dim обязателен).<br><b>Размещение:</b> Embeddings & Vector Store — Active Model.',
+
+  embModel: '<b>Краткое:</b> Read-only карточка активной модели.<br><br><b>Зачем:</b> Показать пользователю что лежит на диске.<br><b>Связано:</b> fEmbModel, applyEmbModel.<br><b>Размещение:</b> Embeddings & Vector Store.',
+
+  applyEmbModel: '<b>Краткое:</b> Перезагрузить модель после смены.<br><br><b>Зачем:</b> Unload old → load new → если dim другой, авто-reindex.<br><b>Связано:</b> fEmbModel, fEmbDevice.<br><b>Размещение:</b> Embeddings & Vector Store — Active Model.',
+
+  fEmbDevice: '<b>Краткое:</b> CPU / CUDA (NVIDIA) / DirectML (любой GPU).<br><br><b>Зачем:</b> Ускорить embedding inference в 5-20×.<br><b>Связано:</b> ONNX Runtime EP, драйверы GPU, fEmbGpu.<br><b>Размещение:</b> Embeddings & Vector Store — Compute Device.',
+
+  fEmbGpu: '<b>Краткое:</b> Включить GPU для эмбеддингов.<br><br><b>Зачем:</b> 5-20× ускорение.<br><b>Связано:</b> ONNX Runtime, драйверы, fEmbDevice.<br><b>Размещение:</b> Embeddings — рядом с fEmbDevice.',
+
+  fEmbFp16: '<b>Краткое:</b> FP16-веса для эмбеддингов.<br><br><b>Зачем:</b> Вдвое меньше VRAM, точность почти не падает.<br><b>Связано:</b> GPU-режим, fEmbGpu.<br><b>Размещение:</b> Embeddings — рядом с fEmbGpu.',
+
+  embGpuInfo: '<b>Краткое:</b> Live-инфо о GPU.<br><br><b>Зачем:</b> Подтвердить что CUDA/DirectML реально подхватились.<br><b>Связано:</b> detectGpu(), DXGI / NVAPI / CUDA enumerate.<br><b>Размещение:</b> Embeddings & Vector Store — Compute Device.',
+
+  testEmbDevice: '<b>Краткое:</b> detectGpu() + benchmark.<br><br><b>Зачем:</b> Дать пользователю реальные ms/chunk до прода.<br><b>Связано:</b> fEmbDevice, ONNX Runtime timing.<br><b>Размещение:</b> Embeddings & Vector Store.',
+
+  embVectorDb: '<b>Краткое:</b> Stats по ChromaDB: engine, path, collections, total vectors, размер на диске.<br><br><b>Зачем:</b> Дать обзор состояния индекса.<br><b>Связано:</b> data/vectors, reindexAll.<br><b>Размещение:</b> Embeddings & Vector Store — Vector Database.',
+
+  micDev: '<b>Краткое:</b> Устройство микрофона.<br><br><b>Зачем:</b> WASAPI input device.<br><b>Связано:</b> STT pipeline, VU-метр.<br><b>Размещение:</b> Audio — Devices.',
+
+  sysDev: '<b>Краткое:</b> Системное аудио (loopback).<br><br><b>Зачем:</b> Захват того, что играет в колонках — голос собеседника в звонке.<br><b>Связано:</b> WASAPI loopback, STT.<br><b>Размещение:</b> Audio — Devices.',
+
+  fGain: '<b>Краткое:</b> Mic gain 0-200%.<br><br><b>Зачем:</b> Усилить тихий голос или убрать клиппинг.<br><b>Связано:</b> Mic input level, clipping.<br><b>Размещение:</b> Audio — Levels.',
+
+  fNoiseSup: '<b>Краткое:</b> RNNoise шумоподавление.<br><br><b>Зачем:</b> Убрать фоновые шумы (вентилятор, набор текста).<br><b>Связано:</b> STT quality.<br><b>Размещение:</b> Audio — Enhancement.',
+
+  fAec: '<b>Краткое:</b> Acoustic Echo Cancellation.<br><br><b>Зачем:</b> Не слышать собственный голос через открытые колонки.<br><b>Связано:</b> Open speakers, sys audio.<br><b>Размещение:</b> Audio — Enhancement.',
+
+  fAgc: '<b>Краткое:</b> Auto Gain Control.<br><br><b>Зачем:</b> Выровнять громкость при переменном расстоянии до мика.<br><b>Связано:</b> Mic input, clipping.<br><b>Размещение:</b> Audio — Enhancement.',
+
+  fVad: '<b>Краткое:</b> Чувствительность Voice Activity Detection.<br><br><b>Зачем:</b> Больше ловить речь (включая вздохи) или строже (пропускать шум).<br><b>Связано:</b> STT segmentation.<br><b>Размещение:</b> Audio — Enhancement.',
+
+  fStt: '<b>Краткое:</b> STT управляется по-разному в зависимости от режима.<br><br><b>Зачем:</b> Subscription = Quistan сам выбирает движок, без настроек. BYOK = пользователь выбирает Cloud API / Local / Ollama.<br><b>Связано:</b> fMode, segSttMode, sttManaged/sttByok секции.<br><b>Размещение:</b> Audio — Enhancement.',
+
+  fSttMode: '<b>Краткое:</b> Какой STT-бэкенд использовать в BYOK.<br><br><b>Зачем:</b> Локальный Whisper = бесплатно, офлайн, медленно на CPU. Cloud API = быстро, платно. Ollama = свой OpenAI-compatible сервер.<br><b>Связано:</b> fSttApiKey, fSttOllamaUrl.<br><b>Размещение:</b> Audio — Enhancement.',
+
+  fSttApiKey: '<b>Краткое:</b> API-ключ облачного STT-провайдера.<br><br><b>Зачем:</b> Deepgram или OpenAI Whisper API.<br><b>Связано:</b> Credential Manager, Cloud API режим.<br><b>Размещение:</b> Audio — под segSttMode при выборе API.',
+
+  fSttOllamaUrl: '<b>Краткое:</b> URL локального Ollama или другого OpenAI-compatible STT-сервера.<br><br><b>Зачем:</b> Подключить свой бэкенд STT.<br><b>Связано:</b> Должен expose /v1/audio/transcriptions, модель whisper через ollama pull.<br><b>Размещение:</b> Audio — под segSttMode при выборе Ollama.',
+
+  selectRegion: '<b>Краткое:</b> Выбрать область экрана.<br><br><b>Зачем:</b> Скриншот только из нужного прямоугольника.<br><b>Связано:</b> hotkey_region, fCompress, capture pipeline.<br><b>Размещение:</b> Capture — Region.',
+
+  takeScreenshot: '<b>Краткое:</b> Сделать скриншот сейчас.<br><br><b>Зачем:</b> Ручной запуск capture pipeline.<br><b>Связано:</b> hotkey_snap, AI inference.<br><b>Размещение:</b> Capture — Region (после selectRegion).',
+
+  fCompress: '<b>Краткое:</b> PNG → JPEG перед AI.<br><br><b>Зачем:</b> Экономия bandwidth/quota.<br><b>Связано:</b> fJpeg, API cost.<br><b>Размещение:</b> Capture — Region.',
+
+  fJpeg: '<b>Краткое:</b> JPEG quality 40-100%.<br><br><b>Зачем:</b> Баланс размер/качество.<br><b>Связано:</b> fCompress.<br><b>Размещение:</b> Capture — Region.',
+
+  fWda: '<b>Краткое:</b> Windows Display API — скрыть окна Куистана.<br><br><b>Зачем:</b> Не светить ассистента в Zoom/Meet screen-share.<br><b>Связано:</b> Stealth, anti-detection.<br><b>Размещение:</b> Capture — Stealth.',
+
+  fHideFrame: '<b>Краткое:</b> Скрыть рамку региона при screen-share собеседника.<br><br><b>Зачем:</b> Визуальная скрытность.<br><b>Связано:</b> fWda.<br><b>Размещение:</b> Capture — Stealth.',
+
+  fHideSelf: '<b>Краткое:</b> Скрыть self-preview из screen-share.<br><br><b>Зачем:</b> Не показывать вебку собеседнику.<br><b>Связано:</b> Webcam pipeline, stealth.<br><b>Размещение:</b> Capture — Stealth.',
+
+  hotkey_open: '<b>Краткое:</b> Открыть Control Panel.<br><br><b>Зачем:</b> Глобальный вызов главного окна из любого приложения.<br><b>Связано:</b> Main window, restore from tray.<br><b>Размещение:</b> Shortcuts — первый в списке.',
+
+  hotkey_pause: '<b>Краткое:</b> Пауза/возобновить прослушку.<br><br><b>Зачем:</b> Временно отключить AI (звонок закончился, отошёл).<br><b>Связано:</b> STT pipeline, indicator.<br><b>Размещение:</b> Shortcuts.',
+
+  hotkey_region: '<b>Краткое:</b> Выбрать регион.<br><br><b>Зачем:</b> Быстро переопределить зону capture.<br><b>Связано:</b> selectRegion, Capture tab.<br><b>Размещение:</b> Shortcuts.',
+
+  hotkey_snap: '<b>Краткое:</b> Снимок сейчас.<br><br><b>Зачем:</b> Ручной триггер capture из любой точки.<br><b>Связано:</b> takeScreenshot, AI.<br><b>Размещение:</b> Shortcuts.',
+
+  hotkey_refresh: '<b>Краткое:</b> Рефреш всех floating окон.<br><br><b>Зачем:</b> Перечитать контекст, переоценить ситуацию.<br><b>Связано:</b> Floating windows.<br><b>Размещение:</b> Shortcuts.',
+
+  hotkey_solo: '<b>Краткое:</b> Solo mode.<br><br><b>Зачем:</b> AI слушает только вас (без системного аудио).<br><b>Связано:</b> sysDev toggling, fMode.<br><b>Размещение:</b> Shortcuts.',
+
+  hotkey_send: '<b>Краткое:</b> Отправить текущий dialog.<br><br><b>Зачем:</b> Manual capture из floating window input.<br><b>Связано:</b> Floating window send.<br><b>Размещение:</b> Shortcuts.',
+
+  fNotifUpdate: '<b>Краткое:</b> Уведомлять о новых версиях.<br><br><b>Зачем:</b> Донести, что есть апдейт.<br><b>Связано:</b> Update server, fAutoUpdate.<br><b>Размещение:</b> Notifications — Alerts.',
+
+  fNotifLicense: '<b>Краткое:</b> Предупредить об истечении подписки.<br><br><b>Зачем:</b> Дать время продлить.<br><b>Связано:</b> Expiry date, billing.<br><b>Размещение:</b> Notifications — Alerts.',
+
+  fNotifKb: '<b>Краткое:</b> Уведомить о завершении реиндексации KB.<br><br><b>Зачем:</b> Сигнал: можно снова пользоваться AI.<br><b>Связано:</b> reindexAll, KB state.<br><b>Размещение:</b> Notifications — Alerts.',
+
+  fNotifError: '<b>Краткое:</b> Уведомления об ошибках API.<br><br><b>Зачем:</b> Быстро увидеть проблемы quota/rate-limit.<br><b>Связано:</b> Provider errors.<br><b>Размещение:</b> Notifications — Alerts.',
+
+  fNotifWeekly: '<b>Краткое:</b> Еженедельный дайджест.<br><br><b>Зачем:</b> Саммари использования.<br><b>Связано:</b> Analytics aggregation.<br><b>Размещение:</b> Notifications — Alerts.',
+
+  fSound: '<b>Краткое:</b> Пресет звука уведомления.<br><br><b>Зачем:</b> Контроль звукового сопровождения.<br><b>Связано:</b> fChannels, fQuietFrom/To.<br><b>Размещение:</b> Notifications — Delivery.',
+
+  fQuietFrom: '<b>Краткое:</b> Начало quiet hours.<br><br><b>Зачем:</b> Ночной режим без звуков.<br><b>Связано:</b> fQuietTo, fDoNotDisturb.<br><b>Размещение:</b> Notifications — Delivery.',
+
+  fQuietTo: '<b>Краткое:</b> Конец quiet hours.<br><br><b>Зачем:</b> Восстановить звук утром.<br><b>Связано:</b> fQuietFrom.<br><b>Размещение:</b> Notifications — Delivery.',
+
+  fDoNotDisturb: '<b>Краткое:</b> DnD во время fullscreen apps.<br><br><b>Зачем:</b> Не мешать презентациям/играм/видеозвонкам.<br><b>Связано:</b> Fullscreen detection.<br><b>Размещение:</b> Notifications — Delivery.',
+
+  fTgToken: '<b>Краткое:</b> Telegram bot token.<br><br><b>Зачем:</b> Форвард уведомлений в Telegram.<br><b>Связано:</b> @BotFather, Telegram API.<br><b>Размещение:</b> Notifications — Telegram Bot.',
+
+  fTgChat: '<b>Краткое:</b> Telegram chat ID.<br><br><b>Зачем:</b> Куда слать уведомления.<br><b>Связано:</b> @userinfobot, fTgToken.<br><b>Размещение:</b> Notifications — Telegram Bot.',
+
+  testTg: '<b>Краткое:</b> Тестовое сообщение в Telegram.<br><br><b>Зачем:</b> Проверить token + chat ID.<br><b>Связано:</b> fTgToken, fTgChat.<br><b>Размещение:</b> Notifications — Telegram Bot.',
+
+  fTelemetry: '<b>Краткое:</b> Анонимная телеметрия.<br><br><b>Зачем:</b> Улучшать продукт без личных данных.<br><b>Связано:</b> Crash reporter, analytics.<br><b>Размещение:</b> Privacy & Data — Telemetry.',
+
+  fBeta: '<b>Краткое:</b> Бета-функции.<br><br><b>Зачем:</b> Ранний доступ к экспериментам.<br><b>Связано:</b> fExpGpu/fExpMem/fExpMulti.<br><b>Размещение:</b> Privacy & Data — Telemetry.',
+
+  fActiveDb: '<b>Краткое:</b> Активная БД.<br><br><b>Зачем:</b> Несколько проектов = несколько БД (work/research/archive).<br><b>Связано:</b> SQLite files, dbConnPill.<br><b>Размещение:</b> Privacy & Data — Database.',
+
+  fDbConnected: '<b>Краткое:</b> Подключение к БД.<br><br><b>Зачем:</b> Read-only режим для безопасности/дебага.<br><b>Связано:</b> dbConnPill, write operations.<br><b>Размещение:</b> Privacy & Data — Database.',
+
+  fDbFolder: '<b>Краткое:</b> Папка БД.<br><br><b>Зачем:</b> Read-only показ где лежат файлы.<br><b>Связано:</b> AppData/Local/Quistan/db, dbCopyPath, openDataFolder.<br><b>Размещение:</b> Privacy & Data — Database.',
+
+  dbMaintenance: '<b>Краткое:</b> Vacuum/Integrity/Migrations/Rebuild.<br><br><b>Зачем:</b> SQLite housekeeping.<br><b>Связано:</b> SQLite PRAGMA, dbStats.<br><b>Размещение:</b> Privacy & Data — Database.',
+
+  dbBackup: '<b>Краткое:</b> Backup/Restore/Copy/Open.<br><br><b>Зачем:</b> Защита от потери данных, удобный доступ.<br><b>Связано:</b> fActiveDb, .db files.<br><b>Размещение:</b> Privacy & Data — Database.',
+
+  dbCleanup: '<b>Краткое:</b> Clear Vectors/History/Wipe.<br><br><b>Зачем:</b> Радикальная очистка только активной БД.<br><b>Связано:</b> fActiveDb, KB index, dialog turns.<br><b>Размещение:</b> Privacy & Data — Database.',
+
+  dbStats: '<b>Краткое:</b> Read-only: версия схемы, последние операции.<br><br><b>Зачем:</b> Дать пользователю обзор здоровья БД.<br><b>Связано:</b> dbMaintenance.<br><b>Размещение:</b> Privacy & Data — Database.',
+
+  fEncryptDb: '<b>Краткое:</b> SQLCipher AES-256.<br><br><b>Зачем:</b> Шифрование файлов БД на диске.<br><b>Связано:</b> SQLite engine, restart required.<br><b>Размещение:</b> Privacy & Data — Database.',
+
+  fRetention: '<b>Краткое:</b> Срок хранения диалогов.<br><br><b>Зачем:</b> Не дать БД распухнуть.<br><b>Связано:</b> Cleanup cron, dbSize.<br><b>Размещение:</b> Privacy & Data — Database.',
+
+  fClearOnExit: '<b>Краткое:</b> Стирать диалоги при выходе.<br><br><b>Зачем:</b> Чувствительные разговоры — очищать при закрытии.<br><b>Связано:</b> shutdown hook, dialog table.<br><b>Размещение:</b> Privacy & Data — Database.',
+
+  checkUpdate: '<b>Краткое:</b> Проверить обновления сейчас.<br><br><b>Зачем:</b> Ручной trigger вместо ожидания фонового check.<br><b>Связано:</b> Update server, fAutoUpdate.<br><b>Размещение:</b> Updates — первое действие.',
+
+  fAutoUpdate: '<b>Краткое:</b> Скачивать обновления автоматически.<br><br><b>Зачем:</b> Не заставлять пользователя ждать.<br><b>Связано:</b> Update server, fAutoInstall.<br><b>Размещение:</b> Updates.',
+
+  fAutoInstall: '<b>Краткое:</b> Установить при выходе.<br><br><b>Зачем:</b> Не показывать restart prompt.<br><b>Связано:</b> Update workflow.<br><b>Размещение:</b> Updates.',
+
+  fPrerelease: '<b>Краткое:</b> Получать pre-releases.<br><br><b>Зачем:</b> Доступ к бета-билдам.<br><b>Связано:</b> Update channel.<br><b>Размещение:</b> Updates.',
+
+  fLogLevel: '<b>Краткое:</b> Уровень логирования (error/warn/info/debug).<br><br><b>Зачем:</b> Поддержка vs чистота логов.<br><b>Связано:</b> fLogToFile, copyDiagnostics.<br><b>Размещение:</b> Advanced — Logs & Debug.',
+
+  fLogToFile: '<b>Краткое:</b> Писать логи в файл.<br><br><b>Зачем:</b> Диагностика для саппорта.<br><b>Связано:</b> Log rotation, openLogs.<br><b>Размещение:</b> Advanced — Logs & Debug.',
+
+  logsTools: '<b>Краткое:</b> Open logs / Copy diagnostics.<br><br><b>Зачем:</b> Быстрый доступ к логам и диагностическому пакету.<br><b>Связано:</b> fLogToFile, support workflow.<br><b>Размещение:</b> Advanced — Logs & Debug.',
+
+  fExpGpu: '<b>Краткое:</b> GPU для Whisper local.<br><br><b>Зачем:</b> Ускорить STT на совместимом GPU.<br><b>Связано:</b> fStt=whisper-local, CUDA.<br><b>Размещение:</b> Advanced — Experimental.',
+
+  fExpMem: '<b>Краткое:</b> Persistent memory (RAG по диалогам).<br><br><b>Зачем:</b> AI помнит факты между сессиями.<br><b>Связано:</b> Vector DB, dialog history.<br><b>Размещение:</b> Advanced — Experimental.',
+
+  fExpMulti: '<b>Краткое:</b> 3 модели параллельно + consensus.<br><br><b>Зачем:</b> Качество vs cost. Дебаг/исследование.<br><b>Связано:</b> AI providers, latency x3.<br><b>Размещение:</b> Advanced — Experimental.',
+
+  configIO: '<b>Краткое:</b> Export/Import JSON настроек.<br><br><b>Зачем:</b> Перенос настроек между машинами. API keys не экспортируются (безопасность).<br><b>Связано:</b> DEFAULTS, saveAll.<br><b>Размещение:</b> Advanced — Import/Export.',
+
+  factoryReset: '<b>Краткое:</b> Полный сброс.<br><br><b>Зачем:</b> Вернуть к DEFAULTS, вычистить всё.<br><b>Связано:</b> fWipeHistory, localStorage.<br><b>Размещение:</b> Advanced — Danger zone.',
+
+  fWipeHistory: '<b>Краткое:</b> Дополнительно стереть диалоги при reset.<br><br><b>Зачем:</b> Опция: только настройки или полная очистка.<br><b>Связано:</b> factoryReset, dialog table.<br><b>Размещение:</b> Advanced — Danger zone.',
 };
 
 function applyHelp() {
   document.querySelectorAll('.field').forEach(field => {
     if (field.querySelector(':scope > .field__help')) return;
-    const ctrl = field.querySelector('input, select, textarea, .seg, .theme-grid, .accent-row, .providers, .device-row, .meter-row, .kv, .update');
-    if (!ctrl) return;
-    const id = ctrl.id;
-    const text = HELP[id];
+    let text = null;
+    if (field.dataset.help && HELP[field.dataset.help]) {
+      text = HELP[field.dataset.help];
+    } else {
+      const ctrl = field.querySelector('input, select, textarea, .seg, .theme-grid, .accent-row, .providers, .device-row, .meter-row, .kv, .update, .btn-row');
+      if (ctrl && ctrl.id && HELP[ctrl.id]) text = HELP[ctrl.id];
+    }
     if (!text) return;
     const tip = document.createElement('div');
     tip.className = 'field__help';
     tip.innerHTML = text;
     field.appendChild(tip);
+    field.classList.add('has-help');
+  });
+  document.querySelectorAll('.shortcut').forEach(row => {
+    if (row.querySelector(':scope > .field__help')) return;
+    const key = row.dataset.help;
+    if (!key || !HELP[key]) return;
+    const tip = document.createElement('div');
+    tip.className = 'field__help field__help--shortcut';
+    tip.innerHTML = HELP[key];
+    row.appendChild(tip);
+    row.classList.add('has-help');
+  });
+}
+
+// Dev notes hover panel (temporary)
+function bindDevHover() {
+  const note = document.getElementById('devNote');
+  if (!note) return;
+  const placeholder = note.innerHTML;
+
+  const findKey = (el) => {
+    if (!el) return null;
+    if (el.dataset && el.dataset.help && DEV[el.dataset.help]) return el.dataset.help;
+    const ctrl = el.querySelector && el.querySelector('input, select, textarea, .seg, .theme-grid, .accent-row, .providers, .device-row, .meter-row, .kv, .update, .btn-row');
+    if (ctrl && ctrl.id && DEV[ctrl.id]) return ctrl.id;
+    return null;
+  };
+
+  let lastEl = null;
+  document.querySelectorAll('.field, .shortcut').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      const key = findKey(el);
+      lastEl = el;
+      if (key) note.innerHTML = `<span class="dev-note__key">${key}</span>` + DEV[key];
+      else note.innerHTML = placeholder;
+    });
+    el.addEventListener('mouseleave', () => {
+      if (lastEl === el) note.innerHTML = placeholder;
+    });
   });
 }
 
@@ -2343,9 +2998,15 @@ function applyTheme() {
   document.body.classList.remove('theme-obsidian', 'theme-midnight', 'theme-forest', 'theme-ember', 'theme-paper', 'theme-carbon');
   document.body.classList.add('theme-' + (state.theme || 'obsidian'));
 }
-const ACCENTS = [
-  '#54548F', '#6868A2', '#6E9C5E', '#7E73AA', '#669AB2', '#B89A6A', '#A86E68', '#A8A8B5',
-];
+function applyBg() {
+  const mode = state.bg || 'texture';
+  const layer = mode === 'solid' ? 'none' : 'var(--bg-texture, none)';
+  document.body.style.setProperty('--bg-mode-layer', layer);
+}
+function applyScale() {
+  const s = (state.fScale || 100) / 100;
+  document.documentElement.style.zoom = s;
+}
 
 const STORAGE_KEY = 'quistan.settings.v2';
 let state = {};
@@ -2354,17 +3015,19 @@ let activeCat = 'general';
 
 const DEFAULTS = {
 fLang: 'en',
-  theme: 'obsidian', accent: '#54548F', bg: 'solid',
-  fScale: 100, fReduceMotion: true,
+  theme: 'obsidian', bg: 'texture',
+  fScale: 100,
   fAutoStart: false, fStartMinimized: true, fTrayIcon: true, fStartMode: 'preflight',
   fMode: 'subscription', fHwid: 'a7f3-9c2b-4e81-...',
-  fTemp: 7, fMaxTok: 120, fStream: true, fFallback: true,
+  fTemp: 7, fMaxTok: 120, fStream: true,
   fModelFast: 'gpt-4o-mini', fModelHeavy: 'gpt-4o',
   fKeyOpenAI: 'sk-proj-' + '*'.repeat(35),
   fKeyAnthropic: '', fKeyOpenRouter: '',
   fReindexWatch: true, fReindexVerify: false,
   fChunk: 500, fOverlap: 50, fWorkers: '2',
-  fGain: 100, fNoiseSup: true, fAec: true, fAgc: false, fVad: 'mid', fStt: 'whisper-local',
+  fEmbModel: 'bge-small-en-v1.5', fEmbCustomPath: '', fEmbDevice: 'cpu', fEmbGpu: false, fEmbFp16: true,
+  fGain: 100, fNoiseSup: true, fAec: true, fAgc: false, fVad: 'mid',
+  fSttMode: 'local', fSttApiKey: '', fSttOllamaUrl: 'http://localhost:11434',
   fCompress: true, fJpeg: 70,
   fWda: true, fHideFrame: true, fHideSelf: true,
   hotkey_open: 'Ctrl+Shift+Q', hotkey_pause: 'Ctrl+Shift+Space', hotkey_region: 'Ctrl+Shift+A',
@@ -2422,12 +3085,12 @@ function renderAccents() {
 }
 
 // -- segmented / dirty --------------------------------
-function paintSegSingle(id, key) {
+function paintSegSingle(id, key, onChange) {
   const el = document.getElementById(id);
   if (!el) return;
   el.querySelectorAll('.seg__btn').forEach(b => {
     b.classList.toggle('is-on', b.dataset.val === state[key]);
-    b.onclick = () => { state[key] = b.dataset.val; markDirty(); paintSegSingle(id, key); };
+    b.onclick = () => { state[key] = b.dataset.val; markDirty(); paintSegSingle(id, key, onChange); if (onChange) onChange(); };
   });
 }
 function paintSegMulti(id, key) {
@@ -2468,6 +3131,15 @@ function applyModeVisibility() {
   toggle('modeByokInfo', isByok);
   toggle('modeSubExtras', !isByok);
   toggle('planPill', !isByok);
+  toggle('sttManaged', !isByok);
+  toggle('sttByok', isByok);
+}
+
+function applySttModeVisibility() {
+  const m = state.fSttMode || 'local';
+  toggle('sttByokLocal', m === 'local');
+  toggle('sttByokApi', m === 'api');
+  toggle('sttByokOllama', m === 'ollama');
 }
 function toggle(id, on) {
   const el = document.getElementById(id);
@@ -2490,17 +3162,17 @@ function updateDbConnPill() {
 // -- field bindings ----------------------------------
 function bindFields() {
   // selects
-  ['fLang','fModelFast','fModelHeavy','fSound','fActiveDb'].forEach(id => {
+  ['fLang','fModelFast','fModelHeavy','fSound','fActiveDb','fEmbModel'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     el.value = state[id];
-    el.addEventListener('change', () => { state[id] = el.value; markDirty(); });
+    el.addEventListener('change', () => { state[id] = el.value; markDirty(); if (id === 'fEmbModel') paintEmbModelInfo(); });
   });
 
   // switches
   const swMap = {
-    fReduceMotion:'fReduceMotion', fAutoStart:'fAutoStart', fStartMinimized:'fStartMinimized', fTrayIcon:'fTrayIcon',
-    fStream:'fStream', fFallback:'fFallback',
+    fAutoStart:'fAutoStart', fStartMinimized:'fStartMinimized', fTrayIcon:'fTrayIcon',
+    fStream:'fStream',
     fReindexWatch:'fReindexWatch', fReindexVerify:'fReindexVerify',
     fNoiseSup:'fNoiseSup', fAec:'fAec', fAgc:'fAgc',
     fCompress:'fCompress', fWda:'fWda', fHideFrame:'fHideFrame', fHideSelf:'fHideSelf',
@@ -2511,6 +3183,7 @@ function bindFields() {
     fAutoUpdate:'fAutoUpdate', fAutoInstall:'fAutoInstall', fPrerelease:'fPrerelease',
     fLogToFile:'fLogToFile', fExpGpu:'fExpGpu', fExpMem:'fExpMem', fExpMulti:'fExpMulti',
     fWipeHistory:'fWipeHistory',
+    fEmbGpu:'fEmbGpu', fEmbFp16:'fEmbFp16',
   };
   Object.entries(swMap).forEach(([id,key]) => {
     const el = document.getElementById(id);
@@ -2539,6 +3212,7 @@ const rangeMap = {
       state[cfg.key] = parseInt(inp.value, 10);
       if (out) out.textContent = cfg.fmt(state[cfg.key]);
       markDirty();
+      if (cfg.key === 'fScale') applyScale();
     });
   });
 
@@ -2550,8 +3224,16 @@ const rangeMap = {
     el.addEventListener('change', () => { state[id] = el.value; markDirty(); });
   });
 
+  // STT BYOK: api key + ollama url
+  ['fSttApiKey','fSttOllamaUrl'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = state[id] || '';
+    el.addEventListener('input', () => { state[id] = el.value; markDirty(); });
+  });
+
   // api key inputs
-  ['fKeyOpenAI','fKeyAnthropic','fKeyOpenRouter','fTgToken','fTgChat'].forEach(id => {
+  ['fKeyOpenAI','fKeyAnthropic','fKeyOpenRouter','fTgToken','fTgChat','fEmbCustomPath'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     el.value = state[id] || '';
@@ -2559,19 +3241,24 @@ const rangeMap = {
   });
 
   // segmented
-  paintSegSingle('segBg','bg');
+  paintSegSingle('segBg','bg', applyBg);
   paintSegSingle('segStartMode','fStartMode');
   paintSegMode();
 paintSegSingle('segVad','fVad');
-  paintSegSingle('segStt','fStt');
+  paintSegSingle('segSttMode','fSttMode', applySttModeVisibility);
   paintSegSingle('segRetention','fRetention');
-  paintSegSingle('segWorkers','fWorkers');
+paintSegSingle('segWorkers','fWorkers');
   paintSegSingle('segLog','fLogLevel');
+  paintSegSingle('segEmbDevice','fEmbDevice', paintEmbDevice);
   paintSegMulti('segChannels','fChannels');
 
-applyModeVisibility();
+  applyModeVisibility();
+  applySttModeVisibility();
+  paintEmbModelInfo();
+  paintEmbDevice();
   bindHotkeys();
   applyHelp();
+  bindDevHover();
 }
 
 // -- hotkeys ------------------------------------------
@@ -2713,7 +3400,7 @@ function resetAll() {
   save();
   dirty = false;
   document.getElementById('dirty').classList.remove('is-on');
-bindFields(); renderThemes(); renderAccents(); updateDbConnPill(); applyTheme();
+bindFields(); renderThemes(); renderAccents(); updateDbConnPill(); applyTheme(); applyBg(); applyScale(); applyModeVisibility(); applySttModeVisibility();
   toast('Reset to defaults', 'warn');
 }
 
@@ -2727,7 +3414,7 @@ function factoryReset() {
   try { if (wipe) localStorage.removeItem('quistan.dialogs.v1'); } catch (_) {}
 state = JSON.parse(JSON.stringify(DEFAULTS));
   save();
-  bindFields(); renderThemes(); renderAccents(); updateDbConnPill(); applyTheme();
+bindFields(); renderThemes(); renderAccents(); updateDbConnPill(); applyTheme(); applyBg(); applyScale(); applyModeVisibility(); applySttModeVisibility();
   toast('Factory reset complete', 'warn');
 }
 
@@ -2788,9 +3475,109 @@ function dbClearVectors() { if (!confirm('Wipe vector index for the active datab
 function dbClearHistory() { if (!confirm('Wipe dialog history for the active database? Settings and vectors preserved.')) return; toast('Dialog history cleared', 'warn'); }
 function dbWipe()         { if (!confirm('Wipe the ACTIVE database completely? This cannot be undone.')) return; if (!confirm('Are you absolutely sure?')) return; toast('Database wiped', 'warn'); }
 
+// -- embeddings: model picker, device picker, gpu detect -
+const EMB_MODELS = {
+  'bge-small-en-v1.5':     { name: 'bge-small-en-v1.5',     dim: 384,  size: '~33 MB',   bundled: true,  path: 'C:\\Program Files\\Quistan\\models\\bge-small-en-v1.5' },
+  'bge-base-en-v1.5':      { name: 'bge-base-en-v1.5',      dim: 768,  size: '~110 MB',  bundled: true,  path: 'C:\\Program Files\\Quistan\\models\\bge-base-en-v1.5' },
+  'bge-large-en-v1.5':     { name: 'bge-large-en-v1.5',     dim: 1024, size: '~335 MB',  bundled: true,  path: 'C:\\Program Files\\Quistan\\models\\bge-large-en-v1.5' },
+  'nomic-embed-text-v1.5': { name: 'nomic-embed-text-v1.5', dim: 768,  size: '~270 MB',  bundled: false, path: '%USERPROFILE%\\.cache\\quistan\\nomic-embed-text-v1.5' },
+  'mxbai-embed-large-v1':  { name: 'mxbai-embed-large-v1',  dim: 1024, size: '~670 MB',  bundled: false, path: '%USERPROFILE%\\.cache\\quistan\\mxbai-embed-large-v1' },
+  'custom':                { name: 'Custom model',          dim: 0,    size: 'unknown',  bundled: false, path: '' },
+};
+
+function paintEmbModelInfo() {
+  const id = state.fEmbModel || 'bge-small-en-v1.5';
+  const info = EMB_MODELS[id] || EMB_MODELS['bge-small-en-v1.5'];
+  const isCustom = id === 'custom';
+  const row = document.getElementById('embCustomRow');
+  if (row) row.style.display = isCustom ? '' : 'none';
+  const path = isCustom ? (state.fEmbCustomPath || '(pick a folder)') : info.path;
+  const nameEl = document.getElementById('embKvName');
+  const pathEl = document.getElementById('embKvPath');
+  const dimEl  = document.getElementById('embKvDim');
+  const sizeEl = document.getElementById('embKvSize');
+  if (nameEl) nameEl.textContent = info.name + (info.bundled ? '  -  bundled' : (isCustom ? '' : '  -  downloadable'));
+  if (pathEl) pathEl.textContent = path;
+  if (dimEl)  dimEl.textContent  = info.dim || 'depends on model';
+  if (sizeEl) sizeEl.textContent = info.size;
+  const pill = document.getElementById('embStatusPill');
+  const status = document.getElementById('embKvStatus');
+  if (info.bundled) {
+    if (pill) { pill.className = 'pill pill--live'; pill.innerHTML = '<span class="d"></span>Loaded'; }
+    if (status) status.textContent = 'Loaded';
+  } else if (isCustom) {
+    if (pill) { pill.className = 'pill pill--warn'; pill.innerHTML = '<span class="d"></span>Custom'; }
+    if (status) status.textContent = 'Custom path';
+  } else {
+    if (pill) { pill.className = 'pill pill--off'; pill.innerHTML = '<span class="d"></span>Not installed'; }
+    if (status) status.textContent = 'Not installed';
+  }
+}
+
+function paintEmbDevice() {
+  const dev = state.fEmbDevice || 'cpu';
+  const gpuEnabled = !!state.fEmbGpu;
+  const segEl = document.getElementById('segEmbDevice');
+  if (segEl) {
+    segEl.querySelectorAll('.seg__btn').forEach(b => b.classList.toggle('is-on', b.dataset.val === dev));
+  }
+  const runtime = document.getElementById('gpuKvRuntime');
+  if (runtime) {
+    let txt = 'ONNX Runtime 1.18  -  ';
+    if (dev === 'cpu') txt += 'CPU';
+    else if (dev === 'cuda') txt += gpuEnabled ? 'CUDA 12.x (NVIDIA)' : 'CUDA (disabled)';
+    else if (dev === 'dml')  txt += gpuEnabled ? 'DirectML' : 'DirectML (disabled)';
+    runtime.textContent = txt;
+  }
+}
+
+function applyEmbModel() {
+  const id = state.fEmbModel || 'bge-small-en-v1.5';
+  if (id === 'custom' && !state.fEmbCustomPath) { toast('Pick a model folder first', 'warn'); return; }
+  toast('Loading ' + id + '  -  rebuilding vector index');
+}
+
+function unloadEmbModel() {
+  toast('Embedding model unloaded');
+}
+
+function downloadEmbModel() {
+  const id = state.fEmbModel || '';
+  if (id === 'custom') { toast('Custom models are not downloadable', 'warn'); return; }
+  if (EMB_MODELS[id] && EMB_MODELS[id].bundled) { toast('Already bundled  -  nothing to download'); return; }
+  toast('Downloading ' + id + '  -  ~' + EMB_MODELS[id].size);
+}
+
+function pickEmbModel() { toast('Native folder picker  -  backend integration Phase 6'); }
+
+function detectGpu() {
+  const name = document.getElementById('gpuKvName');
+  const drv  = document.getElementById('gpuKvDriver');
+  const vram = document.getElementById('gpuKvVram');
+  const cuda = document.getElementById('gpuKvCuda');
+  const pill = document.getElementById('gpuDetectPill');
+  const txt  = document.getElementById('gpuDetectText');
+  if (name) name.textContent = 'Scanning';
+  setTimeout(() => {
+    if (name) name.textContent = 'NVIDIA GeForce RTX 4070';
+    if (drv)  drv.textContent  = '551.23  -  CUDA 12.4';
+    if (vram) vram.textContent = '12 GB GDDR6X';
+    if (cuda) cuda.textContent = '5888';
+    if (pill) { pill.className = 'pill pill--live'; pill.innerHTML = '<span class="d"></span>Detected'; }
+    if (txt)  txt.textContent = 'RTX 4070';
+  }, 600);
+  toast('Detecting GPU');
+}
+
+function benchmarkEmb() { toast('Benchmark running  -  100 chunks  -  measuring ms/chunk'); }
+function optimizeVectors() { toast('Optimizing vector index  -  IVF-PQ recompute'); }
+function openVectorsFolder() { toast('Opening vector store folder'); }
+
 // -- init --------------------------------------------
 state = load();
 applyTheme();
+applyBg();
+applyScale();
 renderSidebar();
 renderThemes();
 renderAccents();

@@ -23,7 +23,7 @@
 
 | # | Вкладка | Что внутри |
 |---|---------|-----------|
-| 1 | **General** | язык, тема, accent, background, UI scale, Reduce Motion, автозапуск, tray, startup mode |
+| 1 | **General** | язык, тема, accent, background, UI scale, автозапуск, tray, startup mode |
 | 2 | **Account** | профиль, режим **Subscription/BYOK** (toggle), plan-pill, usage-бары, HWID, deactivate |
 | 3 | **AI & Models** | Subscription: «managed by Quistan» карточка. BYOK: **Fast model** + **Heavy model** два отдельных `<select>`, providers, API keys. Общая секция Generation (temp / max-tokens / stream / fallback). Плюс **Indexing & Embeddings** (см. п.1.3) |
 | 4 | **Audio** | микрофон + system loopback (третий device — TTS — убран по запросу), живые VU-метры, RNNoise/AEC/AGC, VAD, STT engine |
