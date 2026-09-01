@@ -129,7 +129,7 @@ body {
   min-height: 0;
 }
 
-/* SIDEBAR — список окон */
+/* SIDEBAR — ѝпиѝок окон */
 .sidebar {
   border-right: 1px solid var(--border);
   background: rgba(20,20,25,.4);
@@ -333,6 +333,171 @@ body {
   text-transform: none;
   letter-spacing: 0;
   font-family: inherit;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 0;
+  margin: 6px 0 24px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border-radius: 0;
+}
+.tab:hover { color: var(--text); background: var(--surface); }
+.tab.is-on {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+.tab svg { width: 14px; height: 14px; opacity: .75; }
+.tab.is-on svg { opacity: 1; color: var(--accent-2); }
+
+.tab-pane { display: none; }
+.tab-pane.is-on {
+  display: block;
+  animation: tabFadeIn .15s ease;
+}
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* TOOLTIP */
+.section__head { position: relative; cursor: help; }
+.tooltip {
+  position: fixed;
+  z-index: 200;
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  padding: 14px 16px 16px;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-size: 12.5px;
+  line-height: 1.55;
+  box-shadow: 0 16px 40px rgba(0,0,0,.55), 0 0 24px rgba(84,84,143,.18);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px) scale(.98);
+  transition: opacity .14s ease, transform .14s ease;
+}
+.tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.tooltip__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.tooltip__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(84,84,143,.3);
+}
+.tooltip__icon svg { width: 16px; height: 16px; }
+.tooltip__heading { flex: 1; min-width: 0; }
+.tooltip__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: .2px;
+}
+.tooltip__sub {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-top: 2px;
+}
+.tooltip__body {
+  color: var(--text-2);
+  margin-bottom: 12px;
+}
+.tooltip__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+.tooltip__list li {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  font-size: 11.5px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.tooltip__list li::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 7px;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px var(--accent);
+}
+.tooltip__list b {
+  font-weight: 500;
+  color: var(--text);
+  margin-right: 4px;
+}
+.tooltip__arrow {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+}
+.tooltip[data-side="right"] { margin-left: 12px; }
+.tooltip[data-side="right"] .tooltip__arrow {
+  left: -7px;
+  top: 22px;
+  border-right: none;
+  border-bottom: none;
+  transform: rotate(-45deg);
+}
+.tooltip[data-side="bottom"] { margin-top: 10px; }
+.tooltip[data-side="bottom"] .tooltip__arrow {
+  top: -7px;
+  left: 24px;
+  border-right: none;
+  border-bottom: none;
+  transform: rotate(135deg);
 }
 
 /* FIELD */
@@ -602,7 +767,7 @@ body {
 <!-- ─────────── LAYOUT ─────────── -->
 <div class="layout">
 
-  <!-- SIDEBAR — список окон -->
+  <!-- SIDEBAR — ѝпиѝок окон -->
   <aside class="sidebar">
     <div class="sidebar__head">
       <span>Windows</span>
@@ -653,17 +818,38 @@ body {
         </div>
       </div>
 
-      <!-- KNOWLEDGE (most important) -->
-      <div class="section section--primary">
-        <div class="section__head">
-          Core
-          <span class="section__hint">identity & content</span>
+      <!-- TABS -->
+      <nav class="tabs" id="tabs">
+        <button class="tab is-on" data-tab="identity">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Identity
+        </button>
+        <button class="tab" data-tab="behavior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Behavior
+        </button>
+        <button class="tab" data-tab="sources">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+          Sources
+        </button>
+        <button class="tab" data-tab="window">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          Window
+        </button>
+        <button class="tab" data-tab="shortcuts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>
+          Shortcuts
+        </button>
+      </nav>
+
+      <!-- IDENTITY -->
+      <div class="tab-pane is-on" data-pane="identity">
+        <div class="section__head" data-tooltip="identity">
+          Identity
+          <span class="section__hint">who this window is</span>
         </div>
 
-
-
-
-                <div class="field">
+        <div class="field">
           <div class="field__label">
             <span>Display name</span>
             <span class="field__hint">shown in window header</span>
@@ -671,17 +857,23 @@ body {
           <input class="input" id="fName" placeholder="e.g. Coding Helper">
         </div>
 
-<div class="field">
+        <div class="field">
           <div class="field__label">
             <span>Accent color</span>
             <span class="field__hint">tints the window border &amp; dot</span>
           </div>
           <div class="colors" id="colors"></div>
         </div>
+      </div>
 
+      <!-- BEHAVIOR -->
+      <div class="tab-pane" data-pane="behavior">
+        <div class="section__head" data-tooltip="behavior">
+          Behavior
+          <span class="section__hint">how it responds</span>
+        </div>
 
-
-<div class="field">
+        <div class="field">
           <div class="field__label">
             <span>Model</span>
             <span class="field__hint">speed vs depth</span>
@@ -692,15 +884,10 @@ body {
           </div>
         </div>
 
-
-
-
-
-
-                <div class="field">
+        <div class="field">
           <div class="field__label">
             <span>System prompt</span>
-            <span class="field__hint">role & tone for this window's hints</span>
+            <span class="field__hint">role &amp; tone for this window's hints</span>
           </div>
           <textarea class="textarea" id="fPrompt" placeholder="You are a coding interview helper..."></textarea>
         </div>
@@ -712,6 +899,26 @@ body {
             <span class="switch__label">Internet search</span>
           </label>
         </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Output length (W)</span>
+            <span class="field__hint">max words in the hint</span>
+          </div>
+          <div class="range-row">
+            <input type="range" class="range" id="fW" min="20" max="500" step="10" value="120">
+            <div class="range__val" id="fWVal">W=120</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOURCES -->
+      <div class="tab-pane" data-pane="sources">
+        <div class="section__head" data-tooltip="sources">
+          Sources
+          <span class="section__hint">what it reads</span>
+        </div>
+
         <div class="field">
           <div class="field__label">
             <span>Replies (R)</span>
@@ -725,22 +932,12 @@ body {
 
         <div class="field">
           <div class="field__label">
-            <span>Output length (W)</span>
-            <span class="field__hint">max words in the hint</span>
-          </div>
-          <div class="range-row">
-            <input type="range" class="range" id="fW" min="20" max="500" step="10" value="120">
-            <div class="range__val" id="fWVal">W=120</div>
-          </div>
-        </div>
-
-        <div class="field">
-          <div class="field__label">
             <span>Knowledge bases</span>
             <span class="field__hint">selected sources for retrieval</span>
           </div>
           <div class="kb-tags" id="kbTags"></div>
         </div>
+
         <div class="field">
           <div class="field__label">
             <span>Knowledge base (Chunks)</span>
@@ -751,15 +948,11 @@ body {
             <div class="range__val" id="fNVal">C=10</div>
           </div>
         </div>
-
-
-
-
       </div>
 
-      <!-- APPEARANCE -->
-      <div class="section">
-        <div class="section__head">Window</div>
+      <!-- WINDOW -->
+      <div class="tab-pane" data-pane="window">
+        <div class="section__head" data-tooltip="window">Window <span class="section__hint">placement &amp; chrome</span></div>
 
 
 
@@ -790,9 +983,9 @@ body {
       </div>
 
 
-      <!-- HOTKEYS -->
-      <div class="section">
-        <div class="section__head">Shortcuts</div>
+      <!-- SHORTCUTS -->
+      <div class="tab-pane" data-pane="shortcuts">
+        <div class="section__head" data-tooltip="shortcuts">Shortcuts <span class="section__hint">how to trigger</span></div>
 
         <div class="field">
           <div class="field__label">
@@ -826,6 +1019,20 @@ body {
 
 </div>
 
+<!-- TOOLTIP -->
+<div class="tooltip" id="tooltip" data-side="right">
+  <div class="tooltip__arrow"></div>
+  <div class="tooltip__head">
+    <div class="tooltip__icon" id="ttIcon"></div>
+    <div class="tooltip__heading">
+      <div class="tooltip__title" id="ttTitle"></div>
+      <div class="tooltip__sub" id="ttSub"></div>
+    </div>
+  </div>
+  <div class="tooltip__body" id="ttBody"></div>
+  <ul class="tooltip__list" id="ttList"></ul>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
@@ -833,7 +1040,7 @@ body {
 </div>
 
 <script>
-// ─── коллекция цветов (Obsidian palette + Hermes-расширения) ───
+// ─── коллекциѝ цветов (Obsidian palette + Hermes-раѝширениѝ) ───
 
 const KB_LIBRARY = [
   'System-Design-Primer',
@@ -861,7 +1068,7 @@ const PALETTE = [
 
 
 
-// ─── пресеты по умолчанию ───
+// ─── преѝеты по умолчанию ───
 const DEFAULTS = [
   {
     id: 'coding', name: 'Coding Helper', color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
@@ -1186,10 +1393,132 @@ function toast(msg) {
   toastT = setTimeout(() => t.classList.remove('is-visible'), 1800);
 }
 
+// tabs
+function bindTabs() {
+  const tabs = document.querySelectorAll('#tabs .tab');
+  const panes = document.querySelectorAll('.tab-pane');
+  tabs.forEach(t => {
+    t.addEventListener('click', () => {
+      const id = t.dataset.tab;
+      tabs.forEach(x => x.classList.toggle('is-on', x === t));
+      panes.forEach(p => p.classList.toggle('is-on', p.dataset.pane === id));
+      hideTooltip();
+    });
+  });
+}
+
+// tooltips
+const TOOLTIPS = {
+  identity: {
+    title: 'Identity',
+    sub: 'who this window is',
+    body: 'Identity defines how the window presents itself. Tweak this first when adding a new floating window � it is what you see in the chat header and the small color dot beside the title.',
+    items: [
+      ['Display name', 'shown in the window header'],
+      ['Accent color', 'tints the border and status dot'],
+    ],
+  },
+  behavior: {
+    title: 'Behavior',
+    sub: 'how it responds',
+    body: 'Behavior shapes what the assistant says and how it thinks. Pick the engine (fast or heavy), then set its personality via the system prompt. Internet search expands its knowledge and output length keeps responses focused and easy to scan.',
+    items: [
+      ['Model', 'fast for quick hints, heavy for deeper reasoning'],
+      ['System prompt', 'role and tone for this window'],
+      ['Internet search', 'look up current facts on the web'],
+      ['Output length (W)', 'max words per hint'],
+    ],
+  },
+  sources: {
+    title: 'Sources',
+    sub: 'what it reads',
+    body: 'Sources determine what context the window has access to. Replies from the main chat give immediate context, knowledge bases provide reference material, and chunks limit how much is pulled per query.',
+    items: [
+      ['Replies (R)', 'recent lines from main chat for context'],
+      ['Knowledge bases', 'retrieval sources to pull from'],
+      ['Chunks (C)', 'rows per base � cap on retrieval size'],
+    ],
+  },
+  window: {
+    title: 'Window',
+    sub: 'placement & chrome',
+    body: 'Window controls the physical footprint of the floating panel. Pick a size that fits the content and a default corner so the window never covers the main chat.',
+    items: [
+      ['Window size', 'S / M / L / XL preset dimensions'],
+      ['Default position', 'corner where the window spawns'],
+    ],
+  },
+  shortcuts: {
+    title: 'Shortcuts',
+    sub: 'how to trigger',
+    body: 'Shortcuts let you summon and shape the window without leaving the chat. The hotkey toggles or refreshes it, the prompt input sends a direct question, and pin keeps it visible above everything else.',
+    items: [
+      ['Hotkey', 'toggle or refresh the window'],
+      ['Prompt input', 'ask the window a direct question'],
+      ['Pin', 'keep window above everything (always-on-top)'],
+    ],
+  },
+};
+
+function showTooltip(head) {
+  const tt = document.getElementById('tooltip');
+  const key = head.dataset.tooltip;
+  const data = TOOLTIPS[key];
+  if (!data) return;
+
+  const ttIcon = document.getElementById('ttIcon');
+  const srcIcon = document.querySelector(`.tab[data-tab="${key}"] svg`);
+  ttIcon.innerHTML = '';
+  if (srcIcon) ttIcon.appendChild(srcIcon.cloneNode(true));
+
+  document.getElementById('ttTitle').textContent = data.title;
+  document.getElementById('ttSub').textContent = data.sub;
+  document.getElementById('ttBody').textContent = data.body;
+  document.getElementById('ttList').innerHTML = data.items
+    .map(([n, d]) => `<li><b>${escapeHtml(n)}</b> ${escapeHtml(d)}</li>`)
+    .join('');
+
+  positionTooltip(head, tt);
+  tt.classList.add('is-visible');
+}
+
+function hideTooltip() {
+  const tt = document.getElementById('tooltip');
+  if (tt) tt.classList.remove('is-visible');
+}
+
+function positionTooltip(head, tt) {
+  const r = head.getBoundingClientRect();
+  const tw = tt.offsetWidth;
+  const th = tt.offsetHeight;
+  const m = 12;
+  const rightX = r.right + m;
+  if (rightX + tw < window.innerWidth - 20) {
+    tt.dataset.side = 'right';
+    tt.style.left = rightX + 'px';
+    tt.style.top = (r.top + 14) + 'px';
+  } else {
+    tt.dataset.side = 'bottom';
+    tt.style.left = Math.max(20, Math.min(r.left, window.innerWidth - tw - 20)) + 'px';
+    tt.style.top = (r.bottom + m) + 'px';
+  }
+}
+
+function setupTooltips() {
+  document.querySelectorAll('.section__head[data-tooltip]').forEach(head => {
+    head.addEventListener('mouseenter', () => showTooltip(head));
+    head.addEventListener('mouseleave', hideTooltip);
+  });
+  window.addEventListener('scroll', hideTooltip, true);
+  window.addEventListener('resize', hideTooltip);
+}
+
 // ─── init ───
 load();
 renderList();
 bindFields();
+bindTabs();
+setupTooltips();
 
 if (windows.length) {
   // open first enabled, else first

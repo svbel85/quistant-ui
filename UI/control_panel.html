@@ -89,7 +89,7 @@ body {
 .demo__bg-mark {
   display: flex; align-items: center; gap: 10px;
   padding: 6px 14px;
-  background: rgba(11,11,14,.55);
+  background: rgba(10,10,16,.55);
   border: 1px solid var(--border);
   border-radius: 999px;
   backdrop-filter: blur(6px);
@@ -182,7 +182,7 @@ body {
   transition: all .12s;
 }
 .pultik__btn:hover { background: var(--bg-3); color: var(--text); }
-.pultik__btn--close:hover { background: rgba(210,128,121,.18); color: var(--danger); }
+.pultik__btn--close:hover { background: rgba(168,110,104,.18); color: var(--danger); }
 .pultik__btn svg { width: 12px; height: 12px; }
 .pultik__btn.is-pinned { color: var(--accent-2); }
 .pultik__btn.is-pinned:hover { color: var(--accent-2); }
@@ -239,7 +239,7 @@ body {
   z-index: 50;
   display: flex; gap: 6px;
   padding: 8px 12px;
-  background: rgba(20,20,25,.75);
+  background: rgba(17,17,25,.75);
   border: 1px solid var(--border);
   border-radius: 12px;
   backdrop-filter: blur(12px);
@@ -306,7 +306,7 @@ body {
 .ctl-row {
   display: flex; align-items: center; gap: 8px;
   padding: 10px;
-  background: rgba(11,11,14,.5);
+  background: rgba(10,10,16,.5);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
 }
@@ -350,7 +350,7 @@ body {
 .demo-composer {
   display: flex; align-items: flex-end; gap: 8px;
   padding: 10px;
-  background: rgba(11,11,14,.55);
+  background: rgba(10,10,16,.55);
   border: 1px solid rgba(84,84,143,.22);
   border-radius: var(--radius-lg);
 }
@@ -1087,7 +1087,7 @@ pultikPin.addEventListener('click', () => {
   pultikPin.classList.toggle('is-pinned', pultikPinned);
   pultik.style.zIndex = pultikPinned ? 9999 : 40;
   pultik.style.boxShadow = pultikPinned
-    ? '0 24px 70px rgba(0,0,0,.7), 0 0 0 1px rgba(132,132,214,.35), 0 0 80px rgba(84,84,143,.35)'
+    ? '0 24px 70px rgba(0,0,0,.7), 0 0 0 1px rgba(84,84,143,.35), 0 0 80px rgba(84,84,143,.35)'
     : '';
   pultik.style.borderColor = pultikPinned ? 'var(--accent)' : '';
 });

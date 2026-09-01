@@ -11,27 +11,32 @@
 
 <style>
 :root {
-  --bg:         #0B0B0E;
-  --bg-1:       #141419;
-  --bg-2:       #1E1E24;
-  --bg-3:       #27272F;
-  --border:     #2D2D38;
-  --border-2:   #38384A;
-  --text:       #DBDBE0;
-  --text-2:     #B0B0BD;
-  --muted:      #9090A1;
-  --muted-2:    #5E5E70;
-  --accent:     #8484D6;
-  --accent-2:   #9C9CE0;
-  --accent-soft:rgba(132,132,214,.12);
-  --live:       #94D07A;
-  --solo:       #B497D7;
-  --kb:         #84BFD6;
-  --warn:       #D6BC84;
-  --danger:     #D28079;
+  /* ОБСИДИАН — единые токены с themes/1-Obsidian/obsidian_design_dark.html */
+  --bg:         #0A0A10;
+  --bg-1:       #111119;
+  --bg-2:       #1B1B25;
+  --bg-3:       #25252F;
+  --border:     #2D2D3A;
+  --border-2:   #3A3A4C;
+  --text:       #A8A8B5;
+  --text-2:     #8C8C99;
+  --muted:      #6F6F7A;
+  --muted-2:    #4A4A55;
+  --accent:     #54548F;
+  --accent-2:   #6868A2;
+  --accent-soft:rgba(84,84,143,.18);
+  --live:       #6E9C5E;
+  --solo:       #7E73AA;
+  --kb:         #669AB2;
+  --warn:       #B89A6A;
+  --danger:     #A86E68;
   --radius-sm:  6px;
   --radius-md:  10px;
   --radius-lg:  14px;
+  --radius-xl:  20px;
+  --surface:    rgba(255,255,255,.025);
+  --surface-2:  rgba(255,255,255,.06);
+  --surface-bd: rgba(255,255,255,.05);
 }
 
 * { box-sizing: border-box; }
@@ -41,9 +46,19 @@ html, body {
   overflow: hidden;
 }
 body {
-  background:
-    radial-gradient(1200px 600px at 50% 0%, rgba(132,132,214,.07), transparent 60%),
-    var(--bg);
+  background-color: #0A0A10;
+  background-image:
+    url('1-obsidian.png?v=4'),
+    radial-gradient(ellipse 70% 55% at 25% 15%, rgba(84,84,143,.10) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 78% 78%, rgba(126,115,170,.08) 0%, transparent 65%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(70,70,110,.12) 0%, transparent 75%),
+    radial-gradient(circle at 15% 90%, rgba(50,80,140,.07) 0%, transparent 50%),
+    radial-gradient(circle at 85% 10%, rgba(140,120,180,.05) 0%, transparent 45%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: normal, screen, screen, screen, screen, screen;
   color: var(--text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 14px;
@@ -74,7 +89,7 @@ body {
   flex-direction: column;
   box-shadow:
     0 24px 60px rgba(0,0,0,.55),
-    0 0 0 1px rgba(132,132,214,.08),
+    0 0 0 1px rgba(84,84,143,.08),
     inset 0 1px 0 rgba(255,255,255,.02);
   overflow: hidden;
   animation: kb-pop .22s cubic-bezier(.2,.9,.3,1.1);
@@ -98,7 +113,7 @@ body {
   width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
   background: var(--accent-soft);
-  border: 1px solid rgba(132,132,214,.25);
+  border: 1px solid rgba(84,84,143,.25);
   border-radius: var(--radius-md);
   color: var(--accent-2);
 }
@@ -274,7 +289,7 @@ body {
   flex-shrink: 0;
 }
 .kb-progress__cancel:hover {
-  background: rgba(210,128,121,.12);
+  background: rgba(168,110,104,.12);
   border-color: var(--danger);
   color: var(--danger);
 }
@@ -329,10 +344,10 @@ body {
 .kb-row.is-on .kb-row__icon { color: var(--accent-2); }
 .kb-row__icon svg { width: 14px; height: 14px; }
 /* kind-specific icon tint */
-.kb-row[data-kind="folder"] .kb-row__icon { background: rgba(132,132,214,.16); }
-.kb-row[data-kind="folder"].is-on .kb-row__icon { background: rgba(132,132,214,.24); }
-.kb-row[data-kind="file"]   .kb-row__icon { background: rgba(148,208,122,.14); }
-.kb-row[data-kind="file"].is-on   .kb-row__icon { background: rgba(148,208,122,.22); }
+.kb-row[data-kind="folder"] .kb-row__icon { background: rgba(84,84,143,.16); }
+.kb-row[data-kind="folder"].is-on .kb-row__icon { background: rgba(84,84,143,.24); }
+.kb-row[data-kind="file"]   .kb-row__icon { background: rgba(110,156,94,.14); }
+.kb-row[data-kind="file"].is-on   .kb-row__icon { background: rgba(110,156,94,.22); }
 .kb-row[data-kind="url"]    .kb-row__icon { background: rgba(132,191,214,.14); }
 .kb-row[data-kind="url"].is-on    .kb-row__icon { background: rgba(132,191,214,.22); }
 
@@ -373,8 +388,8 @@ body {
   border-radius: 3px;
   background: var(--bg-3);
 }
-.kb-row[data-kind="folder"] .kb-row__kind { color: var(--accent-2); background: rgba(132,132,214,.15); }
-.kb-row[data-kind="file"]   .kb-row__kind { color: var(--live);     background: rgba(148,208,122,.14); }
+.kb-row[data-kind="folder"] .kb-row__kind { color: var(--accent-2); background: rgba(84,84,143,.15); }
+.kb-row[data-kind="file"]   .kb-row__kind { color: var(--live);     background: rgba(110,156,94,.14); }
 .kb-row[data-kind="url"]    .kb-row__kind { color: var(--kb);       background: rgba(132,191,214,.14); }
 .kb-row__path {
   display: block;
@@ -408,13 +423,13 @@ body {
   flex-shrink: 0;
 }
 .kb-status--indexed, .kb-status--ready {
-  background: rgba(148,208,122,.12);
+  background: rgba(110,156,94,.12);
   color: var(--live);
-  border: 1px solid rgba(148,208,122,.25);
+  border: 1px solid rgba(110,156,94,.25);
 }
 .kb-status--indexed .d, .kb-status--ready .d {
   background: var(--live);
-  box-shadow: 0 0 6px rgba(148,208,122,.6);
+  box-shadow: 0 0 6px rgba(110,156,94,.6);
 }
 .kb-status--indexing {
   background: rgba(132,191,214,.12);
@@ -430,9 +445,9 @@ body {
   50%      { opacity: .4; transform: scale(.7); }
 }
 .kb-status--error {
-  background: rgba(210,128,121,.12);
+  background: rgba(168,110,104,.12);
   color: var(--danger);
-  border: 1px solid rgba(210,128,121,.25);
+  border: 1px solid rgba(168,110,104,.25);
 }
 .kb-status--error .d { background: var(--danger); }
 .kb-status--missing {
@@ -484,7 +499,7 @@ body {
 }
 .kb-row__act:hover { background: var(--bg-3); color: var(--text); }
 .kb-row__act--danger:hover {
-  background: rgba(210,128,121,.15);
+  background: rgba(168,110,104,.15);
   color: var(--danger);
 }
 .kb-row__act svg { width: 13px; height: 13px; }

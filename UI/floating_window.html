@@ -11,34 +11,50 @@
 
 <style>
 :root {
-  --bg:         #0B0B0E;
-  --bg-1:       #141419;
-  --bg-2:       #1E1E24;
-  --bg-3:       #27272F;
-  --border:     #2D2D38;
-  --border-2:   #38384A;
-  --text:       #DBDBE0;
-  --text-2:     #B0B0BD;
-  --muted:      #9090A1;
-  --muted-2:    #5E5E70;
-  --accent:     #8484D6;
-  --accent-2:   #9C9CE0;
-  --accent-soft:rgba(132,132,214,.12);
-  --live:       #94D07A;
-  --solo:       #B497D7;
-  --kb:         #84BFD6;
-  --warn:       #D6BC84;
-  --danger:     #D28079;
+  /* ОБСИДИАН — единые токены с themes/1-Obsidian/obsidian_design_dark.html */
+  --bg:         #0A0A10;
+  --bg-1:       #111119;
+  --bg-2:       #1B1B25;
+  --bg-3:       #25252F;
+  --border:     #2D2D3A;
+  --border-2:   #3A3A4C;
+  --text:       #A8A8B5;
+  --text-2:     #8C8C99;
+  --muted:      #6F6F7A;
+  --muted-2:    #4A4A55;
+  --accent:     #54548F;
+  --accent-2:   #6868A2;
+  --accent-soft:rgba(84,84,143,.18);
+  --live:       #6E9C5E;
+  --solo:       #7E73AA;
+  --kb:         #669AB2;
+  --warn:       #B89A6A;
+  --danger:     #A86E68;
   --radius-sm:  6px;
   --radius-md:  10px;
   --radius-lg:  14px;
+  --radius-xl:  20px;
+  --surface:    rgba(255,255,255,.025);
+  --surface-2:  rgba(255,255,255,.06);
+  --surface-bd: rgba(255,255,255,.05);
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; height: 100%; }
 body {
-  background: var(--bg) url('obsidian.png') center / cover no-repeat fixed;
-  background-blend-mode: luminosity;
+  background-color: #0A0A10;
+  background-image:
+    url('1-obsidian.png?v=4'),
+    radial-gradient(ellipse 70% 55% at 25% 15%, rgba(84,84,143,.10) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 78% 78%, rgba(126,115,170,.08) 0%, transparent 65%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(70,70,110,.12) 0%, transparent 75%),
+    radial-gradient(circle at 15% 90%, rgba(50,80,140,.07) 0%, transparent 50%),
+    radial-gradient(circle at 85% 10%, rgba(140,120,180,.05) 0%, transparent 45%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: normal, screen, screen, screen, screen, screen;
   color: var(--text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 14px;
@@ -75,12 +91,24 @@ body {
 .demo__bg-mark {
   display: flex; align-items: center; gap: 10px;
   padding: 6px 14px;
-  background: rgba(11,11,14,.55);
+  background: rgba(10,10,16,.55);
   border: 1px solid var(--border);
   border-radius: 999px;
   backdrop-filter: blur(6px);
 }
 .demo__bg-mark svg { width: 14px; height: 14px; color: var(--accent-2); }
+.demo__bg-mark--info {
+  max-width: 540px;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: .01em;
+  font-size: 11px;
+  opacity: .85;
+}
+.demo__bg-mark--info b { color: var(--accent-2); font-weight: 600; }
+.demo__bg-mark--info svg { color: var(--text-2); }
 
 /* селектор типа окна — нижний-левый угол */
 .picker {
@@ -90,7 +118,7 @@ body {
   z-index: 50;
   display: flex; gap: 8px;
   padding: 8px;
-  background: rgba(20,20,25,.75);
+  background: rgba(17,17,25,.75);
   border: 1px solid var(--border);
   border-radius: 12px;
   backdrop-filter: blur(12px);
@@ -123,7 +151,7 @@ body {
   background: var(--accent-soft);
   color: var(--accent-2);
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent) inset, 0 0 12px rgba(132,132,214,.25);
+  box-shadow: 0 0 0 1px var(--accent) inset, 0 0 12px rgba(84,84,143,.25);
 }
 .picker__chip .d {
   width: 7px; height: 7px;
@@ -144,7 +172,7 @@ body {
   box-shadow:
     0 20px 60px rgba(0,0,0,.6),
     0 0 0 1px rgba(255,255,255,.02),
-    0 0 80px rgba(132,132,214,.12);
+    0 0 80px rgba(84,84,143,.12);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -155,7 +183,7 @@ body {
   box-shadow:
     0 24px 70px rgba(0,0,0,.65),
     0 0 0 1px rgba(255,255,255,.04),
-    0 0 100px rgba(132,132,214,.18);
+    0 0 100px rgba(84,84,143,.18);
 }
 
 /* цветная полоска сверху — показывает тип окна */
@@ -217,7 +245,7 @@ body {
   transition: all .12s;
 }
 .fwin__btn:hover { background: var(--bg-3); color: var(--text); }
-.fwin__btn--close:hover { background: rgba(210,128,121,.18); color: var(--danger); }
+.fwin__btn--close:hover { background: rgba(168,110,104,.18); color: var(--danger); }
 .fwin__btn svg { width: 13px; height: 13px; }
 
 /* BODY — лента подсказок */
@@ -234,8 +262,8 @@ body {
 
 .hint {
   padding: 12px 14px;
-  background: linear-gradient(180deg, rgba(132,132,214,.06), transparent), var(--bg-2);
-  border: 1px solid rgba(132,132,214,.25);
+  background: linear-gradient(180deg, rgba(84,84,143,.06), transparent), var(--bg-2);
+  border: 1px solid rgba(84,84,143,.25);
   border-left: 3px solid var(--w-color, var(--accent));
   border-radius: var(--radius-md);
   font-size: 13px;
@@ -337,23 +365,23 @@ body {
 /* MINI REFRESH — появляется в левом нижнем углу, когда нижняя панель свёрнута */
 .fwin__refresh-mini {
   position: absolute;
-  left: 8px;
+  left: 6px;
   bottom: 0px;
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 7px;
+  border-radius: 8px;
   color: var(--muted-2);
   cursor: pointer;
   z-index: 5;
   opacity: 0;
   pointer-events: none;
   transform: scale(.85);
-  transition: opacity .2s ease, transform .2s ease, color .15s, background .15s;
+  transition: opacity .2s ease, transform .2s ease, color .15s, background .15s, border-color .15s;
 }
 .fwin:not(.is-panel-open) .fwin__refresh-mini {
   opacity: 1;
@@ -365,10 +393,10 @@ body {
   color: var(--text);
 }
 .fwin__refresh-mini.is-loading {
-  color: var(--accent-2);
-  background: var(--accent-soft);
+  color: var(--text-2);
+  background: var(--bg-3);
 }
-.fwin__refresh-mini svg { width: 11px; height: 11px; display: block; }
+.fwin__refresh-mini svg { width: 14px; height: 14px; display: block; }
 .fwin__refresh-mini.is-loading svg { display: none; }
 .fwin__refresh-mini .fwin__dots { display: none; }
 .fwin__refresh-mini.is-loading .fwin__dots { display: inline-flex; }
@@ -422,7 +450,23 @@ body {
 .fwin__ask-btn:hover { background: var(--accent-2); }
 .fwin__ask-btn svg { width: 13px; height: 13px; }
 
-/* refresh-кнопка слева от инпута — такой же стиль, но со spin-анимацией во время запроса */
+/* refresh-кнопка слева от инпута — скромный стиль (без фиолетового),
+   со spin-анимацией во время запроса */
+.fwin__refresh-btn {
+  background: var(--bg-2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.fwin__refresh-btn:hover {
+  background: var(--bg-3);
+  color: var(--text);
+  border-color: var(--border-2);
+}
+.fwin__refresh-btn.is-loading {
+  background: var(--bg-3);
+  color: var(--text-2);
+  border-color: var(--border);
+}
 .fwin__refresh-btn svg { transition: transform .4s ease; }
 .fwin__refresh-btn.is-loading svg {
   animation: spin .9s linear infinite;
@@ -467,6 +511,10 @@ body {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>
       floating window · drag the header
     </div>
+    <div class="demo__bg-mark demo__bg-mark--info" style="margin-top:8px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+      bottom-left <b>↻</b> pulls the current question from the <b>main window context</b> (<span id="winCount">…</span> floating windows open · count depends on settings)
+    </div>
   </div>
 
   <!-- ════════════ FLOATING WINDOW ════════════ -->
@@ -498,7 +546,7 @@ body {
 
     <!-- FOOTER — мини-ввод (скрыт, открывается по клику на handle) -->
     <div class="fwin__foot is-collapsed" id="fwinFoot">
-      <button class="fwin__ask-btn fwin__refresh-btn" id="fwinRefresh" title="Refresh from main window">
+      <button class="fwin__ask-btn fwin__refresh-btn" id="fwinRefresh" title="Pull current question from main window context (this window's type decides which one)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 12a9 9 0 1 1-3.5-7.1"/>
           <path d="M21 4v5h-5"/>
@@ -519,7 +567,7 @@ body {
     <div class="fwin__grip" id="fwinGrip"></div>
 
     <!-- MINI REFRESH (виден, когда нижняя панель свёрнута) -->
-    <button class="fwin__refresh-mini" id="fwinRefreshMini" title="Refresh">
+    <button class="fwin__refresh-mini" id="fwinRefreshMini" title="Pull current question from main window context (this window's type decides which one)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 12a9 9 0 1 1-3.5-7.1"/>
         <path d="M21 4v5h-5"/>
@@ -788,8 +836,103 @@ picker.addEventListener('click', e => {
   });
 })();
 
+// ─── настройки пользователя: сколько плавающих окон сейчас открыто ───
+const SETTINGS = {
+  openWindows: 4
+};
+
+// ─── MAIN CONTEXT — приходит из главного окна (мок для демо) ───
+//   каждая запись = один "вопрос" в общем контексте:
+//     target       — какой тип плавающего окна должен его решать
+//                    (или 'all', если подходит любому)
+//     origin       — откуда вопрос пришёл (имя соседнего окна)
+//     relevance    — насколько он подходит текущему окну (0..1)
+//     title/bullets — сам вопрос + буллеты-подсказки
+//
+const MAIN_CONTEXT = [
+  // ── Coding Helper ─────────────────────────────────────────────
+  {
+    target: 'coding', relevance: 0.81,
+    origin: 'Behavioral Coach', originColor: 'var(--solo)',
+    title:  'How would you design a rate limiter for our API?',
+    bullets: [
+      '<b>Token bucket</b> per user — bursty traffic, smooth refill',
+      'Distributed: <code>Redis INCR</code> with TTL window',
+      'Fail-open vs fail-closed — choose by SLA'
+    ]
+  },
+  {
+    target: 'coding', relevance: 0.74,
+    origin: 'Lecture Notes', originColor: 'var(--kb)',
+    title:  'Design Twitter timeline — fan-out strategy',
+    bullets: [
+      '<b>Hybrid:</b> push for regular users, pull for celebrities',
+      '<code>Cassandra</code> for materialized timelines',
+      'Redis cache layer — TTL 30s for hot users'
+    ]
+  },
+
+  // ── Behavioral Coach ──────────────────────────────────────────
+  {
+    target: 'behavioral', relevance: 0.78,
+    origin: 'Coding Helper', originColor: 'var(--live)',
+    title:  'Tell me about a disagreement with your tech lead',
+    bullets: [
+      '<b>S:</b> tech lead wanted sync architecture, I pushed async',
+      '<b>T:</b> keep team velocity without political fallout',
+      '<b>A:</b> built a PoC in 2 days, presented data, no ego',
+      '<b>R:</b> shipped async, 3x throughput, tech lead thanked me'
+    ]
+  },
+
+  // ── Salary Negotiator ─────────────────────────────────────────
+  {
+    target: 'salary', relevance: 0.69,
+    origin: 'Behavioral Coach', originColor: 'var(--solo)',
+    title:  'How to ask for a raise when you have competing offers',
+    bullets: [
+      'Lead with <b>value delivered</b>, not leverage',
+      'Anchor 15–20% above the number you actually want',
+      'Have a walk-away number — say it out loud once'
+    ]
+  },
+
+  // ── Lecture Notes ─────────────────────────────────────────────
+  {
+    target: 'lecture', relevance: 0.72,
+    origin: 'Coding Helper', originColor: 'var(--live)',
+    title:  'Why hash tables have O(1) lookup — but not really',
+    bullets: [
+      'Average-case O(1) under simple uniform hashing',
+      'Worst-case O(n) if every key hashes to same bucket',
+      'Resizing: O(n) but amortized O(1) per insertion'
+    ]
+  },
+
+  // ── Universal (любой тип окна) ────────────────────────────────
+  {
+    target: 'all', relevance: 0.55,
+    origin: 'aggregated', originColor: 'var(--accent)',
+    title:  'Cross-cutting: what did the candidate miss in last 5 min',
+    bullets: [
+      'Open Q: <code>cache invalidation</code> tradeoffs (Coding)',
+      'Open Q: behavioral anchor for "leadership under pressure"',
+      'Open Q: market range for L5 in Berlin (Salary)'
+    ]
+  }
+];
+
+// выбираем из MAIN_CONTEXT самый релевантный вопрос для текущего типа окна
+function pickFromMainContext(presetId) {
+  const candidates = MAIN_CONTEXT
+    .filter(c => c.target === presetId || c.target === 'all')
+    .sort((a, b) => b.relevance - a.relevance);
+  return candidates[0] || null;
+}
+
 // ─── initial ───
 renderPreset('coding');
+document.getElementById('winCount').textContent = SETTINGS.openWindows;
 
 // ─── toggle нижней панели ввода ───
 const fwinFoot   = document.getElementById('fwinFoot');
@@ -826,38 +969,19 @@ function pushEcho() {
 ask.addEventListener('keydown', e => { if (e.key === 'Enter') pushEcho(); });
 askBtn.addEventListener('click', pushEcho);
 
-// ─── refresh: тянем свежий контекст из "главного окна" и пушим новую подсказку ───
+// ─── refresh: тянем "вопрос для решения" из контекста главного окна ───
+//
+//   СМЫСЛ КНОПКИ ↻ (слева внизу):
+//   Главное окно Quistan агрегирует контекст всех открытых плавающих окон.
+//   Количество этих окон определяется настройками пользователя (SETTINGS).
+//   По клику ↻ мы забираем из этого общего контекста тот вопрос, который
+//   лучше всего подходит для решения именно в ЭТОМ окне (по его типу —
+//   coding / behavioral / salary / lecture), и подставляем его сюда —
+//   чтобы пользователь получил подсказку/черновик ответа от
+//   специализированного окна.
+//
 const refreshBtn  = document.getElementById('fwinRefresh');
 const refreshMini = document.getElementById('fwinRefreshMini');
-const PRESET_TITLES = {
-  coding:     'System Design — Cache invalidation strategies',
-  behavioral: 'STAR — Tell me about a leadership moment',
-  salary:     'Negotiation — Walking away from a lowball',
-  lecture:    'Hashing — Birthday paradox & table sizing'
-};
-const PRESET_BULLETS = {
-  coding: [
-    '<code>TTL</code> per key — simpler, but stale window',
-    '<b>Event-driven invalidation</b> via Kafka — fan-out on write',
-    'Cache-aside vs write-through: pick by read/write ratio'
-  ],
-  behavioral: [
-    '<b>Situation:</b> junior engineer missed a deadline, team was blocked',
-    '<b>Task:</b> unblock the team without blaming',
-    '<b>Action:</b> 1:1 + paired re-estimation, no escalation',
-    '<b>Result:</b> shipped on time, junior grew into ownership'
-  ],
-  salary: [
-    '"Thank you for the offer. I need a week to compare."',
-    'Use the silence — recruiters fill it with extras',
-    'Counter with <b>two</b> numbers: base + sign-on split'
-  ],
-  lecture: [
-    'Birthday paradox: 50% collision at <code>√m ≈ 23</code> for m=365',
-    'Hash table load factor α = n/m — keep &lt; 0.7',
-    'Resizing: double m, rehash all keys — O(n) amortized'
-  ]
-};
 
 function getActivePresetId() {
   const on = picker.querySelector('.picker__chip.is-on');
@@ -874,11 +998,17 @@ function performRefresh() {
   setTimeout(() => {
     refreshBtn.classList.remove('is-loading');
     refreshMini.classList.remove('is-loading');
-    const id = getActivePresetId();
-    const p = PRESETS[id];
-    const title = PRESET_TITLES[id];
-    const bullets = PRESET_BULLETS[id];
 
+    // 1) определяем тип текущего плавающего окна
+    const id = getActivePresetId();
+    const p  = PRESETS[id];
+
+    // 2) тянем из MAIN_CONTEXT вопрос, который лучше всего подходит
+    //    для решения именно в этом типе окна
+    const ctx = pickFromMainContext(id);
+    if (!ctx) return;
+
+    // 3) подставляем его как новую карточку-подсказку
     const card = document.createElement('div');
     card.className = 'hint ' + (p.hintClass || '');
     card.innerHTML = `
@@ -887,15 +1017,17 @@ function performRefresh() {
           <path d="M21 12a9 9 0 1 1-3.5-7.1"/>
           <path d="M21 4v5h-5"/>
         </svg>
-        <b>Quistan · synced</b>
+        <b>Quistan · pulled from main</b>
         <span class="sep">·</span>
-        <span class="tag">pulled from main window</span>
+        <span class="tag">${SETTINGS.openWindows} windows open</span>
+        <span class="sep">·</span>
+        <span class="tag" style="color:${ctx.originColor}">via ${ctx.origin}</span>
       </div>
-      <h4>${title}</h4>
-      <ul>${bullets.map(b => '<li>' + b + '</li>').join('')}</ul>
+      <h4>${ctx.title}</h4>
+      <ul>${ctx.bullets.map(b => '<li>' + b + '</li>').join('')}</ul>
       <div class="hint__src">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-        manual sync · ${new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+        relevance ${ctx.relevance.toFixed(2)} · synced ${new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
       </div>
     `;
     fwinBody.appendChild(card);
