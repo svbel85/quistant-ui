@@ -1552,23 +1552,23 @@ body {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M21 7V5a2 2 0 0 0-2-2h-2M3 17v2a2 2 0 0 0 2 2h2M21 17v2a2 2 0 0 1-2 2h-2"/></svg>
               Select region
             </button>
-            <button class="topbar__btn" onclick="clearRegion()">Clear</button>
+<button class="topbar__btn" onclick="clearRegion()">Clear</button>
           </div>
         </div>
         <div class="field">
-          <div class="field__label"><span>Capture trigger</span><span class="field__hint">when to take a screenshot</span></div>
-          <div class="seg" id="segTrigger">
-            <button class="seg__btn" data-val="manual">Manual only</button>
-            <button class="seg__btn is-on" data-val="replies">On new reply</button>
-            <button class="seg__btn" data-val="interval">Every N seconds</button>
-            <button class="seg__btn" data-val="manual-ai">Manual + AI hint</button>
+          <div class="field__label">
+            <span>Trigger</span>
+            <span class="field__hint">manual</span>
           </div>
-        </div>
-        <div class="field">
-          <div class="field__label"><span>Interval (if "every N sec")</span><span class="field__hint">seconds</span></div>
-          <div class="range-row">
-            <input type="range" class="range" id="fInterval" min="2" max="60" step="1" value="10">
-            <div class="range__val" id="fIntervalVal">10 s</div>
+          <div class="info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <div>Screenshots are taken <b>only on demand</b> — press the button below or use the global hotkey <kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">Shift</kbd>+<kbd class="kbd">S</kbd> (rebind in <b>Shortcuts</b>).</div>
+          </div>
+          <div class="btn-row" style="margin-top:10px">
+            <button class="topbar__btn topbar__btn--primary" onclick="takeScreenshot()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              Take screenshot now
+            </button>
           </div>
         </div>
         <div class="field">
@@ -2164,7 +2164,7 @@ const DEFAULTS = {
   fReindexWatch: true, fReindexVerify: false,
   fChunk: 500, fOverlap: 50, fWorkers: '2',
   fGain: 100, fNoiseSup: true, fAec: true, fAgc: false, fVad: 'mid', fStt: 'whisper-local',
-  fTrigger: 'replies', fInterval: 10, fCompress: true, fJpeg: 70,
+  fCompress: true, fJpeg: 70,
   fWda: true, fHideFrame: true, fHideSelf: true,
   hotkey_open: 'Ctrl+Shift+Q', hotkey_pause: 'Ctrl+Shift+Space', hotkey_region: 'Ctrl+Shift+A',
   hotkey_snap: 'Ctrl+Shift+S', hotkey_refresh: 'Ctrl+R', hotkey_solo: 'Ctrl+Shift+M', hotkey_send: 'Ctrl+Enter',
@@ -2319,12 +2319,11 @@ function bindFields() {
   });
 
   // ranges
-  const rangeMap = {
+const rangeMap = {
     fScale:    { fmt: v => v + '%',            key: 'fScale' },
     fTemp:     { fmt: v => (v/10).toFixed(1),  key: 'fTemp' },
     fMaxTok:   { fmt: v => v + '',             key: 'fMaxTok' },
     fGain:     { fmt: v => v + '%',            key: 'fGain' },
-    fInterval: { fmt: v => v + ' s',           key: 'fInterval' },
     fJpeg:     { fmt: v => v + '%',            key: 'fJpeg' },
     fChunk:    { fmt: v => v + ' tok',         key: 'fChunk' },
     fOverlap:  { fmt: v => v + ' tok',         key: 'fOverlap' },
@@ -2362,9 +2361,8 @@ function bindFields() {
   paintSegSingle('segBg','bg');
   paintSegSingle('segStartMode','fStartMode');
   paintSegMode();
-  paintSegSingle('segVad','fVad');
+paintSegSingle('segVad','fVad');
   paintSegSingle('segStt','fStt');
-  paintSegSingle('segTrigger','fTrigger');
   paintSegSingle('segRetention','fRetention');
   paintSegSingle('segWorkers','fWorkers');
   paintSegSingle('segLog','fLogLevel');
@@ -2553,6 +2551,7 @@ function testMic()        { document.getElementById('btnTestMic').onclick(); }
 function testSys()        { document.getElementById('btnTestSys').onclick(); }
 function selectRegion()   { toast('Drag-select region on any screen'); }
 function clearRegion()    { toast('Region cleared'); }
+function takeScreenshot() { toast('Screenshot captured from current region'); }
 function testTg()         { toast('Test message sent to Telegram'); }
 function openDataFolder() { toast('Opening data folder…'); }
 function checkUpdate()    { toast('You are on the latest version'); }
