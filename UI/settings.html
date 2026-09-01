@@ -1,0 +1,2601 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings — Quistan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:         #0A0A10;
+  --bg-1:       #111119;
+  --bg-2:       #1B1B25;
+  --bg-3:       #25252F;
+  --border:     #2D2D3A;
+  --border-2:   #3A3A4C;
+  --text:       #A8A8B5;
+  --text-2:     #8C8C99;
+  --muted:      #6F6F7A;
+  --muted-2:    #4A4A55;
+  --accent:     #54548F;
+  --accent-2:   #6868A2;
+  --accent-soft:rgba(84,84,143,.18);
+  --live:       #6E9C5E;
+  --solo:       #7E73AA;
+  --kb:         #669AB2;
+  --warn:       #B89A6A;
+  --danger:     #A86E68;
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: #0A0A10;
+  background-image:
+    url('1-obsidian.png?v=4'),
+    radial-gradient(ellipse 70% 55% at 25% 15%, rgba(84,84,143,.10) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 78% 78%, rgba(126,115,170,.08) 0%, transparent 65%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(70,70,110,.12) 0%, transparent 75%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: normal, screen, screen, screen;
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: .2px;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─────── TOPBAR ─────── */
+.topbar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, var(--bg-2), rgba(17,17,25,.7));
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  backdrop-filter: blur(8px);
+  min-width: 0;
+}
+.topbar__brand {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; color: var(--text);
+  flex-shrink: 0;
+}
+.topbar__brand-mark {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--solo));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 13px;
+  box-shadow: 0 4px 12px rgba(84,84,143,.35);
+}
+.topbar__brand-text { display: flex; flex-direction: column; gap: 1px; }
+.topbar__title { font-size: 13.5px; font-weight: 600; }
+.topbar__sub {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.topbar__search {
+  flex: 1 1 200px;
+  max-width: 340px;
+  min-width: 120px;
+  position: relative;
+  margin: 0 8px;
+}
+.topbar__search-icon {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 13px; height: 13px; color: var(--muted-2); pointer-events: none;
+}
+.topbar__search input {
+  width: 100%;
+  padding: 7px 10px 7px 32px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12.5px;
+  outline: none;
+  transition: all .15s;
+}
+.topbar__search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.topbar__search input::placeholder { color: var(--muted-2); }
+.topbar__search kbd {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--muted-2);
+  padding: 2px 5px; background: var(--bg-2);
+  border: 1px solid var(--border); border-radius: 4px; pointer-events: none;
+}
+.topbar__dirty {
+  display: none; align-items: center; gap: 6px;
+  padding: 0 10px; height: 24px;
+  background: rgba(184,154,106,.12);
+  border: 1px solid rgba(184,154,106,.3);
+  border-radius: 999px;
+  color: var(--warn);
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.topbar__dirty.is-on { display: inline-flex; }
+.topbar__dirty .d {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--warn);
+  box-shadow: 0 0 6px var(--warn);
+  animation: dirty-pulse 1.4s ease-in-out infinite;
+}
+@keyframes dirty-pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+.topbar__btn {
+  height: 30px; padding: 0 12px;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.topbar__btn:hover { background: var(--bg-3); color: var(--text); border-color: var(--border-2); }
+.topbar__btn--primary {
+  background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600;
+}
+.topbar__btn--primary:hover {
+  background: var(--accent-2); border-color: var(--accent-2); color: var(--bg);
+  box-shadow: 0 4px 14px rgba(84,84,143,.35);
+}
+.topbar__btn--danger { color: var(--danger); border-color: rgba(168,110,104,.3); }
+.topbar__btn--danger:hover { background: rgba(168,110,104,.12); border-color: var(--danger); color: var(--danger); }
+.topbar__btn--ghost { background: transparent; border-color: var(--border); }
+.topbar__btn svg { width: 12px; height: 12px; }
+.topbar__divider { width: 1px; height: 18px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
+
+/* ─────── BODY (flex row: sidebar + main) ─────── */
+.body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* ─────── SIDEBAR ─────── */
+.sidebar {
+  width: 244px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: rgba(17,17,25,.4);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.sidebar__head {
+  padding: 14px 16px 10px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted-2);
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar__head b { color: var(--accent-2); font-weight: 600; }
+.cat-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+.cat-list::-webkit-scrollbar { width: 6px; }
+.cat-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+.cat {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
+  margin-bottom: 1px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .12s;
+  border: 1px solid transparent;
+  position: relative;
+  color: var(--text-2);
+}
+.cat:hover { background: var(--bg-2); color: var(--text); }
+.cat.is-on {
+  background: var(--bg-2);
+  border-color: var(--border);
+  color: var(--text);
+}
+.cat.is-on::before {
+  content: '';
+  position: absolute;
+  left: -8px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--accent);
+}
+.cat__icon {
+  width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.cat.is-on .cat__icon { color: var(--accent-2); }
+.cat__icon svg { width: 15px; height: 15px; }
+.cat__name {
+  flex: 1;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cat.is-search-hide { display: none; }
+
+/* ─────── MAIN ─────── */
+.main {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 24px 28px 80px;
+}
+.main::-webkit-scrollbar { width: 8px; }
+.main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+.tab-content { display: none; width: 100%; max-width: 760px; margin: 0 auto; min-width: 0; }
+.tab-content.is-on { display: block; animation: tabFadeIn .18s ease; }
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────── TAB HEADER ─────── */
+.tab-head {
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.tab-head__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -.01em;
+  margin-bottom: 4px;
+  display: flex; align-items: center; gap: 10px;
+}
+.tab-head__icon {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(84,84,143,.3);
+  color: var(--accent-2);
+  display: flex; align-items: center; justify-content: center;
+}
+.tab-head__icon svg { width: 16px; height: 16px; }
+.tab-head__sub {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: 580px;
+}
+
+/* ─────── SECTION ─────── */
+.section { margin-bottom: 28px; padding-bottom: 4px; }
+.section__head {
+  display: flex; align-items: center; gap: 8px;
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.section__head::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+}
+.section__hint {
+  margin-left: auto;
+  font-size: 10.5px;
+  color: var(--muted-2);
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: inherit;
+}
+.section.is-warn .section__head::before { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+.section.is-warn .section__head { color: var(--warn); }
+.section.is-danger .section__head::before { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+.section.is-danger .section__head { color: var(--danger); }
+
+/* ─────── FIELD ─────── */
+.field { margin-bottom: 14px; }
+.field__label {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.field__hint {
+  font-size: 10.5px;
+  font-weight: 400;
+  color: var(--muted-2);
+  font-family: 'Geist Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.field__row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field.is-search-hide { display: none; }
+.section.is-search-empty { display: none; }
+
+/* ─────── INPUTS ─────── */
+.input, .textarea, .select {
+  width: 100%;
+  padding: 9px 11px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: all .15s;
+}
+.input:focus, .textarea:focus, .select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.input::placeholder, .textarea::placeholder { color: var(--muted-2); }
+.textarea { resize: vertical; min-height: 80px; line-height: 1.55; font-family: inherit; }
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239090A1' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  padding-right: 32px;
+  cursor: pointer;
+}
+.input--suffix { position: relative; }
+.input--suffix input { padding-right: 56px; }
+.input--suffix .suf {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted-2);
+  pointer-events: none;
+}
+
+/* ─────── SEGMENTED ─────── */
+.seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+.seg--compact { grid-auto-columns: auto; }
+.seg__btn {
+  padding: 7px 10px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .12s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.seg__btn:hover { color: var(--text); }
+.seg__btn.is-on { background: var(--bg-3); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+.seg__btn svg { width: 12px; height: 12px; }
+
+/* ─────── SWITCH ─────── */
+.switch {
+  display: inline-flex; align-items: center; gap: 9px;
+  cursor: pointer;
+  user-select: none;
+}
+.switch__track {
+  width: 34px; height: 19px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  position: relative;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.switch__thumb {
+  position: absolute; top: 1px; left: 1px;
+  width: 15px; height: 15px;
+  background: var(--muted);
+  border-radius: 50%;
+  transition: all .15s;
+}
+.switch input { display: none; }
+.switch input:checked ~ .switch__track { background: var(--accent); border-color: var(--accent); }
+.switch input:checked ~ .switch__track .switch__thumb { transform: translateX(15px); background: #fff; }
+.switch__label { font-size: 12.5px; color: var(--text-2); }
+.switch--danger input:checked ~ .switch__track { background: var(--danger); border-color: var(--danger); }
+
+/* ─────── RANGE ─────── */
+.range-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.range {
+  flex: 1 1 auto;
+  min-width: 0;
+  appearance: none;
+  height: 4px;
+  background: var(--bg-3);
+  border-radius: 999px;
+  outline: none;
+}
+.range::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px; height: 16px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(84,84,143,.4);
+}
+.range::-moz-range-thumb {
+  width: 16px; height: 16px;
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.range__val {
+  flex-shrink: 0;
+  min-width: 70px;
+  text-align: center;
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-2);
+  padding: 4px 8px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* ─────── HOTKEY ─────── */
+.hotkey-input {
+  padding: 7px 11px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: 'Geist Mono', monospace;
+  font-size: 12.5px;
+  outline: none;
+  transition: all .15s;
+  cursor: pointer;
+  display: inline-block;
+  min-width: 150px;
+  max-width: 220px;
+  text-align: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hotkey-input:focus, .hotkey-input.is-recording {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  background: var(--accent-soft);
+  color: var(--accent-2);
+}
+
+/* ─────── PILL ─────── */
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border-radius: 999px;
+}
+.pill .d { width: 5px; height: 5px; border-radius: 50%; }
+.pill--live  { background: rgba(110,156,94,.12); color: var(--live);  border: 1px solid rgba(110,156,94,.25); }
+.pill--live .d  { background: var(--live);  box-shadow: 0 0 6px rgba(110,156,94,.6); }
+.pill--warn  { background: rgba(184,154,106,.12); color: var(--warn); border: 1px solid rgba(184,154,106,.3); }
+.pill--warn .d { background: var(--warn); }
+.pill--off   { background: var(--bg-3); color: var(--muted); border: 1px solid var(--border); }
+.pill--off .d { background: var(--muted-2); }
+.pill--info  { background: var(--accent-soft); color: var(--accent-2); border: 1px solid rgba(84,84,143,.3); }
+.pill--info .d { background: var(--accent-2); }
+
+/* ─────── KV list (uses flex, not grid) ─────── */
+.kv {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.kv-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+}
+.kv dt {
+  flex-shrink: 0;
+  min-width: 100px;
+  font-family: 'Geist Mono', monospace;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: 10.5px;
+  margin: 0;
+}
+.kv dd {
+  margin: 0;
+  color: var(--text);
+  min-width: 0;
+  flex: 1;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+.kv dd code {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11.5px;
+  color: var(--accent-2);
+  background: var(--bg-2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  display: inline-block;
+  max-width: 100%;
+  word-break: break-all;
+}
+
+/* ─────── INFO ─────── */
+.info {
+  display: flex; gap: 10px;
+  padding: 11px 13px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(84,84,143,.25);
+  border-radius: 8px;
+  color: var(--text-2);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.info svg {
+  width: 14px; height: 14px;
+  color: var(--accent-2);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.info--warn { background: rgba(184,154,106,.08); border-color: rgba(184,154,106,.3); }
+.info--warn svg { color: var(--warn); }
+.info--danger { background: rgba(168,110,104,.08); border-color: rgba(168,110,104,.3); }
+.info--danger svg { color: var(--danger); }
+
+/* ─────── Account card ─────── */
+.acc-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--bg-2), var(--bg-1));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 18px;
+}
+.acc-card__avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--solo));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 17px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(84,84,143,.35);
+}
+.acc-card__body { flex: 1; min-width: 0; }
+.acc-card__name { font-size: 14px; font-weight: 600; color: var(--text); }
+.acc-card__email { font-size: 11.5px; color: var(--muted); font-family: 'Geist Mono', monospace; margin-top: 2px; word-break: break-all; }
+.acc-card__meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+
+/* ─────── Usage ─────── */
+.usage {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 12px 14px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.usage__head {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11.5px;
+}
+.usage__head b { color: var(--text); font-weight: 600; }
+.usage__head span { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted-2); }
+.usage__bar {
+  height: 6px;
+  background: var(--bg-3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.usage__bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 999px;
+  transition: width .25s;
+}
+.usage__bar-fill.is-warn { background: var(--warn); }
+.usage__bar-fill.is-danger { background: var(--danger); }
+.usage__sub {
+  font-size: 10.5px;
+  color: var(--muted-2);
+  font-family: 'Geist Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+/* ─────── Providers ─────── */
+.providers { display: flex; flex-direction: column; gap: 6px; }
+.provider {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.provider.is-on { border-color: var(--accent); background: linear-gradient(180deg, var(--accent-soft), transparent); }
+.provider__logo {
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  background: var(--bg-3);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Geist Mono', monospace;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.provider.is-on .provider__logo { color: var(--accent-2); }
+.provider__body { flex: 1; min-width: 0; }
+.provider__name { font-size: 12.5px; font-weight: 500; color: var(--text); }
+.provider__hint { font-size: 11px; color: var(--muted); }
+.provider__status {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  color: var(--live);
+  flex-shrink: 0;
+}
+.provider__status.is-off { color: var(--muted-2); }
+.provider__status.is-warn { color: var(--warn); }
+
+/* ─────── Devices ─────── */
+.device-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+.device-row__icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--bg-3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent-2);
+  flex-shrink: 0;
+}
+.device-row__icon svg { width: 14px; height: 14px; }
+.device-row__body { flex: 1; min-width: 0; }
+.device-row__name {
+  font-size: 12.5px;
+  color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.device-row__hint {
+  font-size: 10.5px;
+  color: var(--muted-2);
+  font-family: 'Geist Mono', monospace;
+  margin-top: 1px;
+}
+.device-row__act { display: flex; gap: 4px; flex-shrink: 0; }
+
+/* ─────── Audio meters ─────── */
+.meter-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.meter-row__icon {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  background: var(--bg-3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent-2);
+  flex-shrink: 0;
+}
+.meter-row__icon svg { width: 14px; height: 14px; }
+.meter-row__body { flex: 1; min-width: 0; }
+.meter-row__label {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+.meter-row__val { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted-2); }
+.meter-bars { display: flex; gap: 1.5px; align-items: center; height: 16px; }
+.meter-bar {
+  flex: 1;
+  min-width: 2px;
+  max-width: 6px;
+  background: var(--bg-3);
+  border-radius: 1.5px;
+}
+.meter-bar.is-on { background: var(--live); box-shadow: 0 0 4px var(--live); }
+.meter-bar.is-warn.is-on { background: var(--warn); box-shadow: 0 0 4px var(--warn); }
+.meter-bar.is-danger.is-on { background: var(--danger); box-shadow: 0 0 4px var(--danger); }
+.meter-row__btn {
+  flex-shrink: 0;
+  height: 26px;
+  padding: 0 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.meter-row__btn:hover { background: var(--bg-3); color: var(--text); }
+.meter-row__btn.is-on { background: var(--accent-soft); color: var(--accent-2); border-color: var(--accent); }
+
+/* ─────── Theme grid ─────── */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+}
+.theme {
+  padding: 8px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+}
+.theme:hover { border-color: var(--border-2); }
+.theme.is-on { border-color: var(--accent); background: var(--accent-soft); }
+.theme__swatches { display: flex; gap: 3px; margin-bottom: 6px; justify-content: center; }
+.theme__sw {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,.05);
+}
+.theme__name { font-size: 11.5px; color: var(--text-2); font-weight: 500; }
+.theme.is-on .theme__name { color: var(--text); }
+
+.accent-row { display: flex; flex-wrap: wrap; gap: 5px; padding: 4px 0; }
+.accent {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform .12s;
+}
+.accent:hover { transform: scale(1.12); }
+.accent.is-on { border-color: #fff; box-shadow: 0 0 0 1px var(--bg), 0 0 8px currentColor; }
+
+/* ─────── Shortcut list ─────── */
+.shortcut-list { display: flex; flex-direction: column; gap: 6px; }
+.shortcut {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-width: 0;
+}
+.shortcut__body { flex: 1; min-width: 0; }
+.shortcut__name {
+  font-size: 12.5px;
+  color: var(--text);
+  font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.shortcut__hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.shortcut__keys { display: inline-flex; gap: 3px; flex-shrink: 0; }
+.kbd {
+  display: inline-flex; align-items: center;
+  padding: 3px 7px;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  color: var(--text-2);
+  font-weight: 500;
+  min-width: 20px;
+  justify-content: center;
+}
+
+/* ─────── Update card ─────── */
+.update {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.update__icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--bg-3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent-2);
+  flex-shrink: 0;
+}
+.update__icon svg { width: 16px; height: 16px; }
+.update__body { flex: 1; min-width: 0; }
+.update__title { font-size: 13px; color: var(--text); font-weight: 600; }
+.update__sub { font-size: 11px; color: var(--muted); font-family: 'Geist Mono', monospace; margin-top: 2px; }
+.update__act { flex-shrink: 0; }
+
+/* ─────── Button row helper ─────── */
+.btn-row {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+
+/* ─────── Danger zone ─────── */
+.dz {
+  padding: 16px;
+  background: rgba(168,110,104,.06);
+  border: 1px solid rgba(168,110,104,.25);
+  border-radius: var(--radius-md);
+}
+.dz__head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px;
+  color: var(--danger);
+  font-weight: 600;
+  font-size: 13px;
+}
+.dz__head svg { width: 16px; height: 16px; }
+.dz__desc { font-size: 12px; color: var(--muted); line-height: 1.55; margin-bottom: 14px; }
+
+/* ─────── Toast ─────── */
+.toast {
+  position: fixed;
+  bottom: 18px; right: 18px;
+  padding: 10px 16px;
+  background: var(--bg-2);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12.5px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 0 18px var(--accent-soft);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: all .25s;
+  z-index: 100;
+  display: flex; align-items: center; gap: 8px;
+}
+.toast.is-visible { opacity: 1; transform: translateY(0); }
+.toast svg { width: 14px; height: 14px; color: var(--accent-2); }
+.toast--warn { border-color: var(--warn); }
+.toast--warn svg { color: var(--warn); }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar__brand">
+    <div class="topbar__brand-mark">Q</div>
+    <div class="topbar__brand-text">
+      <div class="topbar__title">Settings</div>
+      <div class="topbar__sub">Quistan · v0.1.4-beta</div>
+    </div>
+  </div>
+
+  <div class="topbar__search">
+    <svg class="topbar__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+    <input id="search" type="text" placeholder="Search settings…" spellcheck="false">
+    <kbd>Ctrl K</kbd>
+  </div>
+
+  <span class="topbar__divider"></span>
+
+  <div class="topbar__dirty" id="dirty"><span class="d"></span><span>Unsaved</span></div>
+
+  <button class="topbar__btn topbar__btn--ghost" onclick="openWindows()" title="Configure floating windows (separate screen)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>
+    Windows
+  </button>
+  <button class="topbar__btn topbar__btn--ghost" onclick="openKb()" title="Knowledge sources (separate screen)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+    Knowledge
+  </button>
+
+  <span class="topbar__divider"></span>
+
+  <button class="topbar__btn topbar__btn--danger" onclick="resetAll()" title="Reset all settings to defaults">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+    Reset
+  </button>
+  <button class="topbar__btn topbar__btn--primary" id="btnSave" onclick="saveAll()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    Save
+  </button>
+</div>
+
+<!-- BODY: sidebar + main -->
+<div class="body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar__head">
+      <span>Categories</span>
+      <span><b id="catCount">10</b></span>
+    </div>
+    <div class="cat-list" id="catList"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- GENERAL -->
+    <section class="tab-content is-on" data-tab="general">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+          General
+        </div>
+        <div class="tab-head__sub">Language, theme, startup behavior and system integration.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Language & Region <span class="section__hint">locale</span></div>
+        <div class="field">
+          <div class="field__label"><span>Interface language</span><span class="field__hint">ui</span></div>
+          <select class="select" id="fLang">
+            <option value="en">English</option>
+            <option value="ru">Руѝѝкий</option>
+            <option value="de">Deutsch</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="zh">中文 (简体)</option>
+            <option value="ja">日本語</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Timezone</span><span class="field__hint">auto-detected</span></div>
+          <select class="select" id="fTz">
+            <option value="auto">Auto-detect</option>
+            <option value="UTC">UTC</option>
+            <option value="Europe/Moscow">Europe/Moscow</option>
+            <option value="Europe/Berlin">Europe/Berlin</option>
+            <option value="America/New_York">America/New_York</option>
+            <option value="America/Los_Angeles">America/Los_Angeles</option>
+            <option value="Asia/Shanghai">Asia/Shanghai</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Appearance <span class="section__hint">theme</span></div>
+        <div class="field">
+          <div class="field__label"><span>Theme preset</span><span class="field__hint">visual style</span></div>
+          <div class="theme-grid" id="themeGrid"></div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Accent color</span><span class="field__hint">primary tint</span></div>
+          <div class="accent-row" id="accentRow"></div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Background</span></div>
+          <div class="seg" id="segBg">
+            <button class="seg__btn" data-val="obsidian">Obsidian texture</button>
+            <button class="seg__btn is-on" data-val="solid">Solid dark</button>
+            <button class="seg__btn" data-val="auto">Auto (system)</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>UI scale</span><span class="field__hint">zoom</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fScale" min="80" max="140" step="5" value="100">
+            <div class="range__val" id="fScaleVal">100%</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fReduceMotion" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Reduce motion (accessibility)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Startup & System <span class="section__hint">boot</span></div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fAutoStart">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Launch Quistan when Windows starts</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fStartMinimized" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Start minimized to system tray</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fTrayIcon" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Show icon in system tray</span>
+          </label>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Default startup mode</span><span class="field__hint">first screen</span></div>
+          <div class="seg" id="segStartMode">
+            <button class="seg__btn is-on" data-val="preflight">Pre-flight</button>
+            <button class="seg__btn" data-val="last">Resume last session</button>
+            <button class="seg__btn" data-val="tray">Stay in tray</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ACCOUNT -->
+    <section class="tab-content" data-tab="account">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          Account & License
+        </div>
+        <div class="tab-head__sub">Your Quistan account, subscription plan and hardware binding.</div>
+      </header>
+
+      <div class="acc-card">
+        <div class="acc-card__avatar">S</div>
+        <div class="acc-card__body">
+          <div class="acc-card__name" id="accName">� Not signed in</div>
+          <div class="acc-card__email" id="accEmail">Sign in to activate Pro features</div>
+          <div class="acc-card__meta">
+            <span class="pill pill--off"><span class="d"></span>Offline mode</span>
+          </div>
+        </div>
+        <button class="topbar__btn" onclick="signIn()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Sign in
+        </button>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Plan & Mode <span class="section__hint">how you use Quistan</span></div>
+        <div class="field">
+          <div class="field__label">
+            <span>Mode</span>
+            <span class="pill pill--info" id="planPill"><span class="d"></span>Trial � 14 days left</span>
+          </div>
+          <div class="seg" id="segMode">
+            <button class="seg__btn is-on" data-val="subscription">Subscription � managed by Quistan</button>
+            <button class="seg__btn" data-val="byok">BYOK � bring your own keys</button>
+          </div>
+        </div>
+
+        <div class="info" id="modeSubInfo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>All models and providers are <b>managed by Quistan</b>. You don't pick the model � Quistan chooses the best fit per request. Simpler, no setup, predictable quota. Switch to BYOK if you want full control.</div>
+        </div>
+
+        <div class="info info--warn" id="modeByokInfo" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>You bring your own API keys. Quistan only routes requests � <b>you pay the providers directly</b> and choose Fast and Heavy models yourself. Quistan does not cover usage costs.</div>
+        </div>
+
+        <div id="modeSubExtras">
+          <div class="field">
+            <div class="field__label"><span>API requests this month</span><span class="field__hint">quota</span></div>
+            <div class="usage">
+              <div class="usage__head"><b>1,247 / 5,000</b><span>25%</span></div>
+              <div class="usage__bar"><div class="usage__bar-fill" style="width:25%"></div></div>
+              <div class="usage__sub">Resets in 9 days � Mar 1, 2026</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field__label"><span>Audio minutes this month</span><span class="field__hint">stt quota</span></div>
+            <div class="usage">
+              <div class="usage__head"><b>48 / 120 min</b><span>40%</span></div>
+              <div class="usage__bar"><div class="usage__bar-fill is-warn" style="width:40%"></div></div>
+              <div class="usage__sub">Resets in 9 days</div>
+            </div>
+          </div>
+          <div class="field">
+            <button class="topbar__btn topbar__btn--primary" onclick="manageSub()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              Manage subscription
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Hardware Binding <span class="section__hint">hwid</span></div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>Your license is bound to this machine. Changing major hardware (motherboard, CPU) will require re-activation. You can deactivate on this device to free up a seat.</div>
+        </div>
+        <div class="field" style="margin-top:12px">
+          <dl class="kv">
+            <div class="kv-row"><dt>HWID</dt><dd><code id="hwid">a7f3-9c2b-4e81-...</code> <button class="topbar__btn" style="height:24px;padding:0 8px;font-size:11px;margin-left:6px" onclick="copyHwid()">Copy</button></dd></div>
+            <div class="kv-row"><dt>Activated</dt><dd>Sep 14, 2025</dd></div>
+            <div class="kv-row"><dt>Device name</dt><dd id="devName">DESKTOP-USER</dd></div>
+            <div class="kv-row"><dt>Platform</dt><dd>Windows 11 � x64</dd></div>
+          </dl>
+        </div>
+        <div class="field">
+          <button class="topbar__btn topbar__btn--danger" onclick="deactivate()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            Deactivate on this device
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI & MODELS -->
+    <section class="tab-content" data-tab="ai">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v2a4 4 0 0 0-4 4v2a4 4 0 0 0 4 4v0a4 4 0 0 0 4 4 4 4 0 0 0 4-4v0a4 4 0 0 0 4-4v-2a4 4 0 0 0-4-4V6a4 4 0 0 0-4-4z"/></svg></div>
+          AI & Models
+        </div>
+        <div class="tab-head__sub">Fast and Heavy models for floating windows. Detailed prompts live in each window.</div>
+      </header>
+
+      <!-- SUBSCRIPTION MODE -->
+      <div id="aiManagedSection">
+        <div class="section">
+          <div class="section__head">Models <span class="section__hint">managed</span></div>
+          <div class="info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <div>Quistan picks the best model per request � fast model for quick hints, heavy model for deep reasoning. You don't configure anything. Switch to <b>BYOK</b> in Account to choose models yourself.</div>
+          </div>
+          <dl class="kv" style="margin-top:14px">
+            <div class="kv-row"><dt>Fast</dt><dd>auto � Quistan-managed</dd></div>
+            <div class="kv-row"><dt>Heavy</dt><dd>auto � Quistan-managed</dd></div>
+            <div class="kv-row"><dt>Routing</dt><dd>per-request (fast by default)</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <!-- BYOK MODE -->
+      <div id="aiByokSection" style="display:none">
+        <div class="section">
+          <div class="section__head">Models <span class="section__hint">byok � choose per role</span></div>
+
+          <div class="field">
+            <div class="field__label">
+              <span>Fast model</span>
+              <span class="field__hint">quick hints � cheap</span>
+            </div>
+            <select class="select" id="fModelFast">
+              <option value="gpt-4o-mini">gpt-4o-mini � fast, cheap</option>
+              <option value="gpt-3.5-turbo">gpt-3.5-turbo � cheapest</option>
+              <option value="claude-haiku">claude-haiku-4 � fast claude</option>
+              <option value="gemini-flash">gemini-2.0-flash � fast multimodal</option>
+              <option value="llama-3.1-8b">llama-3.1-8b � via OpenRouter</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <div class="field__label">
+              <span>Heavy model</span>
+              <span class="field__hint">deep reasoning � long context</span>
+            </div>
+            <select class="select" id="fModelHeavy">
+              <option value="gpt-4o">gpt-4o � balanced</option>
+              <option value="gpt-4-turbo">gpt-4-turbo � deep reasoning</option>
+              <option value="claude-sonnet">claude-sonnet-4.5 � long context</option>
+              <option value="claude-opus">claude-opus � top tier</option>
+              <option value="gemini-2-pro">gemini-2.0-pro � multimodal</option>
+              <option value="llama-3.3-70b">llama-3.3-70b � via OpenRouter</option>
+            </select>
+          </div>
+
+          <div class="info" style="margin-top:6px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <div>Each floating window picks <b>Fast</b> or <b>Heavy</b> in its own settings. The choice here sets which model backs each role globally.</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section__head">Providers <span class="section__hint">api endpoints</span></div>
+          <div class="providers">
+            <div class="provider is-on">
+              <div class="provider__logo">OA</div>
+              <div class="provider__body"><div class="provider__name">OpenAI</div><div class="provider__hint">api.openai.com</div></div>
+              <div class="provider__status">Connected � 3 keys</div>
+            </div>
+            <div class="provider">
+              <div class="provider__logo">AN</div>
+              <div class="provider__body"><div class="provider__name">Anthropic</div><div class="provider__hint">api.anthropic.com</div></div>
+              <div class="provider__status is-off">No key</div>
+            </div>
+            <div class="provider">
+              <div class="provider__logo">OR</div>
+              <div class="provider__body"><div class="provider__name">OpenRouter</div><div class="provider__hint">openrouter.ai � all models</div></div>
+              <div class="provider__status is-warn">Set key</div>
+            </div>
+            <div class="provider">
+              <div class="provider__logo">GM</div>
+              <div class="provider__body"><div class="provider__name">Google Gemini</div><div class="provider__hint">generativelanguage.googleapis.com</div></div>
+              <div class="provider__status is-off">No key</div>
+            </div>
+          </div>
+          <div class="field" style="margin-top:10px">
+            <button class="topbar__btn" onclick="addProvider()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              Add custom endpoint
+            </button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section__head">API Keys <span class="section__hint">byok � stored locally encrypted</span></div>
+          <div class="info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <div>Keys are stored in the OS keychain (Windows Credential Manager). They never leave this machine. Quistan's proxy uses them only to forward requests.</div>
+          </div>
+          <div class="field" style="margin-top:12px">
+            <div class="field__label"><span>OpenAI API key</span><span class="field__hint">sk-...</span></div>
+            <div class="input--suffix">
+              <input class="input" id="fKeyOpenAI" type="password" placeholder="sk-..." value="sk-proj-���������������������������������">
+              <span class="suf">Active</span>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field__label"><span>Anthropic API key</span><span class="field__hint">sk-ant-...</span></div>
+            <div class="input--suffix">
+              <input class="input" id="fKeyAnthropic" type="password" placeholder="sk-ant-...">
+              <span class="suf">Empty</span>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field__label"><span>OpenRouter API key</span><span class="field__hint">sk-or-...</span></div>
+            <div class="input--suffix">
+              <input class="input" id="fKeyOpenRouter" type="password" placeholder="sk-or-...">
+              <span class="suf">Empty</span>
+            </div>
+          </div>
+          <div class="field">
+            <button class="topbar__btn" onclick="testKeys()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Test all keys
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHARED GENERATION -->
+      <div class="section">
+        <div class="section__head">Generation <span class="section__hint">shared params</span></div>
+        <div class="field">
+          <div class="field__label"><span>Temperature</span><span class="field__hint">creativity 0�2</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fTemp" min="0" max="20" step="1" value="7">
+            <div class="range__val" id="fTempVal">0.7</div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Max output tokens</span><span class="field__hint">hint length</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fMaxTok" min="40" max="1000" step="20" value="120">
+            <div class="range__val" id="fMaxTokVal">120</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fStream" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Stream responses token-by-token</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fFallback" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Auto-fallback to backup model on failure</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- INDEXING -->
+      <div class="section">
+        <div class="section__head">Indexing & Embeddings <span class="section__hint">vector store</span></div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+          <div>Quistan ships with a local embedding model in the program folder. It indexes your knowledge sources into the vector database. No setup or API key required � it runs locally.</div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <dl class="kv">
+            <div class="kv-row"><dt>Model</dt><dd>bge-small-en-v1.5 � bundled</dd></div>
+            <div class="kv-row"><dt>Path</dt><dd><code>C:\Program Files\Quistan\models\bge-small-en-v1.5</code></dd></div>
+            <div class="kv-row"><dt>Vector DB</dt><dd>ChromaDB � <code>./data/vectors</code></dd></div>
+            <div class="kv-row"><dt>Dimensions</dt><dd>384</dd></div>
+            <div class="kv-row"><dt>Status</dt><dd><span class="pill pill--live"><span class="d"></span>Loaded</span></dd></div>
+          </dl>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fReindexWatch" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Reindex changed files automatically (file watcher)</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fReindexVerify">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Verify index integrity on startup</span>
+          </label>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Chunk size</span><span class="field__hint">tokens per chunk</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fChunk" min="100" max="1500" step="50" value="500">
+            <div class="range__val" id="fChunkVal">500 tok</div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Chunk overlap</span><span class="field__hint">tokens between chunks</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fOverlap" min="0" max="300" step="10" value="50">
+            <div class="range__val" id="fOverlapVal">50 tok</div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Indexing workers</span><span class="field__hint">parallel jobs</span></div>
+          <div class="seg" id="segWorkers">
+            <button class="seg__btn" data-val="1">1 � slow</button>
+            <button class="seg__btn is-on" data-val="2">2</button>
+            <button class="seg__btn" data-val="4">4 � balanced</button>
+            <button class="seg__btn" data-val="8">8 � fast</button>
+          </div>
+        </div>
+        <div class="field">
+          <button class="topbar__btn" onclick="reindexAll()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
+            Reindex all sources
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUDIO -->
+    <section class="tab-content" data-tab="audio">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          Audio
+        </div>
+        <div class="tab-head__sub">Input devices, microphone tuning and noise suppression.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Devices <span class="section__hint">wasapi � directsound</span></div>
+        <div class="field">
+          <div class="field__label"><span>Microphone (your voice)</span><span class="field__hint">input</span></div>
+          <div class="device-row">
+            <div class="device-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg></div>
+            <div class="device-row__body">
+              <div class="device-row__name" id="devIn">Default � Realtek HD Audio</div>
+              <div class="device-row__hint">44.1 kHz � mono</div>
+            </div>
+            <button class="topbar__btn" style="height:26px;padding:0 10px;font-size:11px" onclick="pickDevice('in')">Change</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>System audio (interlocutor)</span><span class="field__hint">loopback � wasapi</span></div>
+          <div class="device-row">
+            <div class="device-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></div>
+            <div class="device-row__body">
+              <div class="device-row__name" id="devSys">Speakers � Realtek HD Audio</div>
+              <div class="device-row__hint">loopback capture</div>
+            </div>
+            <button class="topbar__btn" style="height:26px;padding:0 10px;font-size:11px" onclick="pickDevice('sys')">Change</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Levels <span class="section__hint">live meters</span></div>
+        <div class="meter-row">
+          <div class="meter-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg></div>
+          <div class="meter-row__body">
+            <div class="meter-row__label"><span>Mic input</span><span class="meter-row__val" id="meterInVal">-? dB</span></div>
+            <div class="meter-bars" id="meterInBars"></div>
+          </div>
+          <button class="meter-row__btn" id="btnTestMic" onclick="testMic()">Test</button>
+        </div>
+        <div class="meter-row">
+          <div class="meter-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></div>
+          <div class="meter-row__body">
+            <div class="meter-row__label"><span>System audio</span><span class="meter-row__val" id="meterSysVal">-? dB</span></div>
+            <div class="meter-bars" id="meterSysBars"></div>
+          </div>
+          <button class="meter-row__btn" id="btnTestSys" onclick="testSys()">Test</button>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <div class="field__label"><span>Input gain</span><span class="field__hint">boost mic signal</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fGain" min="0" max="200" value="100">
+            <div class="range__val" id="fGainVal">100%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Enhancement <span class="section__hint">noise & voice</span></div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fNoiseSup" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Noise suppression (RNNoise)</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fAec" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Acoustic echo cancellation</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fAgc">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Auto-gain control (AGC)</span>
+          </label>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>VAD sensitivity</span><span class="field__hint">voice activity</span></div>
+          <div class="seg" id="segVad">
+            <button class="seg__btn" data-val="low">Low � chatty</button>
+            <button class="seg__btn is-on" data-val="mid">Medium</button>
+            <button class="seg__btn" data-val="high">High � strict</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Transcription engine</span><span class="field__hint">stt</span></div>
+          <div class="seg" id="segStt">
+            <button class="seg__btn is-on" data-val="whisper-local">Whisper � local</button>
+            <button class="seg__btn" data-val="whisper-api">Whisper � API</button>
+            <button class="seg__btn" data-val="deepgram">Deepgram</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPTURE -->
+    <section class="tab-content" data-tab="capture">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+          Screen Capture
+        </div>
+        <div class="tab-head__sub">Region screenshots from the interlocutor's screen, anti-detection.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Region <span class="section__hint">screenshot target</span></div>
+        <div class="field">
+          <div class="field__label">
+            <span>Active region</span>
+            <span class="pill pill--off"><span class="d"></span>Not set</span>
+          </div>
+          <div class="info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M21 7V5a2 2 0 0 0-2-2h-2"/><path d="M3 17v2a2 2 0 0 0 2 2h2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/></svg>
+            <div>Press <kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">Shift</kbd>+<kbd class="kbd">A</kbd> to drag-select a region on any screen. Screenshots are taken from this area only.</div>
+          </div>
+          <div class="btn-row" style="margin-top:10px">
+            <button class="topbar__btn topbar__btn--primary" onclick="selectRegion()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M21 7V5a2 2 0 0 0-2-2h-2M3 17v2a2 2 0 0 0 2 2h2M21 17v2a2 2 0 0 1-2 2h-2"/></svg>
+              Select region
+            </button>
+            <button class="topbar__btn" onclick="clearRegion()">Clear</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Capture trigger</span><span class="field__hint">when to take a screenshot</span></div>
+          <div class="seg" id="segTrigger">
+            <button class="seg__btn" data-val="manual">Manual only</button>
+            <button class="seg__btn is-on" data-val="replies">On new reply</button>
+            <button class="seg__btn" data-val="interval">Every N seconds</button>
+            <button class="seg__btn" data-val="manual-ai">Manual + AI hint</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Interval (if "every N sec")</span><span class="field__hint">seconds</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fInterval" min="2" max="60" step="1" value="10">
+            <div class="range__val" id="fIntervalVal">10 s</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fCompress" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Compress screenshots to JPEG before AI</span>
+          </label>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>JPEG quality</span><span class="field__hint">% � lower = smaller</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fJpeg" min="40" max="100" step="5" value="70">
+            <div class="range__val" id="fJpegVal">70%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section is-warn">
+        <div class="section__head">Stealth <span class="section__hint">anti-detection</span></div>
+        <div class="info info--warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>Some video conferencing apps detect window-capture exclusion. Disabling this may reveal the assistant to the interlocutor.</div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label class="switch">
+            <input type="checkbox" id="fWda" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Exclude floating windows from screen capture (WDA)</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fHideFrame" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Hide region frame on interlocutor's screen-share</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fHideSelf" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Hide self-preview from screen-share</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHORTCUTS -->
+    <section class="tab-content" data-tab="shortcuts">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg></div>
+          Keyboard Shortcuts
+        </div>
+        <div class="tab-head__sub">Global hotkeys. Click a field and press your combo. <kbd class="kbd">Esc</kbd> clears.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Global <span class="section__hint">work anywhere</span></div>
+        <div class="shortcut-list">
+          <div class="shortcut">
+            <div class="shortcut__body">
+              <div class="shortcut__name">Open / refresh Control Panel</div>
+              <div class="shortcut__hint">main window of Quistan</div>
+            </div>
+            <span class="hotkey-input" data-hotkey="open" tabindex="0">Ctrl+Shift+Q</span>
+          </div>
+          <div class="shortcut">
+            <div class="shortcut__body">
+              <div class="shortcut__name">Pause / resume listening</div>
+              <div class="shortcut__hint">toggle capture</div>
+            </div>
+            <span class="hotkey-input" data-hotkey="pause" tabindex="0">Ctrl+Shift+Space</span>
+          </div>
+          <div class="shortcut">
+            <div class="shortcut__body">
+              <div class="shortcut__name">Select capture region</div>
+              <div class="shortcut__hint">drag-to-select screenshot area</div>
+            </div>
+            <span class="hotkey-input" data-hotkey="region" tabindex="0">Ctrl+Shift+A</span>
+          </div>
+          <div class="shortcut">
+            <div class="shortcut__body">
+              <div class="shortcut__name">Take screenshot now</div>
+              <div class="shortcut__hint">from current region</div>
+            </div>
+            <span class="hotkey-input" data-hotkey="snap" tabindex="0">Ctrl+Shift+S</span>
+          </div>
+          <div class="shortcut">
+            <div class="shortcut__body">
+              <div class="shortcut__name">Refresh all floating windows</div>
+              <div class="shortcut__hint">re-fetch context</div>
+            </div>
+            <span class="hotkey-input" data-hotkey="refresh" tabindex="0">Ctrl+R</span>
+          </div>
+          <div class="shortcut">
+            <div class="shortcut__body">
+              <div class="shortcut__name">Toggle solo mode</div>
+              <div class="shortcut__hint">assistant without interlocutor</div>
+            </div>
+            <span class="hotkey-input" data-hotkey="solo" tabindex="0">Ctrl+Shift+M</span>
+          </div>
+          <div class="shortcut">
+            <div class="shortcut__body">
+              <div class="shortcut__name">Send current dialog to chat</div>
+              <div class="shortcut__hint">manual capture</div>
+            </div>
+            <span class="hotkey-input" data-hotkey="send" tabindex="0">Ctrl+Enter</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Per-window <span class="section__hint">set inside Floating Windows</span></div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>
+          <div>Each floating window has its own hotkey (open / refresh). Configure them in <b>Floating Windows</b> settings.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTIFICATIONS -->
+    <section class="tab-content" data-tab="notif">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+          Notifications
+        </div>
+        <div class="tab-head__sub">System alerts, sounds and tray balloons.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Alerts <span class="section__hint">when to notify</span></div>
+        <div class="field"><label class="switch"><input type="checkbox" id="fNotifUpdate" checked><span class="switch__track"><span class="switch__thumb"></span></span><span class="switch__label">New app update available</span></label></div>
+        <div class="field"><label class="switch"><input type="checkbox" id="fNotifLicense" checked><span class="switch__track"><span class="switch__thumb"></span></span><span class="switch__label">License expiring soon</span></label></div>
+        <div class="field"><label class="switch"><input type="checkbox" id="fNotifKb" checked><span class="switch__track"><span class="switch__thumb"></span></span><span class="switch__label">Knowledge base index finished</span></label></div>
+        <div class="field"><label class="switch"><input type="checkbox" id="fNotifError" checked><span class="switch__track"><span class="switch__thumb"></span></span><span class="switch__label">API errors &amp; quota warnings</span></label></div>
+        <div class="field"><label class="switch"><input type="checkbox" id="fNotifWeekly"><span class="switch__track"><span class="switch__thumb"></span></span><span class="switch__label">Weekly usage digest</span></label></div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Delivery <span class="section__hint">how to notify</span></div>
+        <div class="field">
+          <div class="field__label"><span>Channels</span><span class="field__hint">multi-select</span></div>
+          <div class="seg seg--compact" id="segChannels" style="grid-auto-columns: auto">
+            <button class="seg__btn is-on" data-val="tray">Tray balloon</button>
+            <button class="seg__btn is-on" data-val="sound">Sound</button>
+            <button class="seg__btn is-on" data-val="toast">In-app toast</button>
+            <button class="seg__btn" data-val="telegram">Telegram bot</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Notification sound</span><span class="field__hint">preset</span></div>
+          <select class="select" id="fSound">
+            <option value="default">Default � soft</option>
+            <option value="ping">Ping</option>
+            <option value="chime">Chime</option>
+            <option value="silent">Silent</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Quiet hours</span><span class="field__hint">no sound</span></div>
+          <div class="field__row">
+            <input class="input" id="fQuietFrom" type="time" value="22:00">
+            <input class="input" id="fQuietTo" type="time" value="08:00">
+          </div>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fDoNotDisturb">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Do Not Disturb during fullscreen apps</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Telegram Bot <span class="section__hint">remote control</span></div>
+        <div class="field">
+          <div class="field__label"><span>Bot token</span><span class="field__hint">from @BotFather</span></div>
+          <div class="input--suffix">
+            <input class="input" id="fTgToken" type="password" placeholder="123456:ABC-DEF...">
+            <span class="suf">Empty</span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Your chat ID</span><span class="field__hint">from @userinfobot</span></div>
+          <input class="input" id="fTgChat" placeholder="987654321">
+        </div>
+        <div class="field">
+          <button class="topbar__btn" onclick="testTg()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Send test message
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRIVACY + DATABASE -->
+    <section class="tab-content" data-tab="privacy">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          Privacy & Data
+        </div>
+        <div class="tab-head__sub">Telemetry, retention, database management and local encryption.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Telemetry <span class="section__hint">anonymous usage</span></div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fTelemetry">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Send anonymous crash reports &amp; usage metrics</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fBeta">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Participate in beta features</span>
+          </label>
+        </div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>Telemetry never includes dialog text, screenshots or personal data. Only app version, OS and feature usage counts.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Database <span class="section__hint">sqlite � sqlcipher</span></div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Active database</span>
+            <span class="pill pill--live" id="dbConnPill"><span class="d"></span>Connected</span>
+          </div>
+          <select class="select" id="fActiveDb">
+            <option value="default">default.db � main workspace</option>
+            <option value="work">work.db � work projects</option>
+            <option value="research">research.db � long-form sources</option>
+            <option value="archive">archive.db � cold storage</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fDbConnected" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Database connection active (turn off for read-only mode)</span>
+          </label>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Database folder</span>
+            <span class="field__hint">3 files � 12.4 MB</span>
+          </div>
+          <div class="input--suffix">
+            <input class="input" id="fDbFolder" value="C:\Users\You\AppData\Local\Quistan\db" readonly>
+            <span class="suf">sqlite</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <dl class="kv">
+            <div class="kv-row"><dt>Schema version</dt><dd><code>v14</code> � up to date</dd></div>
+            <div class="kv-row"><dt>Last integrity check</dt><dd>2 hours ago � <span class="pill pill--live"><span class="d"></span>ok</span></dd></div>
+            <div class="kv-row"><dt>Last vacuum</dt><dd>3 days ago � freed 1.2 MB</dd></div>
+            <div class="kv-row"><dt>Last backup</dt><dd>never</dd></div>
+          </dl>
+        </div>
+
+        <div class="field">
+          <div class="field__label"><span>Maintenance</span><span class="field__hint">sqlite ops</span></div>
+          <div class="btn-row">
+            <button class="topbar__btn" onclick="dbVacuum()" title="Rebuild DB file to reclaim space">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m-9 4v10a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V10"/></svg>
+              Vacuum
+            </button>
+            <button class="topbar__btn" onclick="dbIntegrity()" title="Run PRAGMA integrity_check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+              Integrity check
+            </button>
+            <button class="topbar__btn" onclick="dbMigrate()" title="Apply pending schema migrations">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              Run migrations
+            </button>
+            <button class="topbar__btn" onclick="dbRebuild()" title="Rebuild FTS and B-tree indexes">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
+              Rebuild indexes
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field__label"><span>Backup &amp; restore</span></div>
+          <div class="btn-row">
+            <button class="topbar__btn" onclick="dbBackup()" title="Save a copy of the active database">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Backup to file
+            </button>
+            <button class="topbar__btn" onclick="dbRestore()" title="Replace the active DB with a saved file">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Restore from file
+            </button>
+            <button class="topbar__btn" onclick="dbCopyPath()" title="Copy DB folder path to clipboard">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy path
+            </button>
+            <button class="topbar__btn" onclick="openDataFolder()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              Open folder
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field__label"><span>Cleanup</span><span class="field__hint">active db only</span></div>
+          <div class="btn-row">
+            <button class="topbar__btn" onclick="dbClearVectors()" title="Wipe vector index (KB must be reindexed)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Clear vectors
+            </button>
+            <button class="topbar__btn" onclick="dbClearHistory()" title="Wipe dialog history (vectors and settings preserved)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Clear dialog history
+            </button>
+            <button class="topbar__btn topbar__btn--danger" onclick="dbWipe()" title="Wipe the active database completely">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m-9 4v10a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V10"/></svg>
+              Wipe DB
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fEncryptDb" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Encrypt databases with SQLCipher (requires restart)</span>
+          </label>
+        </div>
+
+        <div class="field">
+          <div class="field__label"><span>Dialog history retention</span><span class="field__hint">auto-cleanup</span></div>
+          <div class="seg" id="segRetention">
+            <button class="seg__btn" data-val="1">1 day</button>
+            <button class="seg__btn" data-val="7">7 days</button>
+            <button class="seg__btn is-on" data-val="30">30 days</button>
+            <button class="seg__btn" data-val="forever">Forever</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fClearOnExit">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Clear dialog history on shutdown</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- UPDATES -->
+    <section class="tab-content" data-tab="update">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg></div>
+          Updates
+        </div>
+        <div class="tab-head__sub">Current version and signing.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Current version <span class="section__hint">v0.1.4-beta</span></div>
+        <div class="update">
+          <div class="update__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9l-3-3H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg></div>
+          <div class="update__body">
+            <div class="update__title">v0.1.4-beta � Aug 28, 2025</div>
+            <div class="update__sub">build � a7f3-9c � signed</div>
+          </div>
+          <div class="update__act"><span class="pill pill--live"><span class="d"></span>Up to date</span></div>
+        </div>
+        <div class="field">
+          <button class="topbar__btn topbar__btn--primary" onclick="checkUpdate()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
+            Check for updates
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fAutoUpdate" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Download updates automatically</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fAutoInstall">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Install on quit (no restart prompt)</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fPrerelease">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Notify about pre-releases</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Code signature <span class="section__hint">trust</span></div>
+        <div class="info info--warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div>This build is signed with EV Code Signing certificate (DigiCert). Some antivirus software may still warn on first launch � add Quistan to the allow-list.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADVANCED -->
+    <section class="tab-content" data-tab="advanced">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+          Advanced
+        </div>
+        <div class="tab-head__sub">Logs, experimental features, import / export.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Logs & Debug <span class="section__hint">troubleshooting</span></div>
+        <div class="field">
+          <div class="field__label"><span>Log level</span><span class="field__hint">verbosity</span></div>
+          <div class="seg" id="segLog">
+            <button class="seg__btn" data-val="error">Errors only</button>
+            <button class="seg__btn is-on" data-val="warn">Warn + errors</button>
+            <button class="seg__btn" data-val="info">Info</button>
+            <button class="seg__btn" data-val="debug">Debug</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fLogToFile" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Write logs to file (rotated, max 50 MB)</span>
+          </label>
+        </div>
+        <div class="field">
+          <div class="btn-row">
+            <button class="topbar__btn" onclick="openLogs()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Open logs folder
+            </button>
+            <button class="topbar__btn" onclick="copyDiagnostics()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy diagnostics bundle
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Experimental <span class="section__hint">may break things</span></div>
+        <div class="info info--warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>Experimental features may be unstable, change without notice, or break existing functionality.</div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label class="switch">
+            <input type="checkbox" id="fExpGpu">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">GPU acceleration for local Whisper</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fExpMem">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Persistent conversation memory (RAG over chat history)</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fExpMulti">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Multi-agent debate (3 models answer in parallel)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Import / Export <span class="section__hint">portable config</span></div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <div>Export includes all settings, floating window configs, shortcuts, KB sources. <b>API keys are NOT included</b> � re-enter them after import.</div>
+        </div>
+        <div class="field" style="margin-top:12px">
+          <div class="btn-row">
+            <button class="topbar__btn" onclick="exportConfig()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export to JSON
+            </button>
+            <button class="topbar__btn" onclick="importConfig()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Import from JSON
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section is-danger">
+        <div class="section__head">Danger zone <span class="section__hint">irreversible</span></div>
+        <div class="dz">
+          <div class="dz__head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Reset everything
+          </div>
+          <div class="dz__desc">Removes all settings, floating windows, knowledge sources, shortcuts and caches. Dialog history is preserved unless you also check "Wipe history". This cannot be undone.</div>
+          <div class="field">
+            <label class="switch switch--danger">
+              <input type="checkbox" id="fWipeHistory">
+              <span class="switch__track"><span class="switch__thumb"></span></span>
+              <span class="switch__label" style="color:var(--danger)">Also wipe all dialog history</span>
+            </label>
+          </div>
+          <div class="btn-row">
+            <button class="topbar__btn topbar__btn--danger" onclick="factoryReset()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Factory reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+  <span id="toastMsg">Saved</span>
+</div>
+
+<script>
+const CATEGORIES = [
+  { id: 'general',   name: 'General',     icon: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>' },
+  { id: 'account',   name: 'Account',     icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
+  { id: 'ai',        name: 'AI & Models', icon: '<path d="M12 2a4 4 0 0 0-4 4v2a4 4 0 0 0-4 4v2a4 4 0 0 0 4 4v0a4 4 0 0 0 4 4 4 4 0 0 0 4-4v0a4 4 0 0 0 4-4v-2a4 4 0 0 0-4-4V6a4 4 0 0 0-4-4z"/>' },
+  { id: 'audio',     name: 'Audio',       icon: '<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
+  { id: 'capture',   name: 'Capture',     icon: '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>' },
+  { id: 'shortcuts', name: 'Shortcuts',   icon: '<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>' },
+  { id: 'notif',     name: 'Notifications', icon: '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>' },
+  { id: 'privacy',   name: 'Privacy & Data', icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>' },
+  { id: 'update',    name: 'Updates',     icon: '<path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/>' },
+  { id: 'advanced',  name: 'Advanced',    icon: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>' },
+];
+
+const THEMES = [
+  { id: 'obsidian', name: 'Obsidian', sw: ['#0A0A10','#54548F','#A8A8B5'] },
+  { id: 'midnight', name: 'Midnight', sw: ['#08080F','#3D6FB5','#9DB5D1'] },
+  { id: 'forest',   name: 'Forest',   sw: ['#0A130D','#3A7C4F','#9CB89F'] },
+  { id: 'ember',    name: 'Ember',    sw: ['#150B0B','#B25E48','#D8B19E'] },
+  { id: 'paper',    name: 'Paper',    sw: ['#F5F2EA','#6E6248','#3A3328'] },
+  { id: 'carbon',   name: 'Carbon',   sw: ['#0F0F11','#5E5E68','#B8B8C0'] },
+];
+const ACCENTS = [
+  '#54548F', '#6868A2', '#6E9C5E', '#7E73AA', '#669AB2', '#B89A6A', '#A86E68', '#A8A8B5',
+];
+
+const STORAGE_KEY = 'quistan.settings.v2';
+let state = {};
+let dirty = false;
+let activeCat = 'general';
+
+const DEFAULTS = {
+  fLang: 'en', fTz: 'auto',
+  theme: 'obsidian', accent: '#54548F', bg: 'solid',
+  fScale: 100, fReduceMotion: true,
+  fAutoStart: false, fStartMinimized: true, fTrayIcon: true, fStartMode: 'preflight',
+  fMode: 'subscription', fHwid: 'a7f3-9c2b-4e81-...',
+  fTemp: 7, fMaxTok: 120, fStream: true, fFallback: true,
+  fModelFast: 'gpt-4o-mini', fModelHeavy: 'gpt-4o',
+  fKeyOpenAI: 'sk-proj-' + '\u2022'.repeat(35),
+  fKeyAnthropic: '', fKeyOpenRouter: '',
+  fReindexWatch: true, fReindexVerify: false,
+  fChunk: 500, fOverlap: 50, fWorkers: '2',
+  fGain: 100, fNoiseSup: true, fAec: true, fAgc: false, fVad: 'mid', fStt: 'whisper-local',
+  fTrigger: 'replies', fInterval: 10, fCompress: true, fJpeg: 70,
+  fWda: true, fHideFrame: true, fHideSelf: true,
+  hotkey_open: 'Ctrl+Shift+Q', hotkey_pause: 'Ctrl+Shift+Space', hotkey_region: 'Ctrl+Shift+A',
+  hotkey_snap: 'Ctrl+Shift+S', hotkey_refresh: 'Ctrl+R', hotkey_solo: 'Ctrl+Shift+M', hotkey_send: 'Ctrl+Enter',
+  fNotifUpdate: true, fNotifLicense: true, fNotifKb: true, fNotifError: true, fNotifWeekly: false,
+  fChannels: ['tray','sound','toast'], fSound: 'default', fQuietFrom: '22:00', fQuietTo: '08:00',
+  fDoNotDisturb: false, fTgToken: '', fTgChat: '',
+  fTelemetry: false, fBeta: false, fRetention: '30', fEncryptDb: true, fClearOnExit: false,
+  fActiveDb: 'default', fDbConnected: true,
+  fAutoUpdate: true, fAutoInstall: false, fPrerelease: false,
+  fLogLevel: 'warn', fLogToFile: true,
+  fExpGpu: false, fExpMem: false, fExpMulti: false,
+  fWipeHistory: false,
+};
+
+// -- sidebar ------------------------------------------
+function renderSidebar() {
+  const list = document.getElementById('catList');
+  list.innerHTML = CATEGORIES.map(c => `
+    <div class="cat ${c.id === activeCat ? 'is-on' : ''}" data-cat="${c.id}">
+      <span class="cat__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${c.icon}</svg></span>
+      <span class="cat__name">${c.name}</span>
+    </div>
+  `).join('');
+  list.querySelectorAll('.cat').forEach(el => {
+    el.addEventListener('click', () => switchCat(el.dataset.cat));
+  });
+}
+function switchCat(id) {
+  activeCat = id;
+  document.querySelectorAll('.tab-content').forEach(p => p.classList.toggle('is-on', p.dataset.tab === id));
+  document.querySelectorAll('.cat').forEach(c => c.classList.toggle('is-on', c.dataset.cat === id));
+  document.querySelector('.main').scrollTop = 0;
+}
+
+// -- palettes -----------------------------------------
+function renderThemes() {
+  const g = document.getElementById('themeGrid');
+  g.innerHTML = THEMES.map(t => `
+    <div class="theme ${t.id === state.theme ? 'is-on' : ''}" data-theme="${t.id}">
+      <div class="theme__swatches">${t.sw.map(c => `<span class="theme__sw" style="background:${c}"></span>`).join('')}</div>
+      <div class="theme__name">${t.name}</div>
+    </div>
+  `).join('');
+  g.querySelectorAll('.theme').forEach(el => {
+    el.addEventListener('click', () => { state.theme = el.dataset.theme; markDirty(); renderThemes(); });
+  });
+}
+function renderAccents() {
+  const r = document.getElementById('accentRow');
+  r.innerHTML = ACCENTS.map(c => `<div class="accent ${c === state.accent ? 'is-on' : ''}" style="background:${c};color:${c}" data-color="${c}"></div>`).join('');
+  r.querySelectorAll('.accent').forEach(el => {
+    el.addEventListener('click', () => { state.accent = el.dataset.color; markDirty(); renderAccents(); });
+  });
+}
+
+// -- segmented / dirty --------------------------------
+function paintSegSingle(id, key) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.querySelectorAll('.seg__btn').forEach(b => {
+    b.classList.toggle('is-on', b.dataset.val === state[key]);
+    b.onclick = () => { state[key] = b.dataset.val; markDirty(); paintSegSingle(id, key); };
+  });
+}
+function paintSegMulti(id, key) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.querySelectorAll('.seg__btn').forEach(b => {
+    const on = state[key].includes(b.dataset.val);
+    b.classList.toggle('is-on', on);
+    b.onclick = () => {
+      const v = b.dataset.val;
+      if (state[key].includes(v)) state[key] = state[key].filter(x => x !== v);
+      else state[key] = state[key].concat([v]);
+      markDirty();
+      paintSegMulti(id, key);
+    };
+  });
+}
+function markDirty() {
+  if (dirty) return;
+  dirty = true;
+  document.getElementById('dirty').classList.add('is-on');
+}
+
+// -- mode toggle (subscription - byok) ---------------
+function paintSegMode() {
+  const el = document.getElementById('segMode');
+  if (!el) return;
+  el.querySelectorAll('.seg__btn').forEach(b => {
+    b.classList.toggle('is-on', b.dataset.val === state.fMode);
+    b.onclick = () => { state.fMode = b.dataset.val; markDirty(); paintSegMode(); applyModeVisibility(); };
+  });
+}
+function applyModeVisibility() {
+  const isByok = state.fMode === 'byok';
+  toggle('aiManagedSection', !isByok);
+  toggle('aiByokSection', isByok);
+  toggle('modeSubInfo', !isByok);
+  toggle('modeByokInfo', isByok);
+  toggle('modeSubExtras', !isByok);
+  toggle('planPill', !isByok);
+}
+function toggle(id, on) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = on ? '' : 'none';
+}
+
+// -- DB connection pill ------------------------------
+function updateDbConnPill() {
+  const pill = document.getElementById('dbConnPill');
+  if (!pill) return;
+  if (state.fDbConnected) {
+    pill.className = 'pill pill--live';
+    pill.innerHTML = '<span class="d"></span>Connected';
+  } else {
+    pill.className = 'pill pill--off';
+    pill.innerHTML = '<span class="d"></span>Read-only';
+  }
+}
+
+// -- field bindings ----------------------------------
+function bindFields() {
+  // selects
+  ['fLang','fTz','fModelFast','fModelHeavy','fSound','fActiveDb'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = state[id];
+    el.addEventListener('change', () => { state[id] = el.value; markDirty(); });
+  });
+
+  // switches
+  const swMap = {
+    fReduceMotion:'fReduceMotion', fAutoStart:'fAutoStart', fStartMinimized:'fStartMinimized', fTrayIcon:'fTrayIcon',
+    fStream:'fStream', fFallback:'fFallback',
+    fReindexWatch:'fReindexWatch', fReindexVerify:'fReindexVerify',
+    fNoiseSup:'fNoiseSup', fAec:'fAec', fAgc:'fAgc',
+    fCompress:'fCompress', fWda:'fWda', fHideFrame:'fHideFrame', fHideSelf:'fHideSelf',
+    fNotifUpdate:'fNotifUpdate', fNotifLicense:'fNotifLicense', fNotifKb:'fNotifKb', fNotifError:'fNotifError', fNotifWeekly:'fNotifWeekly',
+    fDoNotDisturb:'fDoNotDisturb', fTelemetry:'fTelemetry', fBeta:'fBeta',
+    fEncryptDb:'fEncryptDb', fClearOnExit:'fClearOnExit',
+    fDbConnected:'fDbConnected',
+    fAutoUpdate:'fAutoUpdate', fAutoInstall:'fAutoInstall', fPrerelease:'fPrerelease',
+    fLogToFile:'fLogToFile', fExpGpu:'fExpGpu', fExpMem:'fExpMem', fExpMulti:'fExpMulti',
+    fWipeHistory:'fWipeHistory',
+  };
+  Object.entries(swMap).forEach(([id,key]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.checked = !!state[key];
+    el.addEventListener('change', () => { state[key] = el.checked; markDirty(); if (key === 'fDbConnected') updateDbConnPill(); });
+  });
+
+  // ranges
+  const rangeMap = {
+    fScale:    { fmt: v => v + '%',            key: 'fScale' },
+    fTemp:     { fmt: v => (v/10).toFixed(1),  key: 'fTemp' },
+    fMaxTok:   { fmt: v => v + '',             key: 'fMaxTok' },
+    fGain:     { fmt: v => v + '%',            key: 'fGain' },
+    fInterval: { fmt: v => v + ' s',           key: 'fInterval' },
+    fJpeg:     { fmt: v => v + '%',            key: 'fJpeg' },
+    fChunk:    { fmt: v => v + ' tok',         key: 'fChunk' },
+    fOverlap:  { fmt: v => v + ' tok',         key: 'fOverlap' },
+  };
+  Object.entries(rangeMap).forEach(([id,cfg]) => {
+    const inp = document.getElementById(id);
+    const out = document.getElementById(id + 'Val');
+    if (!inp) return;
+    inp.value = state[cfg.key];
+    if (out) out.textContent = cfg.fmt(state[cfg.key]);
+    inp.addEventListener('input', () => {
+      state[cfg.key] = parseInt(inp.value, 10);
+      if (out) out.textContent = cfg.fmt(state[cfg.key]);
+      markDirty();
+    });
+  });
+
+  // times
+  ['fQuietFrom','fQuietTo'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = state[id];
+    el.addEventListener('change', () => { state[id] = el.value; markDirty(); });
+  });
+
+  // api key inputs
+  ['fKeyOpenAI','fKeyAnthropic','fKeyOpenRouter','fTgToken','fTgChat'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = state[id] || '';
+    el.addEventListener('input', () => { state[id] = el.value; markDirty(); });
+  });
+
+  // segmented
+  paintSegSingle('segBg','bg');
+  paintSegSingle('segStartMode','fStartMode');
+  paintSegMode();
+  paintSegSingle('segVad','fVad');
+  paintSegSingle('segStt','fStt');
+  paintSegSingle('segTrigger','fTrigger');
+  paintSegSingle('segRetention','fRetention');
+  paintSegSingle('segWorkers','fWorkers');
+  paintSegSingle('segLog','fLogLevel');
+  paintSegMulti('segChannels','fChannels');
+
+  applyModeVisibility();
+  bindHotkeys();
+}
+
+// -- hotkeys ------------------------------------------
+function bindHotkeys() {
+  document.querySelectorAll('.hotkey-input').forEach(el => {
+    el.addEventListener('focus', () => el.classList.add('is-recording'));
+    el.addEventListener('blur',  () => el.classList.remove('is-recording'));
+    el.addEventListener('keydown', e => {
+      e.preventDefault();
+      if (e.key === 'Escape' || e.key === 'Backspace') {
+        state['hotkey_' + el.dataset.hotkey] = '';
+        el.textContent = '';
+        markDirty();
+        return;
+      }
+      const parts = [];
+      if (e.ctrlKey)  parts.push('Ctrl');
+      if (e.shiftKey) parts.push('Shift');
+      if (e.altKey)   parts.push('Alt');
+      if (e.metaKey)  parts.push('Meta');
+      let k = e.key;
+      if (k.length === 1) k = k.toUpperCase();
+      if (['Control','Shift','Alt','Meta'].includes(k)) return;
+      parts.push(k);
+      const key = 'hotkey_' + el.dataset.hotkey;
+      state[key] = parts.join('+');
+      el.textContent = state[key];
+      markDirty();
+    });
+  });
+}
+
+// -- audio meters (demo) -----------------------------
+function buildMeter(id, n) {
+  const wrap = document.getElementById(id);
+  if (!wrap) return null;
+  wrap.innerHTML = '';
+  const bars = [];
+  for (let i = 0; i < n; i++) {
+    const b = document.createElement('span');
+    b.className = 'meter-bar';
+    wrap.appendChild(b);
+    bars.push(b);
+  }
+  return bars;
+}
+let meterTick = null;
+function startMeters() {
+  const inBars  = buildMeter('meterInBars', 24);
+  const sysBars = buildMeter('meterSysBars', 24);
+  let micOn = false, sysOn = false;
+  const micBtn = document.getElementById('btnTestMic');
+  const sysBtn = document.getElementById('btnTestSys');
+  micBtn.onclick = () => { micOn = !micOn; micBtn.classList.toggle('is-on', micOn); toast(micOn ? 'Mic test started' : 'Mic test stopped'); };
+  sysBtn.onclick = () => { sysOn = !sysOn; sysBtn.classList.toggle('is-on', sysOn); toast(sysOn ? 'System audio test started' : 'System audio test stopped'); };
+  if (meterTick) clearInterval(meterTick);
+  meterTick = setInterval(() => {
+    const ml = micOn ? Math.floor(Math.random() * 18) : 0;
+    const sl = sysOn ? Math.floor(Math.random() * 20) : Math.floor(Math.random() * 3);
+    [inBars, sysBars].forEach((bars, idx) => {
+      const lvl = idx === 0 ? ml : sl;
+      bars.forEach((b, i) => {
+        const on = i < lvl;
+        b.classList.toggle('is-on', on);
+        b.classList.toggle('is-warn',   on && i > 14 && i <= 18);
+        b.classList.toggle('is-danger', on && i > 18);
+      });
+    });
+    document.getElementById('meterInVal').textContent  = dbStr(dbFromLevel(ml, 24));
+    document.getElementById('meterSysVal').textContent = dbStr(dbFromLevel(sl, 24));
+  }, 120);
+}
+function dbFromLevel(l, max) { if (l <= 0) return -Infinity; return Math.round(20 * Math.log10(l/max)); }
+function dbStr(db) { return db <= -60 ? '-? dB' : db + ' dB'; }
+
+// -- search ------------------------------------------
+function bindSearch() {
+  const inp = document.getElementById('search');
+  inp.addEventListener('input', applySearch);
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault(); inp.focus(); inp.select();
+    }
+  });
+}
+function applySearch() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  document.querySelectorAll('.cat').forEach(c => {
+    const cat = CATEGORIES.find(x => x.id === c.dataset.cat);
+    c.classList.toggle('is-search-hide', q && !cat.name.toLowerCase().includes(q));
+  });
+  document.querySelectorAll('.tab-content').forEach(pane => {
+    let paneHasMatch = false;
+    pane.querySelectorAll('.field, .update, .acc-card, .shortcut, .dz, .kv').forEach(el => {
+      const hit = !q || (el.textContent || '').toLowerCase().includes(q);
+      el.classList.toggle('is-search-hide', q && !hit);
+      if (hit && q) paneHasMatch = true;
+    });
+    pane.querySelectorAll('.section').forEach(sec => {
+      if (!q) { sec.classList.remove('is-search-empty'); return; }
+      const has = Array.from(sec.querySelectorAll('.field,.update,.acc-card,.shortcut,.dz,.kv'))
+        .some(f => !f.classList.contains('is-search-hide'));
+      sec.classList.toggle('is-search-empty', !has);
+      if (has) paneHasMatch = true;
+    });
+    if (q) {
+      pane.classList.toggle('is-on', paneHasMatch);
+      const cat = pane.dataset.tab;
+      const catEl = document.querySelector(`.cat[data-cat="${cat}"]`);
+      if (catEl) catEl.classList.toggle('is-search-hide', !paneHasMatch);
+    } else {
+      pane.classList.toggle('is-on', pane.dataset.tab === activeCat);
+    }
+  });
+}
+
+// -- save / load / reset -----------------------------
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data && typeof data === 'object') return Object.assign({}, DEFAULTS, data);
+    }
+  } catch (_) {}
+  return JSON.parse(JSON.stringify(DEFAULTS));
+}
+function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {} }
+
+function saveAll() {
+  save();
+  dirty = false;
+  document.getElementById('dirty').classList.remove('is-on');
+  toast('Settings saved');
+}
+function resetAll() {
+  if (!confirm('Reset all settings to defaults? Your customizations will be lost.')) return;
+  state = JSON.parse(JSON.stringify(DEFAULTS));
+  save();
+  dirty = false;
+  document.getElementById('dirty').classList.remove('is-on');
+  bindFields(); renderThemes(); renderAccents(); updateDbConnPill();
+  toast('Reset to defaults', 'warn');
+}
+function factoryReset() {
+  const wipe = document.getElementById('fWipeHistory').checked;
+  const msg = wipe
+    ? 'Factory reset will erase ALL settings, dialog history and caches. This cannot be undone. Continue?'
+    : 'Factory reset will erase all settings and caches (history preserved). Continue?';
+  if (!confirm(msg)) return;
+  try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+  try { if (wipe) localStorage.removeItem('quistan.dialogs.v1'); } catch (_) {}
+  state = JSON.parse(JSON.stringify(DEFAULTS));
+  save();
+  bindFields(); renderThemes(); renderAccents(); updateDbConnPill();
+  toast('Factory reset complete', 'warn');
+}
+
+// -- toast -------------------------------------------
+function toast(msg, kind) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.toggle('toast--warn', kind === 'warn');
+  t.classList.add('is-visible');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('is-visible'), 1800);
+}
+
+// -- action stubs ------------------------------------
+function signIn()         { toast('Sign-in flow � Phase 5'); }
+function manageSub()      { toast('Opening subscription manager�'); }
+function copyHwid()       { navigator.clipboard?.writeText(document.getElementById('hwid').textContent); toast('HWID copied'); }
+function deactivate()     { if (confirm('Deactivate this device? Your license seat will be freed.')) toast('Device deactivated', 'warn'); }
+function addProvider()    { const url = prompt('Provider base URL:'); if (url) toast('Provider added: ' + url); }
+function testKeys()       { toast('Testing keys�'); }
+function reindexAll()     { if (!confirm('Reindex all knowledge sources? Existing vectors will be rebuilt.')) return; toast('Reindexing started'); }
+function pickDevice(k)    { toast('Native picker � backend integration Phase 6'); }
+function testMic()        { document.getElementById('btnTestMic').onclick(); }
+function testSys()        { document.getElementById('btnTestSys').onclick(); }
+function selectRegion()   { toast('Drag-select region on any screen'); }
+function clearRegion()    { toast('Region cleared'); }
+function testTg()         { toast('Test message sent to Telegram'); }
+function openDataFolder() { toast('Opening data folder�'); }
+function checkUpdate()    { toast('You are on the latest version'); }
+function openLogs()       { toast('Opening logs folder�'); }
+function copyDiagnostics(){ toast('Diagnostics copied to clipboard'); }
+function exportConfig()   {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'quistan-settings.json';
+  a.click();
+  toast('Config exported');
+}
+function importConfig()   { toast('Native file picker � backend integration Phase 6'); }
+function openWindows()    {
+  if (window.parent && window.parent !== window) window.parent.postMessage({ type:'open-windows-settings' }, '*');
+  else window.open('floating_windows_settings.html', '_blank');
+}
+function openKb()         {
+  if (window.parent && window.parent !== window) window.parent.postMessage({ type:'open-kb-picker' }, '*');
+  else window.open('kb_picker.html', '_blank');
+}
+function dbVacuum()       { toast('Vacuum: rebuilding DB file to reclaim space�'); }
+function dbIntegrity()    { toast('Integrity check: ok (no corruption)'); }
+function dbMigrate()      { toast('No pending migrations � schema v14 is current'); }
+function dbRebuild()      { toast('Rebuilding FTS and B-tree indexes�'); }
+function dbBackup()       { toast('Backup saved'); }
+function dbRestore()      { const file = prompt('Path to backup .db file:'); if (file) toast('Restoring from ' + file); }
+function dbCopyPath()     { navigator.clipboard?.writeText(document.getElementById('fDbFolder')?.value || ''); toast('Path copied'); }
+function dbClearVectors() { if (!confirm('Wipe vector index for the active database? Sources will need to be reindexed.')) return; toast('Vector index cleared � reindex required', 'warn'); }
+function dbClearHistory() { if (!confirm('Wipe dialog history for the active database? Settings and vectors preserved.')) return; toast('Dialog history cleared', 'warn'); }
+function dbWipe()         { if (!confirm('Wipe the ACTIVE database completely? This cannot be undone.')) return; if (!confirm('Are you absolutely sure?')) return; toast('Database wiped', 'warn'); }
+
+// -- init --------------------------------------------
+state = load();
+renderSidebar();
+renderThemes();
+renderAccents();
+bindFields();
+bindSearch();
+updateDbConnPill();
+startMeters();
+</script>
+
+</body>
+</html>
