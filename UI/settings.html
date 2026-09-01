@@ -3078,7 +3078,9 @@ g.querySelectorAll('.theme').forEach(el => {
 }
 function renderAccents() {
   const r = document.getElementById('accentRow');
-  r.innerHTML = ACCENTS.map(c => `<div class="accent ${c === state.accent ? 'is-on' : ''}" style="background:${c};color:${c}" data-color="${c}"></div>`).join('');
+  if (!r) return;
+  const palette = ['#54548F', '#6868A2', '#6E9C5E', '#7E73AA', '#669AB2', '#B89A6A', '#A86E68', '#A8A8B5'];
+  r.innerHTML = palette.map(c => `<div class="accent ${c === state.accent ? 'is-on' : ''}" style="background:${c};color:${c}" data-color="${c}"></div>`).join('');
   r.querySelectorAll('.accent').forEach(el => {
     el.addEventListener('click', () => { state.accent = el.dataset.color; markDirty(); renderAccents(); });
   });
