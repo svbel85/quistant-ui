@@ -103,7 +103,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   z-index: 40;
-  transition: border-color .2s, box-shadow .2s;
+  transition: border-color .2s, box-shadow .2s, width .2s ease, height .2s ease;
 }
 .pultik:hover {
   box-shadow:
@@ -555,9 +555,10 @@ body {
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 0 6px 0 12px;
-  height: 32px;
+  padding: 0 4px 0 4px;
+  height: 30px;
   transition: all .15s;
+  gap: 4px;
 }
 .chat__composer:focus-within {
   border-color: var(--accent);
@@ -574,6 +575,19 @@ body {
   min-width: 0;
 }
 .chat__composer input::placeholder { color: var(--muted-2); }
+.chat__attach {
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none;
+  color: var(--muted-2);
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.chat__attach:hover { color: var(--accent-2); background: var(--bg-3); }
+.chat__attach.is-active { color: var(--accent-2); background: var(--accent-soft); }
+.chat__attach svg { width: 12px; height: 12px; }
 .chat__send {
   width: 22px; height: 22px;
   display: flex;
@@ -785,6 +799,11 @@ const VARIANTS = {
       </button>
 
       <div class="chat__composer">
+        <button class="chat__attach" id="chatAttach" title="Attach file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.4 11.05 12.25 20.2a6 6 0 0 1-8.49-8.49L12.25 3.22a4 4 0 0 1 5.66 5.66L9.41 17.36a2 2 0 1 1-2.83-2.83l8.49-8.48"/>
+          </svg>
+        </button>
         <input type="text" id="chatInput" placeholder="Write dialog…">
         <button class="chat__send" id="chatSendBtn" title="Send">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -811,9 +830,34 @@ function renderVariant(id) {
   pultikBody.innerHTML = fn();
   pultikName.textContent = 'control panel';
   if (id === 'chat') wireChat();
+  fitToContent();
 }
 
-// ─── chat variant wiring ───
+// ─── auto-fit window to content ───
+let userResized = false;
+let fitRaf = null;
+function fitToContent() {
+  if (userResized) return;
+  const headH = pultik.querySelector('.pultik__head')?.offsetHeight || 0;
+  const bodyH = pultikBody.scrollHeight;
+  const totalH = Math.max(200, headH + bodyH + 2);
+
+  // measure widest direct child inside body
+  let widest = 0;
+  pultikBody.querySelectorAll(':scope > *').forEach(el => {
+    widest = Math.max(widest, el.scrollWidth);
+  });
+  const totalW = Math.max(210, widest + 20); // 10px padding each side
+
+  if (fitRaf) cancelAnimationFrame(fitRaf);
+  fitRaf = requestAnimationFrame(() => {
+    pultik.style.height = totalH + 'px';
+    pultik.style.width  = totalW + 'px';
+  });
+}
+
+const roFit = new ResizeObserver(fitToContent);
+roFit.observe(pultikBody);
 let chatBarsIn  = null;
 let chatBarsOut = null;
 let chatTickInt = null;
@@ -872,6 +916,12 @@ function wireChat() {
     send('cap:region', { state: e.currentTarget.className });
   });
   document.getElementById('chatCapPhoto').addEventListener('click', () => send('cap:photo'));
+
+  // attach file
+  document.getElementById('chatAttach').addEventListener('click', (e) => {
+    e.currentTarget.classList.toggle('is-active');
+    send('chat:attach', { active: e.currentTarget.classList.contains('is-active') });
+  });
 
   // session pills — выбор активного окна
   document.querySelectorAll('.chat__pill[data-id]').forEach(p => {
@@ -959,6 +1009,7 @@ function updateInspector() {
   grip.addEventListener('mousedown', e => {
     e.stopPropagation();
     resizing = true;
+    userResized = true;
     startX = e.clientX; startY = e.clientY;
     origW = pultik.offsetWidth; origH = pultik.offsetHeight;
     document.body.style.userSelect = 'none';
