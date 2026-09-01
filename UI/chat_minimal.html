@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -94,7 +94,7 @@ body {
   bottom: 18px;
   right: 0;
   z-index: 60;
-  width: 18px; height: 56px;
+  width: 24px; height: 56px;
   display: flex; align-items: center; justify-content: center;
   background: var(--bg-2);
   border: 1px solid var(--border);
@@ -109,7 +109,7 @@ body {
    РљРѕРіРґР° РїР°РЅРµР»СЊ Р·Р°РєСЂС‹С‚Р° вЂ” FAB СЃРєСЂС‹РІР°РµС‚СЃСЏ РІРјРµСЃС‚Рµ СЃ РЅРµР№ (overflow:hidden РЅР° chat-panel). */
 .fab-play {
   position: relative;
-  width: 28px; height: 28px;
+  width: 24px; height: 24px;
   border-radius: 50%;
   background: var(--accent);
   color: var(--bg);
@@ -119,6 +119,7 @@ body {
   box-shadow: 0 3px 10px rgba(84,84,143,.35), 0 0 0 1px rgba(84,84,143,.2);
   transition: all .15s;
   flex-shrink: 0;
+  margin-right: 30px;
 }
 .fab-play:hover {
   background: var(--accent-2);
@@ -126,7 +127,7 @@ body {
   box-shadow: 0 6px 18px rgba(84,84,143,.45), 0 0 0 1px var(--accent);
 }
 .fab-play:active { transform: scale(.97); }
-.fab-play svg { width: 12px; height: 12px; transition: transform .2s; }
+.fab-play svg { width: 11px; height: 11px; transition: transform .2s; }
 .fab-play[data-state="live"] { background: var(--live); box-shadow: 0 6px 20px rgba(110,156,94,.35), 0 0 0 1px rgba(110,156,94,.2); }
 .fab-play[data-state="live"]:hover { background: #6E9C5E; box-shadow: 0 8px 24px rgba(110,156,94,.5), 0 0 0 1px var(--live); }
 
@@ -135,12 +136,13 @@ body {
 .fab-meters {
   position: relative;
   display: flex; align-items: center; gap: 6px;
-  padding: 2px 8px;
+  padding: 0 8px;
   background: var(--bg-1);
   border: 1px solid var(--border);
   border-radius: 999px;
   box-shadow: 0 2px 10px rgba(0,0,0,.4);
   flex-shrink: 0;
+  height: 24px;
 }
 .fab-meters .meter {
   padding: 0;
@@ -179,7 +181,7 @@ body {
 /* РЅРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ РѕС‚РєСЂС‹С‚Р° вЂ” РїРѕРґРЅРёРјР°РµРјСЃСЏ РќРђР” РЅРµР№, С‡С‚РѕР±С‹ РЅРµ СЃРёРґРµС‚СЊ РІРЅСѓС‚СЂРё */
 .app.is-bottom-open .bottom-toggle { bottom: 108px; }
 .bottom-toggle:hover { background: var(--bg-3); color: var(--accent-2); border-color: var(--accent); border-right-color: var(--bg-3); }
-.bottom-toggle svg { width: 16px; height: 16px; transition: transform .2s; }
+.bottom-toggle svg { width: 20px; height: 20px; transition: transform .2s; }
 .app.is-bottom-open .bottom-toggle {
   background: var(--accent);
   color: var(--bg);
@@ -404,7 +406,7 @@ body {
 .panel--bottom .panel__body {
   flex: 1;
   overflow-y: auto;
-  padding: 14px 18px;
+  padding: 14px 18px 14px 70px;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -417,11 +419,12 @@ body {
   display: flex; align-items: center; gap: 10px;
   flex-shrink: 0;
   margin-left: auto;
+  margin-right: 80px;
 }
 .profile-card__avatar {
   width: 32px; height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--solo));
+  background: linear-gradient(135deg, var(--live), #94c084);
   display: flex; align-items: center; justify-content: center;
   font-size: 13px; font-weight: 600; color: #fff;
 }
@@ -708,7 +711,7 @@ body {
 
 /* (legacy .meter-toggle СѓРґР°Р»С‘РЅ вЂ” РјРёРєСЂРѕС„РѕРЅС‹ С‚РµРїРµСЂСЊ РІРёСЃСЏС‚ Сѓ FAB) */
 .win-btn {
-  width: 28px; height: 28px;
+  width: 22px; height: 22px;
   display: flex; align-items: center; justify-content: center;
   background: transparent; border: none;
   color: var(--muted);
@@ -822,9 +825,9 @@ body {
   font-weight: 600; font-size: 12px; color: #fff;
   flex-shrink: 0;
 }
-.avatar-sm--ai { background: linear-gradient(135deg, var(--accent), var(--solo)); }
-.avatar-sm--other { background: linear-gradient(135deg, var(--solo), var(--accent)); }
-.avatar-sm--user { background: var(--bg-3); color: var(--text); border: 1px solid var(--border); }
+.avatar-sm--ai { background: linear-gradient(135deg, var(--accent), var(--solo)); color: #fff; }
+.avatar-sm--other { background: linear-gradient(135deg, var(--kb), #8fb8cf); color: #fff; }
+.avatar-sm--user { background: linear-gradient(135deg, var(--live), #94c084); color: #fff; border: 1px solid rgba(110,156,94,.3); }
 
 .hint {
   margin-top: 6px;
@@ -882,52 +885,137 @@ body {
 /* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ CHAT PANEL (РЅР°Рґ composer'РѕРј, РїРѕРґ feed'РѕРј) в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
 
 /* РєРЅРѕРїРєР°-С‚Р°Р±: РјР°Р»РµРЅСЊРєР°СЏ РїРёР»СЋР»СЏ РїРѕ С†РµРЅС‚СЂСѓ, РєР°Рє Сѓ bottom-panel */
-.chat-panel-toggle {
-  flex-shrink: 0;
-  height: 22px;
-  padding: 0 14px;
-  display: flex; align-items: center; justify-content: center;
-  gap: 6px;
-  margin: 0 auto;
-  background: var(--bg-2);
-  color: var(--muted);
-  cursor: pointer;
-  border: none;
-  border-radius: 999px;
-  font-family: 'Geist Mono', monospace;
-  font-size: 10px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  transition: all .15s;
-}
-.chat-panel-toggle:hover { background: var(--bg-3); color: var(--accent-2); }
-.chat-panel-toggle svg { width: 11px; height: 11px; transition: transform .2s; }
-.chat-panel-toggle.is-open {
-  background: var(--accent-soft);
-  color: var(--accent-2);
-}
-.chat-panel-toggle.is-open svg { transform: rotate(180deg); }
-
-/* СЃР°РјР° РїР°РЅРµР»СЊ: РІ Р·Р°РєСЂС‹С‚РѕРј РІРёРґРµ flex-basis:0 + overflow:hidden (РЅРµ РІРёРґРЅР° Рё РЅРµ Р·Р°РЅРёРјР°РµС‚),
-   РІ РѕС‚РєСЂС‹С‚РѕРј вЂ” flex-basis:auto + max-height РґР»СЏ СЃРєСЂРѕР»Р»Р° РґР»РёРЅРЅРѕРіРѕ РєРѕРЅС‚РµРЅС‚Р°.
-   Feed СѓР¶РёРјР°РµС‚СЃСЏ СЃРІРµСЂС…Сѓ (РѕРЅ flex:1), composer РѕСЃС‚Р°С‘С‚СЃСЏ РЅР° РјРµСЃС‚Рµ. */
+/* (chat-panel-toggle удалён — панель закреплена) */
 .chat-panel {
-  flex: 0 0 0;
-  min-height: 0;
-  overflow: hidden;
+  flex-shrink: 0;
+  height: 34px;
   background: transparent;
-  border-bottom: 1px solid transparent;
-  transition: flex-basis .25s ease, border-color .25s ease;
-}
-.chat-panel.is-open {
-  flex: 0 0 auto;
-  max-height: 34px;
-  overflow-y: auto;
 }
 .chat-panel__inner {
-  padding: 0 14px;
+  padding: 0 14px 0 60px;
   color: var(--muted);
   font-size: 13px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.chat-panel__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 0;
+}
+
+/* row of window buttons (left side of panel) */
+.win-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  padding-left: 0;
+  scrollbar-width: none;
+}
+.win-buttons::-webkit-scrollbar { display: none; }
+.win-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 82px;
+  height: 24px;
+  padding: 0 14px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-2);
+  font-family: 'Geist Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  cursor: pointer;
+  transition: all .15s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.win-pill__dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--win-color, var(--muted));
+  box-shadow: 0 0 8px var(--win-color, transparent);
+  flex-shrink: 0;
+}
+.win-pill:hover {
+  border-color: var(--win-color);
+  color: #fff;
+}
+.win-pill.is-active {
+  background: color-mix(in srgb, var(--win-color) 22%, transparent);
+  border-color: var(--win-color);
+  color: #fff;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--win-color) 35%, transparent);
+}
+.win-pill--refresh {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-2);
+  position: relative;
+  overflow: hidden;
+}
+.win-pill--refresh:hover {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  border-color: var(--accent-2);
+  color: #fff;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.win-pill--refresh svg { flex-shrink: 0; }
+/* когда открыто ровно одно окно — красим кнопку в его цвет */
+.win-pill--refresh.win-pill--single {
+  background: color-mix(in srgb, var(--win-color) 22%, transparent);
+  border-color: var(--win-color);
+  color: #fff;
+}
+.win-pill--refresh.win-pill--single:hover {
+  background: color-mix(in srgb, var(--win-color) 38%, transparent);
+  border-color: var(--win-color);
+  color: #fff;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--win-color) 45%, transparent);
+}
+
+/* shimmer-волна пробегает слева направо, пока идёт обновление.
+   BACKEND NOTE: добавь класс `.is-loading` к .win-pill--refresh ПЕРЕД запросом,
+   удали его в `.finally()` или после успешного ответа.
+   Сейчас класс ставится в JS-стабе на ~1.5s — замени на реальное состояние сетевого вызова. */
+@keyframes refresh-shimmer {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+.win-pill--refresh::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,255,255,.28) 50%,
+    transparent 100%);
+  pointer-events: none;
+  opacity: 0;
+}
+.win-pill--refresh.is-loading::before {
+  opacity: 1;
+  animation: refresh-shimmer 1.1s linear infinite;
+}
+.win-pill--refresh.is-loading svg {
+  animation: refresh-spin 1s linear infinite;
+}
+@keyframes refresh-spin {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
 }
 .chat-panel__controls {
   display: flex;
@@ -936,6 +1024,7 @@ body {
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 /* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ COMPOSER в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
@@ -1416,6 +1505,230 @@ body {
 }
 .cap-floating-btn:hover::after { opacity: 1; }
 
+/* ════════════ HUD MODE TOGGLE (в header, перед .window-ctl) ════════════ */
+.hud-toggle {
+  width: 28px; height: 28px;
+  margin-left: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  position: relative;
+  flex-shrink: 0;
+}
+.hud-toggle:hover {
+  background: var(--bg-3);
+  color: var(--accent-2);
+  border-color: var(--border);
+}
+.hud-toggle svg {
+  width: 15px; height: 15px;
+  transition: transform .2s;
+}
+.hud-toggle:hover svg { transform: translateY(-1px); }
+.hud-toggle.is-on {
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(84,84,143,.3);
+}
+.hud-toggle.is-on svg { transform: scale(1.08); }
+.hud-toggle::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%; transform: translateX(-50%);
+  padding: 4px 8px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 11px;
+  font-family: 'Geist Mono', monospace;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s;
+  z-index: 80;
+}
+.hud-toggle:hover::after { opacity: 1; }
+
+/* ════════════ TRANSPARENCY CONTROL (в bottom panel) ════════════ */
+.transparency-control {
+  position: relative;
+  display: flex; align-items: center;
+  flex-shrink: 0;
+}
+.transparency-btn {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  position: relative;
+}
+.transparency-btn:hover {
+  background: var(--bg-3);
+  color: var(--accent-2);
+  border-color: var(--accent);
+}
+.transparency-btn.is-on {
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  border-color: var(--accent);
+}
+.transparency-btn svg { width: 14px; height: 14px; }
+.transparency-btn::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%; transform: translateX(-50%);
+  padding: 4px 8px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 11px;
+  font-family: 'Geist Mono', monospace;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s;
+  z-index: 80;
+}
+.transparency-btn:hover::after { opacity: 1; }
+
+/* popup — раскрывается ВВЕРХ от bottom panel, position: fixed чтобы не клипался */
+.transparency-popup {
+  position: fixed;
+  z-index: 75;
+  width: 220px;
+  padding: 12px 14px;
+  background: rgba(27,27,37,.95);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 28px rgba(0,0,0,.55), 0 0 0 1px rgba(84,84,143,.15);
+  opacity: 0;
+  transform: translateY(8px) scale(.96);
+  pointer-events: none;
+  transition: opacity .18s, transform .18s;
+}
+.transparency-popup.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.transparency-popup__head {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.transparency-popup__val {
+  color: var(--accent-2);
+  font-weight: 600;
+  font-size: 11px;
+}
+.transparency-slider {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px;
+  background: var(--bg-3);
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  margin: 4px 0 10px;
+}
+.transparency-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg-1);
+  cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(84,84,143,.15);
+}
+.transparency-slider::-moz-range-thumb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg-1);
+  cursor: pointer;
+}
+.transparency-popup__quick {
+  display: flex; gap: 4px;
+  margin-top: 2px;
+}
+.transparency-popup__quick button {
+  flex: 1;
+  padding: 4px 0;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  cursor: pointer;
+  transition: all .12s;
+}
+.transparency-popup__quick button:hover {
+  background: var(--bg-3);
+  color: var(--text);
+  border-color: var(--border-2);
+}
+.transparency-popup__quick button.is-active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-2);
+}
+.transparency-popup__hint {
+  font-size: 10px;
+  font-family: 'Geist Mono', monospace;
+  color: var(--muted-2);
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+/* ════════════ HUD MODE (body transparent + opacity variable) ════════════ */
+body.is-hud {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+.app.is-hud .feed .msg,
+.app.is-hud .feed .bubble,
+.app.is-hud .feed .hint,
+.app.is-hud .feed .day,
+.app.is-hud .feed .bubble--system {
+  opacity: var(--hud-opacity, 1);
+  transition: opacity .25s;
+}
+/* header, controls и панели остаются полностью непрозрачными для удобства */
+.app.is-hud .header,
+.app.is-hud .panel--sources,
+.app.is-hud .panel--sessions,
+.app.is-hud .panel--windows,
+.app.is-hud .panel-toggle,
+.app.is-hud .hud-toggle {
+  opacity: 1 !important;
+}
+/* в HUD-режиме bottom-панель, chat-panel, composer, cap-floating СКРЫВАЮТСЯ —
+   они переехали в отдельное окно pultik.html */
+.app.is-hud .panel--bottom,
+.app.is-hud .bottom-toggle,
+.app.is-hud .chat-panel,
+.app.is-hud .composer,
+.app.is-hud .cap-floating { display: none !important; }
+
 </style>
 </head>
 
@@ -1522,15 +1835,23 @@ body {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </button>
 
+      <button class="hud-toggle" id="hudToggle" data-tip="HUD mode" aria-label="Toggle HUD mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 3 9 5-9 5-9-5 9-5z"/>
+          <path d="m3 13 9 5 9-5" opacity=".55"/>
+          <path d="m3 18 9 5 9-5" opacity=".3"/>
+        </svg>
+      </button>
+
       <div class="window-ctl">
         <button class="win-btn" title="Minimize">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
         <button class="win-btn" title="Maximize">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
         </button>
         <button class="win-btn win-btn--close" title="Close">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
         </button>
       </div>
     </header>
@@ -1544,9 +1865,9 @@ body {
       </div>
 
       <div class="msg">
-        <div class="avatar-sm avatar-sm--other">А</div>
+        <div class="avatar-sm avatar-sm--other">S</div>
         <div class="msg__col">
-          <div class="msg__meta"><b>Антон · 1С-разработчик</b> · 14:05:12 · Telegram</div>
+          <div class="msg__meta"><b>Speaker · 1С-разработчик</b> · 14:05:12 · Telegram</div>
           <div class="bubble bubble--other">Слушай, у меня отчёт по остаткам на складах в УТ 11 крутится почти 40 секунд на боевой базе. Уже неделю бьюсь — куда копать в первую очередь?</div>
         </div>
       </div>
@@ -1582,17 +1903,17 @@ body {
         <div class="msg__col">
           <div class="msg__meta msg__meta--mic" style="justify-content:flex-end">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
-            <b>микрофон</b> · 14:05:38
+            <b data-user-name>John Miti</b> · 14:05:38
           </div>
           <div class="bubble bubble--user">Переписал на виртуальную таблицу <code>Остатки</code> с параметрами по складу и периоду, убрал лишние соединения и вложенные подзапросы. Стало 4 секунды вместо 40 — уже норм.</div>
         </div>
-        <div class="avatar-sm avatar-sm--user">U</div>
+        <div class="avatar-sm avatar-sm--user">J</div>
       </div>
 
       <div class="msg">
-        <div class="avatar-sm avatar-sm--other">А</div>
+        <div class="avatar-sm avatar-sm--other">S</div>
         <div class="msg__col">
-          <div class="msg__meta"><b>Антон · 1С-разработчик</b> · 14:06:04</div>
+          <div class="msg__meta"><b>Speaker · 1С-разработчик</b> · 14:06:04</div>
           <div class="bubble bubble--other">Огонь, поздравляю. Только смотри — у нас же ещё RLS включён по подразделениям, и я подозреваю, что он добавляет тормозов на ровном месте. Ты это как-то учитывал?</div>
         </div>
       </div>
@@ -1601,11 +1922,11 @@ body {
         <div class="msg__col">
           <div class="msg__meta msg__meta--kb" style="justify-content:flex-end">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
-            <b>клавиатура</b> · 14:06:31
+            <b data-user-name>John Miti</b> · 14:06:31
           </div>
           <div class="bubble bubble--user-kb">Что ответить про RLS и производительность?</div>
         </div>
-        <div class="avatar-sm avatar-sm--user">U</div>
+        <div class="avatar-sm avatar-sm--user">J</div>
       </div>
 
       <div class="msg">
@@ -1638,17 +1959,17 @@ body {
         <div class="msg__col">
           <div class="msg__meta msg__meta--mic" style="justify-content:flex-end">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
-            <b>микрофон</b> · 14:06:58
+            <b data-user-name>John Miti</b> · 14:06:58
           </div>
           <div class="bubble bubble--user">С RLS есть нюанс: он добавляется в <code>ГДЕ</code> и заметно бьёт по скорости. Я бы вынес тяжёлый отчёт в <code>ПривилегированныйРежим</code>, а для типовых — настроил кеш в регистре сведений. И шаблоны RLS надо оптимизировать, без вложенных подзапросов.</div>
         </div>
-        <div class="avatar-sm avatar-sm--user">U</div>
+        <div class="avatar-sm avatar-sm--user">J</div>
       </div>
 
       <div class="msg">
-        <div class="avatar-sm avatar-sm--other">А</div>
+        <div class="avatar-sm avatar-sm--other">S</div>
         <div class="msg__col">
-          <div class="msg__meta"><b>Антон · 1С-разработчик</b> · 14:07:24</div>
+          <div class="msg__meta"><b>Speaker · 1С-разработчик</b> · 14:07:24</div>
           <div class="bubble bubble--other">Логично. А как замерить, что после всех оптимизаций реально стало быстрее? В конфигураторе же нормального профайлера нет — я обычно только в консоли запросов план смотрю.</div>
         </div>
       </div>
@@ -1657,11 +1978,11 @@ body {
         <div class="msg__col">
           <div class="msg__meta msg__meta--kb" style="justify-content:flex-end">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
-            <b>клавиатура</b> · 14:07:45
+            <b data-user-name>John Miti</b> · 14:07:45
           </div>
           <div class="bubble bubble--user-kb">Чем мерить производительность запросов в 1С?</div>
         </div>
-        <div class="avatar-sm avatar-sm--user">U</div>
+        <div class="avatar-sm avatar-sm--user">J</div>
       </div>
 
       <div class="msg">
@@ -1694,17 +2015,17 @@ body {
         <div class="msg__col">
           <div class="msg__meta msg__meta--mic" style="justify-content:flex-end">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg>
-            <b>микрофон</b> · 14:08:10
+            <b data-user-name>John Miti</b> · 14:08:10
           </div>
           <div class="bubble bubble--user">В конфигураторе есть <code>ЗамерПроизводительности</code>, в консоли запросов можно посмотреть план и время. На проде — технологический журнал через <code>logcfg.xml</code>. Этого обычно хватает, ЦУП — это уже для серьёзных случаев.</div>
         </div>
-        <div class="avatar-sm avatar-sm--user">U</div>
+        <div class="avatar-sm avatar-sm--user">J</div>
       </div>
 
       <div class="msg">
-        <div class="avatar-sm avatar-sm--other">А</div>
+        <div class="avatar-sm avatar-sm--other">S</div>
         <div class="msg__col">
-          <div class="msg__meta"><b>Антон · 1С-разработчик</b> · 14:08:35</div>
+          <div class="msg__meta"><b>Speaker · 1С-разработчик</b> · 14:08:35</div>
           <div class="bubble bubble--other">Понял, спасибо. Пойду переписывать отчёт и настраивать технологический журнал. Если что — ещё напишу.</div>
         </div>
       </div>
@@ -1738,13 +2059,15 @@ body {
 
     <!-- РўР°Р±-РєРЅРѕРїРєР° + СЂР°СЃРєСЂС‹РІР°СЋС‰Р°СЏСЃСЏ РїР°РЅРµР»СЊ РќРђР” composer'РѕРј (С‡Р°С‚ СѓР¶РёРјР°РµС‚СЃСЏ СЃРІРµСЂС…Сѓ).
          РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РћРўРљР Р«РўРђ вЂ” РІРЅСѓС‚СЂРё Р¶РёРІСѓС‚ FAB play/pause Рё РјРµС‚СЂС‹. -->
-    <button class="chat-panel-toggle is-open" id="chatPanelToggle" onclick="toggleChatPanel()" data-tip="Toggle panel">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-    </button>
-
-    <div class="chat-panel is-open" id="chatPanel">
+        <div class="chat-panel" id="chatPanel">
       <div class="chat-panel__inner">
-        <div class="chat-panel__controls">
+        <div class="chat-panel__row">
+          <button class="win-pill win-pill--refresh" id="refreshAllWindows" title="Refresh all open windows with latest chat data">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3.5-7.1"/><path d="M21 4v5h-5"/></svg>
+            <span>Refresh all</span>
+          </button>
+          <div class="win-buttons" id="winButtons"></div>
+          <div class="chat-panel__controls">
           <div class="fab-meters" id="fabMeters">
             <div class="meter meter--in" title="Incoming audio">
               <svg class="meter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -1758,6 +2081,7 @@ body {
           <button class="fab-play" id="fabPlay" data-state="live" title="Start / stop">
             <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
           </button>
+        </div>
         </div>
       </div>
     </div>
@@ -1965,9 +2289,9 @@ body {
       </button>
 
       <div class="profile-card">
-        <div class="profile-card__avatar">K</div>
+        <div class="profile-card__avatar" id="profileAvatar">J</div>
         <div class="profile-card__info">
-          <div class="profile-card__name">quistant_user</div>
+          <div class="profile-card__name" id="profileName">John Miti</div>
           <div class="profile-card__email">svbel85@gmail.com</div>
         </div>
       </div>
@@ -2030,7 +2354,7 @@ body {
       <path d="M4 12h16"/>
     </svg>
   </button>
-  <button class="cap-floating-btn is-primary" id="capShotRegion" data-tip="Screenshot region · Ctrl+Shift+4" title="Screenshot region">
+  <button class="cap-floating-btn" id="capShotRegion" data-tip="Screenshot region · Ctrl+Shift+4" title="Screenshot region">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M5 7h3l2-2h4l2 2h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
       <circle cx="12" cy="13" r="3.5"/>
@@ -2077,6 +2401,110 @@ body {
   }
   const inBars  = buildMeter(document.getElementById('meterIn'),  14);
   const outBars = buildMeter(document.getElementById('meterOut'), 14);
+
+  // ─── window buttons (динамический рендер ТОЛЬКО из #winList — сессий, не файлов) ───
+  function renderWinButtons() {
+    const container = document.getElementById('winButtons');
+    if (!container) return;
+    container.innerHTML = '';
+    let openCount = 0;
+    let lastColor = '';
+    document.querySelectorAll('#winList .src-item').forEach(item => {
+      const box = item.querySelector('.src-item__box');
+      if (!box || !box.classList.contains('is-on')) return;
+      const nameEl = item.querySelector('.src-item__name');
+      const dot = item.querySelector('.win-dot');
+      if (!nameEl) return;
+      const name = nameEl.textContent.trim();
+      const color = dot ? dot.style.background : '';
+      const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const label = name.replace(/[^A-Za-zА-Яа-яЁё]/g, '').slice(0, 5);
+
+      const btn = document.createElement('button');
+      btn.className = 'win-pill';
+      if (color) btn.style.setProperty('--win-color', color);
+      btn.title = name;
+      btn.dataset.window = id;
+      btn.innerHTML = '<span class="win-pill__dot"></span><span class="win-pill__label"></span>';
+      btn.querySelector('.win-pill__label').textContent = label;
+      btn.addEventListener('click', () => {
+        console.log('[stub] update window:', name, '→ push latest chat data into already-open floating window');
+      });
+      container.appendChild(btn);
+      openCount++;
+      lastColor = color;
+    });
+    // обновить кнопку Refresh(-all)
+    const refreshBtn = document.getElementById('refreshAllWindows');
+    if (refreshBtn) {
+      if (openCount === 0) {
+        refreshBtn.style.display = 'none';
+      } else {
+        refreshBtn.style.display = '';
+        const labelEl = refreshBtn.querySelector('span');
+        if (labelEl) labelEl.textContent = openCount === 1 ? 'Refresh' : 'Refresh all';
+        if (openCount === 1 && lastColor) {
+          // подкрасить под цвет единственного открытого окна
+          refreshBtn.style.setProperty('--win-color', lastColor);
+          refreshBtn.classList.add('win-pill--single');
+        } else {
+          refreshBtn.classList.remove('win-pill--single');
+        }
+      }
+    }
+  }
+  document.querySelectorAll('#winList .src-item').forEach(item => {
+    item.addEventListener('click', () => setTimeout(renderWinButtons, 0));
+  });
+  document.addEventListener('quistan:window-closed', (e) => {
+    const id = e.detail && e.detail.window;
+    if (!id) return;
+    const sess = Array.from(document.querySelectorAll('#winList .src-item')).find(s => {
+      const n = s.querySelector('.src-item__name');
+      return n && n.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') === id;
+    });
+    if (sess) {
+      sess.querySelector('.src-item__box').classList.remove('is-on');
+      renderWinButtons();
+    }
+  });
+  renderWinButtons();
+
+  // ─── refresh all windows ───
+  // BACKEND NOTE:
+  //   1) на клик вызвать POST /api/windows/refresh-all с текущим снэпшотом чата
+  //   2) сразу поставить класс `is-loading` на #refreshAllWindows — UI покажет
+  //      бегущую shimmer-волну и крутящуюся иконку (см. CSS .win-pill--refresh.is-loading)
+  //   3) на success → сервер вернёт обновлённые данные для каждого окна →
+  //      разослать их по iframe/postMessage открытых floating windows
+  //   4) на finally → снять класс `is-loading`, вернуть кнопку в обычное состояние
+  //   Сейчас это стаб: имитирует 1.5s задержку.
+  const refreshAllBtn = document.getElementById('refreshAllWindows');
+  if (refreshAllBtn) {
+    refreshAllBtn.addEventListener('click', () => {
+      const open = Array.from(document.querySelectorAll('.win-pill:not(.win-pill--refresh)')).map(b => b.title);
+      console.log('[stub] refresh all open windows:', open);
+      refreshAllBtn.classList.add('is-loading');
+      // === BACKEND: await fetch('/api/windows/refresh-all', { method: 'POST', body: ... }) ===
+      setTimeout(() => refreshAllBtn.classList.remove('is-loading'), 1500);
+    });
+  }
+
+  // ─── имя пользователя + буква аватара подтягиваются из профиля ───
+  function syncUserName() {
+    const profileName = document.getElementById('profileName');
+    const profileAvatar = document.getElementById('profileAvatar');
+    if (!profileName) return;
+    const name = profileName.textContent.trim();
+    const letter = (profileAvatar && profileAvatar.textContent.trim()) || name.charAt(0).toUpperCase();
+    document.querySelectorAll('[data-user-name]').forEach(el => { el.textContent = name; });
+    document.querySelectorAll('.avatar-sm--user').forEach(el => { el.textContent = letter; });
+  }
+  const profileNameEl = document.getElementById('profileName');
+  if (profileNameEl) {
+    new MutationObserver(syncUserName).observe(profileNameEl, { childList: true, characterData: true, subtree: true });
+  }
+  syncUserName();
   const dbIn  = document.getElementById('dbIn');
   const dbOut = document.getElementById('dbOut');
 
@@ -2323,18 +2751,90 @@ body {
   }
   window.addEventListener('load', () => { if (feed) feed.scrollTop = feed.scrollHeight; });
 
-  // в”Ђв”Ђв”Ђ chat panel toggle (РЅР°Рґ composer'РѕРј, С‡Р°С‚ СѓР¶РёРјР°РµС‚СЃСЏ СЃРІРµСЂС…Сѓ) в”Ђв”Ђв”Ђ
-  function toggleChatPanel() {
-    const panel = document.getElementById('chatPanel');
-    const btn   = document.getElementById('chatPanelToggle');
-    if (!panel || !btn) return;
-    panel.classList.toggle('is-open');
-    btn.classList.toggle('is-open');
-    // РїРѕСЃР»Рµ СЂР°СЃРєСЂС‹С‚РёСЏ вЂ” РїСЂРѕРєСЂСѓС‚РёС‚СЊ feed Рє РЅРёР·Сѓ, С‡С‚РѕР±С‹ РїРѕСЃР»РµРґРЅРёР№ РїСѓР·С‹СЂСЊ Р±С‹Р» РІРёРґРµРЅ
-    if (panel.classList.contains('is-open') && feed) {
-      requestAnimationFrame(() => { feed.scrollTop = feed.scrollHeight; });
+  // ─── chat panel toggle (над composer'ом, чат ужимается сверху) ───
+  // chat panel — закреплён, toggle удалён
+
+  // ─── HUD MODE TOGGLE + PULTIK WINDOW ───
+  const hudToggle = document.getElementById('hudToggle');
+  const appEl = document.getElementById('app');
+  let pultikWin = null;
+  const PULTIK_FEATURES = 'width=620,height=72,resizable=yes,scrollbars=no';
+
+  function openPultik() {
+    if (pultikWin && !pultikWin.closed) { pultikWin.focus(); return; }
+    try {
+      pultikWin = window.open('pultik.html', 'quistan-pultik', PULTIK_FEATURES);
+    } catch (e) {
+      console.warn('[hud] cannot open pultik window:', e);
+      pultikWin = null;
     }
   }
+
+  function closePultik() {
+    if (pultikWin && !pultikWin.closed) {
+      try { pultikWin.close(); } catch (e) {}
+    }
+    pultikWin = null;
+  }
+
+  function setHudMode(on) {
+    appEl.classList.toggle('is-hud', on);
+    document.body.classList.toggle('is-hud', on);
+    if (hudToggle) {
+      hudToggle.classList.toggle('is-on', on);
+      hudToggle.dataset.tip = on ? 'Exit HUD' : 'HUD mode';
+    }
+    if (on) openPultik();
+    else closePultik();
+  }
+
+  // применяет opacity к чату (используется и локально, и через postMessage от pultik)
+  function applyOpacity(val) {
+    const pct = Math.max(30, Math.min(100, parseInt(val, 10) || 100));
+    appEl.style.setProperty('--hud-opacity', (pct / 100).toFixed(2));
+    try { localStorage.setItem('quistan:hud-opacity', pct); } catch (e) {}
+  }
+
+  // init opacity из localStorage (если pultik менял ранее)
+  try {
+    const saved = parseInt(localStorage.getItem('quistan:hud-opacity') || '100', 10);
+    if (saved >= 30 && saved <= 100) appEl.style.setProperty('--hud-opacity', (saved / 100).toFixed(2));
+  } catch (e) {}
+
+  if (hudToggle) {
+    hudToggle.addEventListener('click', () => {
+      setHudMode(!appEl.classList.contains('is-hud'));
+    });
+  }
+
+  // ─── СЛУШАЕМ СООБЩЕНИЯ ОТ PULTIK ───
+  window.addEventListener('message', (e) => {
+    if (!e.data || typeof e.data !== 'object') return;
+    if (e.data.type === 'hud:exit') {
+      setHudMode(false);
+    } else if (e.data.type === 'hud:opacity' && typeof e.data.value === 'number') {
+      applyOpacity(e.data.value);
+    } else if (e.data.type === 'hud:ping') {
+      // pultik спрашивает, активен ли HUD — отвечаем
+      try { e.source?.postMessage({ type: 'hud:state', value: appEl.classList.contains('is-hud') }, '*'); } catch (err) {}
+    }
+  });
+
+  // Esc в основном окне — выход из HUD
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && appEl.classList.contains('is-hud')) {
+      setHudMode(false);
+    }
+  });
+
+  // если пользователь закрыл pultik крестиком — выходим из HUD
+  window.addEventListener('focus', () => {
+    if (appEl.classList.contains('is-hud') && pultikWin && pultikWin.closed) {
+      pultikWin = null;
+      setHudMode(false);
+    }
+  });
+
 </script>
 
 

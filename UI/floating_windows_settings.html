@@ -725,6 +725,17 @@ body {
 
         <div class="field">
           <div class="field__label">
+            <span>Output length (W)</span>
+            <span class="field__hint">max words in the hint</span>
+          </div>
+          <div class="range-row">
+            <input type="range" class="range" id="fW" min="20" max="500" step="10" value="120">
+            <div class="range__val" id="fWVal">W=120</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
             <span>Knowledge bases</span>
             <span class="field__hint">selected sources for retrieval</span>
           </div>
@@ -740,6 +751,7 @@ body {
             <div class="range__val" id="fNVal">C=10</div>
           </div>
         </div>
+
 
 
 
@@ -853,32 +865,36 @@ const PALETTE = [
 const DEFAULTS = [
   {
     id: 'coding', name: 'Coding Helper', color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-    size: 'M', pos: 'tr', model: 'heavy', n: 10, r: 10, kbs: ['System-Design-Primer', 'HighScalability'],
+    size: 'M', pos: 'tr', model: 'heavy', n: 10, r: 10,
+    w: 120, kbs: ['System-Design-Primer', 'HighScalability'],
     prompt: 'You are a senior staff engineer helping in a live coding interview. Reply with concise hints: 3–5 bullets, prioritised. Include trade-offs only if material.',
     hotkey: 'Ctrl+Shift+1', ask: true, pin: false, enabled: true,
     web: true,  },
   {
     id: 'behavioral', name: 'Behavioral Coach', color: '#B497D7',
-    size: 'S', pos: 'bl', model: 'fast', n: 5, r: 10, kbs: ['Behavioral Bank'],
+    size: 'S', pos: 'bl', model: 'fast', n: 5, r: 10,
+    w: 120, kbs: ['Behavioral Bank'],
     prompt: 'Coach the user through behavioral answers. Use STAR structure. Keep responses under 2 min spoken time. Emphasise "I" over "we".',
     hotkey: 'Ctrl+Shift+2', ask: true, pin: false, enabled: true,
     web: true,  },
   {
     id: 'salary', name: 'Salary Negotiator', color: '#D6BC84',
-    size: 'S', pos: 'br', model: 'fast', n: 8, r: 10, kbs: ['Salary Notes'],
+    size: 'S', pos: 'br', model: 'fast', n: 8, r: 10,
+    w: 120, kbs: ['Salary Notes'],
     prompt: 'Help with salary / offer negotiation. Provide counter-scripts, total-comp breakdowns, market data. Be concrete with numbers.',
     hotkey: 'Ctrl+Shift+3', ask: true, pin: false, enabled: true,
     web: true,  },
   {
     id: 'lecture', name: 'Lecture Notes', color: '#84BFD6',
-    size: 'M', pos: 'ctr', model: 'fast', n: 20, r: 10, kbs: ['MIT 6.006', '3Blue1Brown transcripts'],
+    size: 'M', pos: 'ctr', model: 'fast', n: 20, r: 10,
+    w: 120, kbs: ['MIT 6.006', '3Blue1Brown transcripts'],
     prompt: 'Capture and explain lecture concepts in real time. Use the notation from the source. Add short worked examples when helpful.',
     hotkey: 'Ctrl+Shift+4', ask: false, pin: true, enabled: false,
     web: true,  },
 ];
 
 // ─── state ───
-const STORAGE_KEY = 'quistant.floatingWindows.v5';
+const STORAGE_KEY = 'quistant.floatingWindows.v6';
 let windows = [];
 let activeId = null;
 
@@ -973,6 +989,8 @@ function renderForm() {
   document.getElementById('fNVal').textContent = 'C=' + w.n;
   document.getElementById('fR').value = w.r || 10;
   document.getElementById('fRVal').textContent = 'R=' + (w.r || 10);
+  document.getElementById('fW').value = w.w || 120;
+  document.getElementById('fWVal').textContent = 'W=' + (w.w || 120);
   document.getElementById('fAsk').checked = !!w.ask;
   document.getElementById('fWeb').checked = !!w.web;
   document.getElementById('fPin').checked = !!w.pin;
@@ -1061,6 +1079,13 @@ function bindFields() {
     save();
   });
 
+  document.getElementById('fW').addEventListener('input', e => {
+    const w = getActive(); if (!w) return;
+    w.w = parseInt(e.target.value, 10);
+    document.getElementById('fWVal').textContent = 'W=' + w.w;
+    save();
+  });
+
   ['fAsk', 'fPin', 'fWeb'].forEach(id => {
     document.getElementById(id).addEventListener('change', e => {
       const w = getActive(); if (!w) return;
@@ -1102,7 +1127,8 @@ function newWindow() {
     id: uid(),
     name: 'New window',
     color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-    size: 'M', pos: 'tr', model: 'fast', n: 5, r: 10, kbs: [], prompt: '', hotkey: '', ask: true, pin: false,
+    size: 'M', pos: 'tr', model: 'fast', n: 5, r: 10,
+    w: 120, kbs: [], prompt: '', hotkey: '', ask: true, pin: false,
     enabled: true,
     web: true,  };
   windows.push(w);
