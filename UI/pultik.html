@@ -37,7 +37,19 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; height: 100%; }
 body {
-  background: var(--bg) url('1-obsidian.png?v=4') center / cover no-repeat fixed;
+  background-color: #0A0A10;
+  background-image:
+    url('1-obsidian.png?v=4'),
+    radial-gradient(ellipse 70% 55% at 25% 15%, rgba(84,84,143,.10) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 78% 78%, rgba(126,115,170,.08) 0%, transparent 65%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(70,70,110,.12) 0%, transparent 75%),
+    radial-gradient(circle at 15% 90%, rgba(50,80,140,.07) 0%, transparent 50%),
+    radial-gradient(circle at 85% 10%, rgba(140,120,180,.05) 0%, transparent 45%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: normal, screen, screen, screen, screen, screen;
   color: var(--text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 14px;
@@ -92,7 +104,18 @@ body {
   transform: translateX(-50%);
   width: 234px;
   height: 364px;
-  background: var(--bg-1);
+  background-color: #111119;
+  background-image:
+    url('1-obsidian.png?v=4'),
+    radial-gradient(ellipse 70% 55% at 25% 15%, rgba(84,84,143,.10) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 78% 78%, rgba(126,115,170,.08) 0%, transparent 65%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(70,70,110,.12) 0%, transparent 75%),
+    radial-gradient(circle at 15% 90%, rgba(50,80,140,.07) 0%, transparent 50%),
+    radial-gradient(circle at 85% 10%, rgba(140,120,180,.05) 0%, transparent 45%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: normal, screen, screen, screen, screen, screen;
   border: 1px solid var(--border-2);
   border-radius: var(--radius-lg);
   box-shadow:
