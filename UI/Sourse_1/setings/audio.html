@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en" data-theme="obsidian">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings - Quistan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../themes/themes.css">
+<link rel="stylesheet" href="_shared/settings.css">
+</head>
+<body data-page="audio">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar__brand">
+    <div class="topbar__brand-mark">Q</div>
+    <div class="topbar__brand-text">
+      <div class="topbar__title">Settings</div>
+      <div class="topbar__sub">Quistan * v0.1.4-beta</div>
+    </div>
+  </div>
+
+  <div class="topbar__search">
+    <svg class="topbar__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+    <input id="search" type="text" placeholder="Search settings." spellcheck="false">
+    <kbd>Ctrl K</kbd>
+  </div>
+
+  <span class="topbar__divider"></span>
+
+  <div class="topbar__dirty" id="dirty"><span class="d"></span><span>Unsaved</span></div>
+
+  <button class="topbar__btn topbar__btn--ghost" onclick="openWindows()" title="Configure floating windows (separate screen)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>
+    Windows
+  </button>
+  <button class="topbar__btn topbar__btn--ghost" onclick="openKb()" title="Knowledge sources (separate screen)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+    Knowledge
+  </button>
+
+  <span class="topbar__divider"></span>
+
+  <button class="topbar__btn topbar__btn--danger" onclick="resetAll()" title="Reset all settings to defaults">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+    Reset
+  </button>
+  <button class="topbar__btn topbar__btn--primary" id="btnSave" onclick="saveAll()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    Save
+  </button>
+</div>
+
+<!-- BODY: sidebar + main -->
+<div class="body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="cat-list" id="catList"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+<section class="tab-content is-on" data-tab="audio">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          Audio
+        </div>
+        <div class="tab-head__sub">Your microphone, speakers and how Quistan cleans up the sound.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Devices <span class="section__hint">plugged into your PC</span></div>
+<div class="field" data-help="micDev">
+          <div class="field__label"><span>Microphone (your voice)</span><span class="field__hint">input</span></div>
+          <div class="device-row">
+            <div class="device-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg></div>
+            <div class="device-row__body">
+              <select class="select" id="devInSelect" style="padding:6px 28px 6px 10px;font-size:12px">
+                <option value="default" selected>Default  -  Realtek HD Audio</option>
+                <option value="usb-mic">USB Microphone  -  Yeti Nano</option>
+                <option value="webcam">Webcam Mic  -  Logitech C920</option>
+                <option value="headset">Headset  -  HyperX Cloud</option>
+              </select>
+              <div class="device-row__hint" style="margin-top:4px">16 kHz · resampled · mono</div>
+            </div>
+          </div>
+        </div>
+        <div class="field" data-help="sysDev">
+          <div class="field__label"><span>System audio (interlocutor)</span><span class="field__hint">loopback  -  wasapi</span></div>
+          <div class="device-row">
+            <div class="device-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></div>
+            <div class="device-row__body">
+              <select class="select" id="devSysSelect" style="padding:6px 28px 6px 10px;font-size:12px">
+                <option value="default" selected>Default  -  Realtek Speakers (loopback)</option>
+                <option value="zoom-out">Zoom Audio Output</option>
+                <option value="teams-out">Microsoft Teams Audio</option>
+                <option value="browser">Browser tab audio</option>
+              </select>
+              <div class="device-row__hint" style="margin-top:4px">loopback capture</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Sound levels <span class="section__hint">live meters</span></div>
+        <div class="meter-row">
+          <div class="meter-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg></div>
+          <div class="meter-row__body">
+            <div class="meter-row__label"><span>Your voice</span><span class="meter-row__val" id="meterInVal">-? dB</span></div>
+            <div class="meter-bars" id="meterInBars"></div>
+            <div class="meter-row__hint" style="margin-top:4px">Always live  -  speak to test</div>
+          </div>
+        </div>
+        <div class="meter-row">
+          <div class="meter-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></div>
+          <div class="meter-row__body">
+            <div class="meter-row__label"><span>System audio</span><span class="meter-row__val" id="meterSysVal">-? dB</span></div>
+            <div class="meter-bars" id="meterSysBars"></div>
+            <div class="meter-row__hint" style="margin-top:4px">Always listening  -  WASAPI loopback, runs even when no app is playing</div>
+          </div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <div class="field__label"><span>Microphone loudness</span><span class="field__hint">speak quietly? turn it up</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fGain" min="0" max="200" value="100">
+            <div class="range__val" id="fGainVal">100%</div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label">
+            <span>System audio loudness</span>
+            <span class="field__hint">loopback gain</span>
+          </div>
+          <div class="range-row">
+            <input type="range" class="range" id="fSysGain" min="0" max="200" value="100">
+            <div class="range__val" id="fSysGainVal">100%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HIDDEN FROM UI — audio cleanup is auto-tuned by Quistan.
+       The values below are read by the backend as best-practice defaults.
+       See DEFAULTS comments and `// -- hidden audio defaults --` block. -->
+<div class="section">
+        <div id="sttByok" style="display:none">
+          <div class="field">
+            <div class="field__label"><span>Transcription engine</span><span class="field__hint">stt</span></div>
+            <div class="seg" id="segSttMode">
+              <button class="seg__btn is-on" data-val="local">Local model</button>
+              <button class="seg__btn" data-val="api">Cloud API</button>
+              <button class="seg__btn" data-val="ollama">Ollama / custom</button>
+            </div>
+          </div>
+          <div id="sttByokLocal" class="field">
+            <div class="info">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M21 7V5a2 2 0 0 0-2-2h-2M3 17v2a2 2 0 0 0 2 2h2M21 17v2a2 2 0 0 1-2 2h-2"/></svg>
+              <div>Uses the bundled <b>Whisper</b> model that ships with the installer. No API key, fully offline. Slow on CPU; enable <b>GPU Whisper</b> in Advanced for a 5-10x speedup.</div>
+            </div>
+          </div>
+          <div id="sttByokApi" class="field" style="display:none">
+            <div class="field__label"><span>STT API key</span><span class="field__hint">Deepgram / OpenAI</span></div>
+            <input class="input" id="fSttApiKey" type="password" placeholder="paste Deepgram or OpenAI Whisper key">
+            <div class="info" style="margin-top:8px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <div>For Deepgram: paste the project key from <code>console.deepgram.com</code>. For OpenAI Whisper API: paste your <code>sk-...</code> key. Stored encrypted in Windows Credential Manager.</div>
+            </div>
+          </div>
+          <div id="sttByokOllama" class="field" style="display:none" data-help="fSttOllamaUrl">
+            <div class="field__label"><span>Ollama endpoint</span><span class="field__hint">http://localhost:11434</span></div>
+            <input class="input" id="fSttOllamaUrl" placeholder="http://localhost:11434">
+            <div class="info" style="margin-top:8px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+              <div>Point at any OpenAI-compatible STT server - Ollama, vLLM whisper, custom self-hosted. Must expose <code>/v1/audio/transcriptions</code>. Local Whisper model is <code>whisper</code> in Ollama.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+  <span id="toastMsg">Saved</span>
+</div>
+
+<script src="_shared/settings.js"></script>
+</body>
+</html>

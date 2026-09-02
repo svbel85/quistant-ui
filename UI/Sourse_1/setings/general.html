@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en" data-theme="obsidian">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings - Quistan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../themes/themes.css">
+<link rel="stylesheet" href="_shared/settings.css">
+</head>
+<body data-page="general">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar__brand">
+    <div class="topbar__brand-mark">Q</div>
+    <div class="topbar__brand-text">
+      <div class="topbar__title">Settings</div>
+      <div class="topbar__sub">Quistan * v0.1.4-beta</div>
+    </div>
+  </div>
+
+  <div class="topbar__search">
+    <svg class="topbar__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+    <input id="search" type="text" placeholder="Search settings." spellcheck="false">
+    <kbd>Ctrl K</kbd>
+  </div>
+
+  <span class="topbar__divider"></span>
+
+  <div class="topbar__dirty" id="dirty"><span class="d"></span><span>Unsaved</span></div>
+
+  <button class="topbar__btn topbar__btn--ghost" onclick="openWindows()" title="Configure floating windows (separate screen)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>
+    Windows
+  </button>
+  <button class="topbar__btn topbar__btn--ghost" onclick="openKb()" title="Knowledge sources (separate screen)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+    Knowledge
+  </button>
+
+  <span class="topbar__divider"></span>
+
+  <button class="topbar__btn topbar__btn--danger" onclick="resetAll()" title="Reset all settings to defaults">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+    Reset
+  </button>
+  <button class="topbar__btn topbar__btn--primary" id="btnSave" onclick="saveAll()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    Save
+  </button>
+</div>
+
+<!-- BODY: sidebar + main -->
+<div class="body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="cat-list" id="catList"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+<section class="tab-content is-on" data-tab="general">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+          General
+        </div>
+        <div class="tab-head__sub">Language, look, startup and how Quistan behaves on your PC.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Language & Region <span class="section__hint">locale</span></div>
+        <div class="field">
+          <div class="field__label"><span>Interface language</span><span class="field__hint">ui</span></div>
+          <select class="select" id="fLang">
+            <option value="en">English</option>
+            <option value="ru">Русский</option>
+            <option value="de">Deutsch</option>
+            <option value="fr">Francais</option>
+            <option value="es">Espanol</option>
+            <option value="zh">?? (??)</option>
+<option value="ja">Japanese</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Appearance <span class="section__hint">theme</span></div>
+        <div class="field">
+          <div class="field__label"><span>Theme preset</span><span class="field__hint">visual style</span></div>
+          <div class="theme-grid" id="themeGrid"></div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Background</span></div>
+<div class="seg" id="segBg">
+            <button class="seg__btn" data-val="texture">Show texture</button>
+            <button class="seg__btn is-on" data-val="solid">Solid only</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>UI scale</span><span class="field__hint">zoom</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fScale" min="80" max="140" step="5" value="100">
+            <div class="range__val" id="fScaleVal">100%</div>
+          </div>
+        </div>
+        <div class="field" data-help="fOpacity">
+          <div class="field__label"><span>Window opacity</span><span class="field__hint">see-through</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fOpacity" min="50" max="100" step="5" value="100">
+            <div class="range__val" id="fOpacityVal">100%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Startup & System <span class="section__hint">boot</span></div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fAutoStart">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Launch Quistan when Windows starts</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fStartMinimized" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Start minimized to system tray</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fTrayIcon" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Show icon in system tray</span>
+          </label>
+        </div>
+        <div class="field">
+          <div class="field__label"><span>Default startup mode</span><span class="field__hint">first screen</span></div>
+          <div class="seg" id="segStartMode">
+            <button class="seg__btn is-on" data-val="preflight">Pre-flight</button>
+            <button class="seg__btn" data-val="last">Resume last session</button>
+            <button class="seg__btn" data-val="tray">Stay in tray</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section is-warn">
+        <div class="section__head">Stealth <span class="section__hint">anti-detection</span></div>
+        <div class="info info--warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>Some video conferencing apps detect window-capture exclusion. Disabling this may reveal the assistant to the interlocutor.</div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label class="switch">
+            <input type="checkbox" id="fWda" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Exclude floating windows from screen capture (WDA)</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fHideFrame" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Hide region frame on interlocutor's screen-share</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fHideSelf" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Hide self-preview from screen-share</span>
+          </label>
+        </div>
+      </div>
+
+    </section>
+
+
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+  <span id="toastMsg">Saved</span>
+</div>
+
+<script src="_shared/settings.js"></script>
+</body>
+</html>

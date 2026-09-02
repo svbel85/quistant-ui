@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en" data-theme="obsidian">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings - Quistan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../themes/themes.css">
+<link rel="stylesheet" href="_shared/settings.css">
+</head>
+<body data-page="capture">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar__brand">
+    <div class="topbar__brand-mark">Q</div>
+    <div class="topbar__brand-text">
+      <div class="topbar__title">Settings</div>
+      <div class="topbar__sub">Quistan * v0.1.4-beta</div>
+    </div>
+  </div>
+
+  <div class="topbar__search">
+    <svg class="topbar__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+    <input id="search" type="text" placeholder="Search settings." spellcheck="false">
+    <kbd>Ctrl K</kbd>
+  </div>
+
+  <span class="topbar__divider"></span>
+
+  <div class="topbar__dirty" id="dirty"><span class="d"></span><span>Unsaved</span></div>
+
+  <button class="topbar__btn topbar__btn--ghost" onclick="openWindows()" title="Configure floating windows (separate screen)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>
+    Windows
+  </button>
+  <button class="topbar__btn topbar__btn--ghost" onclick="openKb()" title="Knowledge sources (separate screen)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+    Knowledge
+  </button>
+
+  <span class="topbar__divider"></span>
+
+  <button class="topbar__btn topbar__btn--danger" onclick="resetAll()" title="Reset all settings to defaults">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+    Reset
+  </button>
+  <button class="topbar__btn topbar__btn--primary" id="btnSave" onclick="saveAll()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    Save
+  </button>
+</div>
+
+<!-- BODY: sidebar + main -->
+<div class="body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="cat-list" id="catList"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+<section class="tab-content is-on" data-tab="capture">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+          Capture
+        </div>
+        <div class="tab-head__sub">Screenshot format, JPEG quality and raw-PNG cache on disk.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Format <span class="section__hint">png &rarr; jpeg</span></div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <div>Windows gives us raw <b>PNG</b> screenshots (lossless, big). Toggle on to convert them to <b>JPEG</b> before sending to the AI  -  about <b>20&times; smaller</b>, faster upload, cheaper API calls. Original PNGs are managed below in <b>Local cache</b>.</div>
+        </div>
+        <div class="field" style="margin-top:14px" data-help="fCompress">
+          <label class="switch">
+            <input type="checkbox" id="fCompress" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Compress screenshots to JPEG before AI</span>
+          </label>
+        </div>
+        <div class="field" data-help="fJpeg">
+          <div class="field__label"><span>Picture quality</span><span class="field__hint" id="fJpegHint">lower = smaller file sent to AI</span></div>
+          <div class="range-row" id="fJpegRow">
+            <input type="range" class="range" id="fJpeg" min="40" max="100" step="5" value="70">
+            <div class="range__val" id="fJpegVal">70%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Local cache <span class="section__hint">raw PNGs on disk</span></div>
+
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+          <div>When ON, every raw PNG is saved to <code>%AppData%\Quistan\screenshots</code> before any conversion. Useful for re-running analysis at higher quality or diagnosing OCR bugs. <b>Without auto-purge, the folder grows 2-5 MB per shot</b>  -  tune the limits below.</div>
+        </div>
+
+        <div class="field" style="margin-top:14px" data-help="fSavePng">
+          <label class="switch">
+            <input type="checkbox" id="fSavePng" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Save raw PNGs to disk</span>
+          </label>
+        </div>
+
+        <div id="pngOffNote" class="info info--warn" style="display:none;margin-top:10px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div>Saving is <b>OFF</b>. The limits and the <b>Purge now</b> button below still work &mdash; use them to clean up old PNGs that were saved earlier. New captures are not written to disk until you turn saving back on.</div>
+        </div>
+
+        <div id="pngKeepGroup" class="field" data-help="fPngKeep" style="margin-top:10px">
+          <div class="field__label"><span>Keep last</span><span class="field__hint">oldest are deleted first</span></div>
+          <div class="seg" id="segPngKeep">
+            <button class="seg__btn" data-val="50">50</button>
+            <button class="seg__btn is-on" data-val="200">200</button>
+            <button class="seg__btn" data-val="1000">1 000</button>
+            <button class="seg__btn" data-val="5000">5 000</button>
+          </div>
+        </div>
+
+        <div id="pngAgeGroup" class="field" data-help="fPngAge">
+          <div class="field__label"><span>Auto-purge after</span><span class="field__hint">by file mtime</span></div>
+          <div class="seg" id="segPngAge">
+            <button class="seg__btn" data-val="never">Never</button>
+            <button class="seg__btn" data-val="7">7 days</button>
+            <button class="seg__btn is-on" data-val="30">30 days</button>
+            <button class="seg__btn" data-val="90">90 days</button>
+          </div>
+        </div>
+
+        <div id="pngCacheMeta">
+          <dl class="kv" style="margin-top:14px">
+            <div class="kv-row">
+              <dt>Cache folder</dt>
+              <dd>
+                <div style="display:flex;align-items:center;gap:8px;min-width:0">
+                  <code id="pngCachePath" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">C:\Users\You\AppData\Roaming\Quistan\screenshots</code>
+                  <button class="topbar__btn" style="padding:3px 9px;font-size:11px;flex-shrink:0" onclick="copyPngPath()" title="Copy full path to clipboard">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+              </dd>
+            </div>
+            <div class="kv-row"><dt>Disk usage</dt><dd><span id="pngCacheCount">214</span> files  -  <span id="pngCacheSize">682 MB</span></dd></div>
+            <div class="kv-row"><dt>Last purge</dt><dd id="pngCacheLastPurge">2 days ago</dd></div>
+          </dl>
+          <div class="btn-row" style="margin-top:10px">
+          <button class="topbar__btn" onclick="openPngFolder()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Open cache folder
+          </button>
+          <button class="topbar__btn" onclick="purgePngNow()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Purge now
+          </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+  <span id="toastMsg">Saved</span>
+</div>
+
+<script src="_shared/settings.js"></script>
+</body>
+</html>

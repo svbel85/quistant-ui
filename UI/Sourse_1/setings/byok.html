@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" data-theme="obsidian">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BYOK - Quistan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../themes/themes.css">
+<link rel="stylesheet" href="_shared/settings.css">
+</head>
+<body data-page="byok">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar__brand">
+    <div class="topbar__brand-mark">Q</div>
+    <div class="topbar__brand-text">
+      <div class="topbar__title">Settings</div>
+      <div class="topbar__sub">Quistan * v0.1.4-beta</div>
+    </div>
+  </div>
+
+  <div class="topbar__search">
+    <svg class="topbar__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+    <input id="search" type="text" placeholder="Search settings." spellcheck="false">
+    <kbd>Ctrl K</kbd>
+  </div>
+
+  <span class="topbar__divider"></span>
+
+  <div class="topbar__dirty" id="dirty"><span class="d"></span><span>Unsaved</span></div>
+
+  <button class="topbar__btn topbar__btn--ghost" onclick="openWindows()" title="Configure floating windows (separate screen)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>
+    Windows
+  </button>
+  <button class="topbar__btn topbar__btn--ghost" onclick="openKb()" title="Knowledge sources (separate screen)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+    Knowledge
+  </button>
+
+  <span class="topbar__divider"></span>
+
+  <button class="topbar__btn topbar__btn--danger" onclick="resetAll()" title="Reset all settings to defaults">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+    Reset
+  </button>
+  <button class="topbar__btn topbar__btn--primary" id="btnSave" onclick="saveAll()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    Save
+  </button>
+</div>
+
+<!-- BODY: sidebar + main -->
+<div class="body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="cat-list" id="catList"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+<section class="tab-content is-on" data-tab="byok">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><line x1="10.85" y1="12.15" x2="19" y2="4"/><line x1="18" y1="5" x2="20" y2="7"/><line x1="15" y1="8" x2="17" y2="10"/></svg></div>
+          BYOK
+        </div>
+        <div class="tab-head__sub">Bring-your-own models: pick per role and store provider keys locally. Hidden from the sidebar when this feature is disabled.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Models <span class="section__hint">byok  -  choose per role</span></div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Fast model</span>
+            <span class="field__hint">quick hints  -  cheap</span>
+          </div>
+          <select class="select" id="fModelFast">
+            <option value="gpt-4o-mini">gpt-4o-mini  -  fast, cheap</option>
+            <option value="gpt-3.5-turbo">gpt-3.5-turbo  -  cheapest</option>
+            <option value="claude-haiku">claude-haiku-4  -  fast claude</option>
+            <option value="gemini-flash">gemini-2.0-flash  -  fast multimodal</option>
+            <option value="llama-3.1-8b">llama-3.1-8b  -  via OpenRouter</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Heavy model</span>
+            <span class="field__hint">deep reasoning  -  long context</span>
+          </div>
+          <select class="select" id="fModelHeavy">
+            <option value="gpt-4o">gpt-4o  -  balanced</option>
+            <option value="gpt-4-turbo">gpt-4-turbo  -  deep reasoning</option>
+            <option value="claude-sonnet">claude-sonnet-4.5  -  long context</option>
+            <option value="claude-opus">claude-opus  -  top tier</option>
+            <option value="gemini-2-pro">gemini-2.0-pro  -  multimodal</option>
+            <option value="llama-3.3-70b">llama-3.3-70b  -  via OpenRouter</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Providers &amp; Keys <span class="section__hint">byok  -  stored locally encrypted</span></div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <div>Keys are stored in the OS keychain (Windows Credential Manager). They never leave this machine. Quistan&rsquo;s proxy uses them only to forward requests. Edit the base URL to point at a self-hosted OpenAI-compatible endpoint (Ollama, vLLM, LM Studio, custom proxy).</div>
+        </div>
+        <div id="apiKeysList" class="api-key-list"></div>
+        <div class="btn-row" style="margin-top:10px">
+          <button class="topbar__btn" data-help="addProvider" onclick="addApiKey()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Add Custom Provider
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+  <span id="toastMsg">Saved</span>
+</div>
+
+<script src="_shared/settings.js"></script>
+</body>
+</html>
