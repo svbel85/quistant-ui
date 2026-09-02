@@ -12,21 +12,20 @@
   const tags = Array.from(document.querySelectorAll('script[type="text/x-partial"]'));
   if (tags.length === 0) return;
 
-  const base = document.currentScript ? new URL('.', document.currentScript.src).href : window.location.href;
+  const base = document.baseURI || window.location.href;
 
   function resolve(url) {
     return new URL(url, base).href;
   }
 
   function inject(mount, html) {
-    const target = mount ? document.querySelector(mount) : null;
+    if (!mount) return;
+    const target = document.querySelector(mount);
     if (!target) {
       console.warn('[partials-loader] mount not found:', mount);
       return;
     }
-    const wrap = document.createElement('div');
-    wrap.innerHTML = html;
-    while (wrap.firstChild) target.appendChild(wrap.firstChild);
+    target.innerHTML = html;
   }
 
   Promise.all(tags.map(tag => {

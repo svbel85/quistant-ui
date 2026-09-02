@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="1-obsidian">
+<html lang="ru" data-theme="obsidian">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,9 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="../themes/themes.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/themes.css" />
   <link rel="stylesheet" href="css/layout.css" />
+
   <style>
     html, body { margin: 0; padding: 0; height: 100%; }
     body {
@@ -29,53 +31,52 @@
       font-size: 14px;
       line-height: 1.5;
     }
-    .placeholder-header {
-      flex-shrink: 0;
-      padding: 14px 24px;
-      border-bottom: 1px solid var(--border);
-      font-family: 'Geist Mono', monospace;
-      font-size: 11px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--muted-2);
-      background: rgba(27,27,37,.45);
-      backdrop-filter: blur(24px) saturate(140%);
-    }
+    #mainHeaderHost,
+    #inputBarHost,
+    #bottomStatusHost { flex-shrink: 0; }
+    #chatFeedHost { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+    .drawer { display: none; }
   </style>
 </head>
 <body>
-  <!-- Шапка-заглушка (в дальнейшем будет заменена на partials/main-window/header.html) -->
-  <header class="placeholder-header">QUISTANT · главное окно</header>
+  <header id="mainHeaderHost" data-role="header"></header>
+  <main id="chatFeedHost" data-role="feed"></main>
+  <section id="inputBarHost" data-role="input"></section>
+  <footer id="bottomStatusHost" data-role="status"></footer>
 
-  <!-- Лента сообщений — шаблоны карточек подгружаются из partials/main-window/chat-feed.html -->
-  <div data-mount="#chatFeedHost"></div>
+  <aside id="drawerKnowledgeHost" class="drawer drawer--left" data-role="drawer-knowledge"></aside>
+  <aside id="drawerSessionsHost"  class="drawer drawer--right" data-role="drawer-sessions"></aside>
+  <aside id="drawerFloatingHost"  class="drawer drawer--right" data-role="drawer-floating"></aside>
 
-  <!-- partials -->
-  <script type="text/x-partial" data-src="partials/main-window/chat-feed.html" data-mount="#chatFeedHost"></script>
+  <script type="text/x-partial" data-src="partials/main-window/header.html"        data-mount="#mainHeaderHost"></script>
+  <script type="text/x-partial" data-src="partials/main-window/chat-feed.html"      data-mount="#chatFeedHost"></script>
+  <script type="text/x-partial" data-src="partials/main-window/input-bar.html"      data-mount="#inputBarHost"></script>
+  <script type="text/x-partial" data-src="partials/main-window/bottom-status.html"  data-mount="#bottomStatusHost"></script>
+  <script type="text/x-partial" data-src="partials/drawers/drawer-knowledge.html"   data-mount="#drawerKnowledgeHost"></script>
+  <script type="text/x-partial" data-src="partials/drawers/drawer-sessions.html"    data-mount="#drawerSessionsHost"></script>
+  <script type="text/x-partial" data-src="partials/drawers/drawer-floating.html"    data-mount="#drawerFloatingHost"></script>
   <script src="js/partials-loader.js"></script>
 
   <script>
-    // ─── рендер ленты из UI/data/feed.json по шаблонам из partials ───
     function applyTemplate(html, data) {
-      return html.replace(/\{\{(\w+)\}\}/g, (m, key) => {
-        const v = data[key];
+      return html.replace(/\{\{(\w+)\}\}/g, function (m, key) {
+        var v = data[key];
         return v == null ? '' : String(v);
       });
     }
 
     function renderFeed(messages) {
-      const root = document.getElementById('chatFeed');
+      var root = document.getElementById('chatFeed');
       if (!root) return;
-      const fragment = document.createDocumentFragment();
-      messages.forEach(msg => {
-        const tpl = document.getElementById('tpl-feed-' + msg.type);
+      var fragment = document.createDocumentFragment();
+      messages.forEach(function (msg) {
+        var tpl = document.getElementById('tpl-feed-' + msg.type);
         if (!tpl) { console.warn('[feed] unknown type:', msg.type); return; }
-        const html = applyTemplate(tpl.innerHTML, msg);
-        const wrap = document.createElement('div');
+        var html = applyTemplate(tpl.innerHTML, msg);
+        var wrap = document.createElement('div');
         wrap.innerHTML = html;
-        // copy source field into span (для msg-other)
         if (msg.type === 'msg-other' && msg.source != null) {
-          const sp = wrap.querySelector('[data-source]');
+          var sp = wrap.querySelector('[data-source]');
           if (sp) sp.textContent = msg.source;
         }
         while (wrap.firstChild) fragment.appendChild(wrap.firstChild);
@@ -85,20 +86,21 @@
 
     function bootFeed() {
       fetch('data/feed.json', { credentials: 'same-origin' })
-        .then(r => {
+        .then(function (r) {
           if (!r.ok) throw new Error('HTTP ' + r.status);
           return r.json();
         })
         .then(renderFeed)
-        .catch(err => console.error('[feed] не удалось загрузить feed.json:', err));
+        .catch(function (err) { console.error('[feed] не удалось загрузить feed.json:', err); });
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        document.addEventListener('partials:loaded', bootFeed, { once: true });
-      });
-    } else {
+    function ready() {
       document.addEventListener('partials:loaded', bootFeed, { once: true });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', ready);
+    } else {
+      ready();
     }
   </script>
 </body>

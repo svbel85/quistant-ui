@@ -1,1 +1,31 @@
-<!-- drawer-sessions.html — заглушка. --><!-- /drawer-sessions.html -->
+<div class="panel panel--right">
+  <header class="panel__head">
+    <span>Сессии</span>
+    <button class="panel__close" type="button" aria-label="Закрыть" data-action="close-drawer" data-target="sessions">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+        <path d="M18 6 6 18M6 6l12 12"/>
+      </svg>
+    </button>
+  </header>
+  <div class="panel__body">
+    <button class="new-sess-btn" type="button" data-action="new-session">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+      Новая сессия
+    </button>
+    <div class="sess-item is-active" data-id="main">
+      <span class="sess-item__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </span>
+      <div class="sess-item__body">
+        <div class="sess-item__name">Главная сессия</div>
+        <div class="sess-item__meta">
+          <span class="sess-item__status is-live"><span class="d"></span>Live</span>
+          <span>·</span>
+          <span>00:14:08</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
