@@ -1,1 +1,44 @@
-[]
+{
+  "windows": [
+    {
+      "id": "coding",
+      "name": "Coding Helper",
+      "color": "#94D07A",
+      "model": "heavy",
+      "modelLabel": "H",
+      "n": 10,
+      "meta": "H·N10",
+      "enabled": true
+    },
+    {
+      "id": "behavioral",
+      "name": "Behavioral Coach",
+      "color": "#B497D7",
+      "model": "fast",
+      "modelLabel": "F",
+      "n": 5,
+      "meta": "F·N5",
+      "enabled": true
+    },
+    {
+      "id": "salary",
+      "name": "Salary Negotiator",
+      "color": "#D6BC84",
+      "model": "fast",
+      "modelLabel": "F",
+      "n": 8,
+      "meta": "F·N8",
+      "enabled": true
+    },
+    {
+      "id": "lecture",
+      "name": "Lecture Notes",
+      "color": "#84BFD6",
+      "model": "fast",
+      "modelLabel": "F",
+      "n": 20,
+      "meta": "F·N20",
+      "enabled": false
+    }
+  ]
+}

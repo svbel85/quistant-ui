@@ -1,1 +1,51 @@
-<!-- tab-behavior.html — заглушка. --><!-- /tab-behavior.html -->
+<!-- tab-behavior.html — вкладка Behavior: модель, промпт, веб-поиск, длина ответа. -->
+<!-- Блоки:
+      .seg#segModel   — сегмент Fast / Heavy;
+      textarea#fPrompt — system prompt;
+      switch#fWeb     — Internet search;
+      range#fW        — Output length (W). -->
+<!-- /tab-behavior.html -->
+<div class="tab-pane" data-pane="behavior">
+  <div class="section__head" data-tooltip="behavior">
+    Behavior
+    <span class="section__hint">how it responds</span>
+  </div>
+
+  <div class="field">
+    <div class="field__label">
+      <span>Model</span>
+      <span class="field__hint">speed vs depth</span>
+    </div>
+    <div class="seg" id="segModel">
+      <button class="seg__btn is-on" data-val="fast">Fast</button>
+      <button class="seg__btn" data-val="heavy">Heavy</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field__label">
+      <span>System prompt</span>
+      <span class="field__hint">role &amp; tone for this window's hints</span>
+    </div>
+    <textarea class="textarea" id="fPrompt" placeholder="You are a coding interview helper..."></textarea>
+  </div>
+
+  <div class="field">
+    <label class="switch">
+      <input type="checkbox" id="fWeb">
+      <span class="switch__track"><span class="switch__thumb"></span></span>
+      <span class="switch__label">Internet search</span>
+    </label>
+  </div>
+
+  <div class="field">
+    <div class="field__label">
+      <span>Output length (W)</span>
+      <span class="field__hint">max words in the hint</span>
+    </div>
+    <div class="range-row">
+      <input type="range" class="range" id="fW" min="20" max="500" step="10" value="120">
+      <div class="range__val" id="fWVal">W=120</div>
+    </div>
+  </div>
+</div>

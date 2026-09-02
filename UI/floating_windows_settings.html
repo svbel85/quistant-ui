@@ -1,13 +1,329 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="1-obsidian">
+<html lang="ru" data-theme="obsidian">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quistant — ????????? ????????? ????</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/floating.css" />
 </head>
 <body>
-  <!-- ???? ????????? ???? (?????? ? ?????????? partials/floating-settings) -->
+
+  <!-- ???????? ????????? ?????? ???????? ????????? ????.
+       ?????????? ???????????? ?? partials/floating-settings/*, ?????? — ?? data/windows.json.
+       ????? ????? ? css/floating.css (?????? ? ????????? fws-). -->
+  <div class="fws-root">
+
+    <!-- ??????????? TOP BAR ??????????? -->
+    <div class="fws-topbar">
+      <div class="fws-topbar__brand">
+        <div class="fws-topbar__brand-mark">Q</div>
+        <div>
+          <div class="fws-topbar__title">Floating Windows</div>
+          <div class="fws-topbar__sub">Settings · <span id="winCount">0</span> configured</div>
+        </div>
+      </div>
+
+      <div class="fws-topbar__spacer"></div>
+
+      <button class="fws-topbar__btn" onclick="resetDefaults()" title="Reset all windows to defaults">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset
+      </button>
+      <button class="fws-topbar__btn fws-topbar__btn--primary" onclick="newWindow()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        New window
+      </button>
+    </div>
+
+    <!-- ??????????? LAYOUT ??????????? -->
+    <div class="fws-layout">
+
+      <!-- SIDEBAR — ?????? ???? (partial: partials/floating-settings/windows-list.html) -->
+      <aside class="fws-sidebar">
+        <div class="fws-sidebar__head">
+          <span>Windows</span>
+          <button onclick="newWindow()" title="Add new window">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+        <div class="fws-list" id="list"></div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="fws-main">
+
+        <!-- EMPTY STATE -->
+        <div class="fws-empty" id="empty">
+          <div class="fws-empty__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>
+          </div>
+          <div class="fws-empty__title">No floating windows configured</div>
+          <div class="fws-empty__sub">Floating windows show context-aware hints above the main chat. Create one to monitor knowledge base, behavioral prompts, salary notes, or anything you want side-by-side.</div>
+          <button class="fws-topbar__btn fws-topbar__btn--primary" onclick="newWindow()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Create first window
+          </button>
+        </div>
+
+        <!-- FORM -->
+        <div class="fws-form" id="form">
+
+          <div class="fws-form__head">
+            <div class="fws-form__preview" id="preview">?</div>
+            <div class="fws-form__title-block">
+              <div class="fws-form__title" id="formTitle">Window</div>
+              <div class="fws-form__sub">
+                <span class="dot" id="formDot"></span>
+                <span id="formType">custom</span>
+                <span>·</span>
+                <span id="formId">—</span>
+              </div>
+            </div>
+            <div class="fws-form__actions">
+              <button class="fws-icon-btn" onclick="duplicateWindow()" title="Duplicate">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+              <button class="fws-icon-btn fws-icon-btn--danger" onclick="deleteWindow()" title="Delete">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- TABS -->
+          <nav class="fws-tabs" id="tabs">
+            <button class="fws-tab is-on" data-tab="identity">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Identity
+            </button>
+            <button class="fws-tab" data-tab="behavior">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Behavior
+            </button>
+            <button class="fws-tab" data-tab="sources">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+              Sources
+            </button>
+            <button class="fws-tab" data-tab="window">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              Window
+            </button>
+            <button class="fws-tab" data-tab="shortcuts">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>
+              Shortcuts
+            </button>
+          </nav>
+
+          <!-- BEGIN partial: partials/floating-settings/tab-identity.html -->
+          <div class="fws-tab-pane is-on" data-pane="identity">
+            <div class="fws-section__head" data-tooltip="identity">
+              Identity
+              <span class="fws-section__hint">who this window is</span>
+            </div>
+
+            <div class="fws-field">
+              <div class="fws-field__label">
+                <span>Display name</span>
+                <span class="fws-field__hint">shown in window header</span>
+              </div>
+              <input class="fws-input" id="fName" placeholder="e.g. Coding Helper">
+            </div>
+
+            <div class="fws-field">
+              <div class="fws-field__label">
+                <span>Accent color</span>
+                <span class="fws-field__hint">tints the window border &amp; dot</span>
+              </div>
+              <div class="fws-colors" id="colors"></div>
+            </div>
+          </div>
+          <!-- END partial: tab-identity.html -->
+
+          <!-- BEGIN partial: partials/floating-settings/tab-behavior.html -->
+          <div class="fws-tab-pane" data-pane="behavior">
+            <div class="fws-section__head" data-tooltip="behavior">
+              Behavior
+              <span class="fws-section__hint">how it responds</span>
+            </div>
+
+            <div class="fws-field">
+              <div class="fws-field__label">
+                <span>Model</span>
+                <span class="fws-field__hint">speed vs depth</span>
+              </div>
+              <div class="fws-seg" id="segModel">
+                <button class="fws-seg__btn is-on" data-val="fast">Fast</button>
+                <button class="fws-seg__btn" data-val="heavy">Heavy</button>
+              </div>
+            </div>
+
+            <div class="fws-field">
+              <div class="fws-field__label">
+                <span>System prompt</span>
+                <span class="fws-field__hint">role &amp; tone for this window's hints</span>
+              </div>
+              <textarea class="fws-textarea" id="fPrompt" placeholder="You are a coding interview helper..."></textarea>
+            </div>
+
+            <div class="fws-field">
+              <label class="fws-switch">
+                <input type="checkbox" id="fWeb">
+                <span class="fws-switch__track"><span class="fws-switch__thumb"></span></span>
+                <span class="fws-switch__label">Internet search</span>
+              </label>
+            </div>
+
+            <div class="fws-field">
+              <div class="fws-field__label">
+                <span>Output length (W)</span>
+                <span class="fws-field__hint">max words in the hint</span>
+              </div>
+              <div class="fws-range-row">
+                <input type="range" class="fws-range" id="fW" min="20" max="500" step="10" value="120">
+                <div class="fws-range__val" id="fWVal">W=120</div>
+              </div>
+            </div>
+          </div>
+          <!-- END partial: tab-behavior.html -->
+
+          <!-- BEGIN partial: partials/floating-settings/tab-sources.html -->
+          <div class="fws-tab-pane" data-pane="sources">
+            <div class="fws-section__head" data-tooltip="sources">
+              Sources
+              <span class="fws-section__hint">what it reads</span>
+            </div>
+
+            <div class="fws-field">
+              <div class="fws-field__label">
+                <span>Replies (R)</span>
+                <span class="fws-field__hint">recent lines from main chat for analysis</span>
+              </div>
+              <div class="fws-range-row">
+                <input type="range" class="fws-range" id="fR" min="0" max="40" value="10">
+                <div class="fws-range__val" id="fRVal">R=10</div>
+              </div>
+            </div>
+
+            <div class="fws-field">
+              <div class="fws-field__label">
+                <span>Knowledge bases</span>
+                <span class="fws-field__hint">selected sources for retrieval</span>
+              </div>
+              <div class="fws-kb-tags" id="kbTags"></div>
+            </div>
+
+            <div class="fws-field">
+              <div class="fws-field__label">
+                <span>Knowledge base (Chunks)</span>
+                <span class="fws-field__hint">rows from knowledge base</span>
+              </div>
+              <div class="fws-range-row">
+                <input type="range" class="fws-range" id="fN" min="1" max="20" value="10">
+                <div class="fws-range__val" id="fNVal">C=10</div>
+              </div>
+            </div>
+          </div>
+          <!-- END partial: tab-sources.html -->
+
+          <!-- BEGIN partial: partials/floating-settings/tab-window.html -->
+          <div class="fws-tab-pane" data-pane="window">
+            <div class="fws-section__head" data-tooltip="window">Window <span class="fws-section__hint">placement &amp; chrome</span></div>
+
+            <div class="fws-field">
+              <div class="fws-field__label">
+                <span>Window size</span>
+              </div>
+              <div class="fws-seg" id="segSize">
+                <button class="fws-seg__btn" data-val="S">S · 320×420</button>
+                <button class="fws-seg__btn is-on" data-val="M">M · 440×560</button>
+                <button class="fws-seg__btn" data-val="L">L · 560×680</button>
+                <button class="fws-seg__btn" data-val="XL">XL · 720×820</button>
+              </div>
+            </div>
+
+            <div class="fws-field">
+              <div class="fws-field__label">
+                <span>Default position</span>
+              </div>
+              <div class="fws-seg" id="segPos">
+                <button class="fws-seg__btn" data-val="tl">? Top-left</button>
+                <button class="fws-seg__btn is-on" data-val="tr">? Top-right</button>
+                <button class="fws-seg__btn" data-val="bl">? Bot-left</button>
+                <button class="fws-seg__btn" data-val="br">? Bot-right</button>
+                <button class="fws-seg__btn" data-val="ctr">? Center</button>
+              </div>
+            </div>
+          </div>
+          <!-- END partial: tab-window.html -->
+
+          <!-- BEGIN partial: partials/floating-settings/tab-shortcuts.html -->
+          <div class="fws-tab-pane" data-pane="shortcuts">
+            <div class="fws-section__head" data-tooltip="shortcuts">Shortcuts <span class="fws-section__hint">how to trigger</span></div>
+
+            <div class="fws-field">
+              <div class="fws-field__label">
+                <span>Hotkey to toggle window</span>
+                <span class="fws-field__hint">open if closed · refresh if open</span>
+              </div>
+              <input class="fws-input" id="fHotkey" placeholder="e.g. Ctrl+Shift+1" readonly>
+            </div>
+
+            <div class="fws-field">
+              <label class="fws-switch">
+                <input type="checkbox" id="fAsk" checked>
+                <span class="fws-switch__track"><span class="fws-switch__thumb"></span></span>
+                <span class="fws-switch__label">Show prompt input at the bottom of window</span>
+              </label>
+            </div>
+
+            <div class="fws-field">
+              <label class="fws-switch">
+                <input type="checkbox" id="fPin">
+                <span class="fws-switch__track"><span class="fws-switch__thumb"></span></span>
+                <span class="fws-switch__label">Pin window on top of others (always-on-top)</span>
+              </label>
+            </div>
+          </div>
+          <!-- END partial: tab-shortcuts.html -->
+
+        </div>
+
+      </main>
+
+    </div>
+
+    <!-- TOOLTIP -->
+    <div class="fws-tooltip" id="tooltip" data-side="right">
+      <div class="fws-tooltip__arrow"></div>
+      <div class="fws-tooltip__head">
+        <div class="fws-tooltip__icon" id="ttIcon"></div>
+        <div class="fws-tooltip__heading">
+          <div class="fws-tooltip__title" id="ttTitle"></div>
+          <div class="fws-tooltip__sub" id="ttSub"></div>
+        </div>
+      </div>
+      <div class="fws-tooltip__body" id="ttBody"></div>
+      <ul class="fws-tooltip__list" id="ttList"></ul>
+    </div>
+
+    <!-- TOAST -->
+    <div class="fws-toast" id="toast">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <span id="toastMsg">Saved</span>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { initFloatingWindowsSettings } from './js/floating-settings.js';
+    initFloatingWindowsSettings();
+  </script>
+
 </body>
 </html>

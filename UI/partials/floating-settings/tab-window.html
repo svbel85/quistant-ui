@@ -1,1 +1,33 @@
-<!-- tab-window.html — заглушка. --><!-- /tab-window.html -->
+<!-- tab-window.html — вкладка Window: размер и положение плавающего окна. -->
+<!-- Блоки:
+      .seg#segSize — пресет S/M/L/XL (320×420, 440×560, 560×680, 720×820);
+      .seg#segPos  — угол спавна (tl / tr / bl / br / ctr). -->
+<!-- /tab-window.html -->
+<div class="tab-pane" data-pane="window">
+  <div class="section__head" data-tooltip="window">Window <span class="section__hint">placement &amp; chrome</span></div>
+
+  <div class="field">
+    <div class="field__label">
+      <span>Window size</span>
+    </div>
+    <div class="seg" id="segSize">
+      <button class="seg__btn" data-val="S">S · 320×420</button>
+      <button class="seg__btn is-on" data-val="M">M · 440×560</button>
+      <button class="seg__btn" data-val="L">L · 560×680</button>
+      <button class="seg__btn" data-val="XL">XL · 720×820</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field__label">
+      <span>Default position</span>
+    </div>
+    <div class="seg" id="segPos">
+      <button class="seg__btn" data-val="tl">↖ Top-left</button>
+      <button class="seg__btn is-on" data-val="tr">↗ Top-right</button>
+      <button class="seg__btn" data-val="bl">↙ Bot-left</button>
+      <button class="seg__btn" data-val="br">↘ Bot-right</button>
+      <button class="seg__btn" data-val="ctr">◉ Center</button>
+    </div>
+  </div>
+</div>
