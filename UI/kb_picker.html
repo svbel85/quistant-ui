@@ -1,13 +1,699 @@
-<!DOCTYPE html>
-<html lang="ru" data-theme="1-obsidian">
+<!doctype html>
+<html lang="en" data-theme="1-obsidian">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quistant — Knowledge Bases</title>
-  <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/themes.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Knowledge sources — Quistan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<link rel="stylesheet" href="css/panels.css">
 </head>
-<body>
-  <!-- Окно управления базами знаний -->
+
+<body class="kb-page-host">
+
+<div class="kb-page">
+<div class="kb-modal" role="dialog" aria-labelledby="kbModalTitle">
+
+  <!-- HEAD + TOOLBAR подгружаются из kb-header.html -->
+  <div data-mount="#kbHeaderHost"></div>
+
+  <!-- BODY + PROGRESS подгружаются из kb-list.html -->
+  <div data-mount="#kbListHost"></div>
+
+  <!-- FOOTER (add-form + add-btn) — оставлен в каркасе -->
+  <footer class="kb-modal__foot">
+    <div class="kb-add-form" id="kbAddForm">
+      <div class="kb-add-form__kinds" id="kbAddKinds">
+        <button type="button" class="kb-add-kind is-on" data-kind="folder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Folder
+        </button>
+        <button type="button" class="kb-add-kind" data-kind="file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          File
+        </button>
+        <button type="button" class="kb-add-kind" data-kind="url">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          URL
+        </button>
+      </div>
+      <div class="kb-add-form__row">
+        <svg class="kb-add-input__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+        <input class="kb-add-input" id="kbAddName" placeholder="Friendly name (e.g. Salary notes)" maxlength="60" spellcheck="false"/>
+      </div>
+      <div class="kb-add-form__row kb-add-form__row--with-pick">
+        <svg class="kb-add-input__icon" id="kbAddPathIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <input class="kb-add-input" id="kbAddPath" placeholder="D:/path/to/folder" spellcheck="false"/>
+        <button type="button" class="kb-add-pick" id="kbAddPick" title="Browse for folder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </button>
+      </div>
+      <div class="kb-add-form__acts">
+        <button type="button" class="kb-add-cancel" onclick="toggleAddForm(false)">Cancel</button>
+        <button type="button" class="kb-add-submit" id="kbAddSubmit" onclick="addSource()" disabled>Add source</button>
+      </div>
+    </div>
+
+    <button class="kb-add-btn" id="kbAdd" onclick="toggleAddForm()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span id="kbAddBtnLabel">Add source</span>
+    </button>
+  </footer>
+
+</div>
+</div>
+
+<div class="kb-toast" id="kbToast"></div>
+
+<!-- partials -->
+<script type="text/x-partial" data-src="partials/kb/kb-header.html" data-mount="#kbHeaderHost"></script>
+<script type="text/x-partial" data-src="partials/kb/kb-list.html" data-mount="#kbListHost"></script>
+<script src="js/partials-loader.js"></script>
+
+<script>
+const KB_KEY = 'quistan-kb-sources-v1';
+const KB_DATA_URL = 'data/knowledge.json';
+
+// SVG-иконки (template literals для подстановки в row)
+const KB_ICON_FOLDER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
+const KB_ICON_FILE   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>';
+const KB_ICON_URL    = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+
+const KB_CHECK_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+const KB_REINDEX  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>';
+const KB_REMOVE   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
+const KB_CHECK_RESOURCE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>';
+const KB_PICK_ICON = {
+  folder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  file:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>'
+};
+
+const KB_PATH_PLACEHOLDER = {
+  folder: 'D:/path/to/folder  (recursively scans .md)',
+  file:   'D:/path/to/single-file.md',
+  url:    'https://example.com/article  (paste any URL)'
+};
+const KB_PATH_ICON_INNER = {
+  folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  file:   '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  url:    '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'
+};
+
+let kbBody, kbSearch, kbCounter, kbToast, kbAddForm, kbAddKinds, kbAddName, kbAddPath, kbAddPathIcon, kbAddSubmit, kbAddBtnLabel;
+
+let addKind = 'folder';
+
+function closeKbPicker() {
+  try { window.close(); } catch (_) {}
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({ type: 'kb-picker:close' }, '*');
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (kbAddForm && kbAddForm.classList.contains('is-on')) {
+      toggleAddForm(false);
+    } else {
+      closeKbPicker();
+    }
+  }
+});
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(KB_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (Array.isArray(data)) return data;
+    }
+  } catch (_) {}
+  return null;
+}
+function saveState() {
+  if (!kbBody) return;
+  const rows = kbBody.querySelectorAll('.kb-row');
+  const data = [];
+  rows.forEach(r => {
+    data.push({
+      kind: r.dataset.kind || 'folder',
+      name: r.dataset.name,
+      path: r.dataset.path || '',
+      on:   r.classList.contains('is-on'),
+      status: r.dataset.status || 'indexed',
+      meta:  r.dataset.meta || ''
+    });
+  });
+  try { localStorage.setItem(KB_KEY, JSON.stringify(data)); } catch (_) {}
+}
+
+function broadcastChange() {
+  if (!kbBody) return;
+  if (window.parent && window.parent !== window) {
+    const state = [];
+    kbBody.querySelectorAll('.kb-row').forEach(r => {
+      state.push({
+        kind: r.dataset.kind, name: r.dataset.name, path: r.dataset.path,
+        on: r.classList.contains('is-on')
+      });
+    });
+    window.parent.postMessage({ type: 'kb-picker:state', state }, '*');
+  }
+}
+
+function rowHTML(s) {
+  const icon  = s.kind === 'file' ? KB_ICON_FILE : s.kind === 'url' ? KB_ICON_URL : KB_ICON_FOLDER;
+  const isOn  = s.on !== false;
+  const status = s.status || (s.kind === 'url' ? 'ready' : 'indexed');
+  const statusText = status === 'indexed'  ? 'Indexed'
+                   : status === 'indexing' ? 'Indexing'
+                   : status === 'error'    ? 'Error'
+                   : status === 'missing'  ? 'Missing'
+                   : status === 'checking' ? 'Checking'
+                   : 'Ready';
+  const statusClass = 'kb-status--' + status;
+  const showReindex = s.kind !== 'url';
+  const extraClass  = (status === 'missing')  ? ' is-missing'
+                    : (status === 'checking') ? ' is-checking'
+                    : (status === 'indexing') ? ' is-indexing'
+                    : '';
+  const progressWidth = status === 'indexing' ? 47
+                      : status === 'indexed'  ? 100
+                      : status === 'ready'    ? 100
+                      : 0;
+  return `
+    <div class="kb-row${isOn ? ' is-on' : ' is-off'}${extraClass}"
+         data-kind="${s.kind}" data-name="${escapeHtml(s.name)}" data-path="${escapeHtml(s.path)}"
+         data-status="${status}">
+      <span class="kb-row__check${isOn ? ' is-on' : ''}">${isOn ? KB_CHECK_ON : ''}</span>
+      <span class="kb-row__icon">${icon}</span>
+      <div class="kb-row__body">
+        <div class="kb-row__name" title="${escapeHtml(s.name)}">${escapeHtml(s.name)}</div>
+        <span class="kb-row__kind">${s.kind}</span>
+        <span class="kb-row__path" title="${escapeHtml(s.path)}">${escapeHtml(s.path)}</span>
+      </div>
+      <div class="kb-row__progress"><div class="kb-row__progress-bar" style="width:${progressWidth}%"></div></div>
+      <div class="kb-row__status ${statusClass}"><span class="d"></span><span class="kb-row__status-text">${statusText}</span></div>
+      <div class="kb-row__acts">
+        <button class="kb-row__act" data-act="check" title="Check resource">${KB_CHECK_RESOURCE}</button>
+        ${showReindex ? `<button class="kb-row__act" data-act="reindex" title="Reindex">${KB_REINDEX}</button>` : ''}
+        <button class="kb-row__act kb-row__act--danger" data-act="remove" title="Remove">${KB_REMOVE}</button>
+      </div>
+    </div>`;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function renderAll(list) {
+  if (!kbBody) return;
+  kbBody.insertAdjacentHTML('beforeend',
+    `<div class="kb-modal__empty" id="kbEmpty" style="display:none">
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+       <p>No sources match your search</p>
+     </div>`);
+  list.forEach(s => kbBody.insertAdjacentHTML('beforeend', rowHTML(s)));
+  wireRows();
+  kbUpdateCounter();
+}
+
+function wireRows() {
+  if (!kbBody) return;
+  kbBody.querySelectorAll('.kb-row').forEach(row => wireSingleRow(row));
+}
+
+function wireSingleRow(row) {
+  const check = row.querySelector('.kb-row__check');
+  row.addEventListener('click', e => {
+    if (e.target.closest('.kb-row__act')) return;
+    if (e.target.closest('.kb-row__name')) return;
+    check.click();
+  });
+  check.addEventListener('click', e => {
+    e.stopPropagation();
+    const on = check.classList.toggle('is-on');
+    check.innerHTML = on ? KB_CHECK_ON : '';
+    row.classList.toggle('is-on', on);
+    row.classList.toggle('is-off', !on);
+    kbUpdateCounter();
+    saveState();
+    broadcastChange();
+  });
+  const nameEl = row.querySelector('.kb-row__name');
+  nameEl.addEventListener('click', e => e.stopPropagation());
+  nameEl.addEventListener('dblclick', () => beginRename(row, nameEl));
+  nameEl.addEventListener('blur', () => commitRename(row, nameEl));
+  nameEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); nameEl.blur(); }
+    if (e.key === 'Escape') { cancelRename(row, nameEl); }
+  });
+  const reBtn = row.querySelector('.kb-row__act[data-act="reindex"]');
+  if (reBtn) reBtn.addEventListener('click', e => { e.stopPropagation(); runReindex(row, reBtn); });
+  const ckBtn = row.querySelector('.kb-row__act[data-act="check"]');
+  if (ckBtn) ckBtn.addEventListener('click', e => { e.stopPropagation(); runCheck(row, ckBtn); });
+  row.querySelector('.kb-row__act[data-act="remove"]').addEventListener('click', e => {
+    e.stopPropagation();
+    runRemove(row);
+  });
+}
+
+function beginRename(row, nameEl) {
+  row.dataset._oldName = nameEl.textContent;
+  nameEl.setAttribute('contenteditable', 'true');
+  nameEl.dataset.last = nameEl.textContent;
+  nameEl.focus();
+  const range = document.createRange();
+  range.selectNodeContents(nameEl);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+function commitRename(row, nameEl) {
+  if (nameEl.getAttribute('contenteditable') !== 'true') return;
+  nameEl.setAttribute('contenteditable', 'false');
+  const newName = nameEl.textContent.trim();
+  if (!newName) { nameEl.textContent = row.dataset._oldName || 'Untitled'; return; }
+  if (newName === row.dataset._oldName) return;
+  nameEl.textContent = newName;
+  row.dataset.name = newName;
+  nameEl.title = newName;
+  saveState();
+  broadcastChange();
+}
+function cancelRename(row, nameEl) {
+  if (nameEl.getAttribute('contenteditable') !== 'true') return;
+  nameEl.setAttribute('contenteditable', 'false');
+  nameEl.textContent = nameEl.dataset.last || row.dataset._oldName || 'Untitled';
+}
+
+const bulk = { active: false, cancelled: false, total: 0, done: 0, label: '' };
+
+function bulkStart(label, total) {
+  bulk.active = true; bulk.cancelled = false; bulk.total = total; bulk.done = 0; bulk.label = label;
+  const p = document.getElementById('kbProgress');
+  if (p) p.classList.add('is-on');
+  const lbl = document.getElementById('kbProgressLabel');
+  if (lbl) lbl.textContent = label;
+  const fill = document.getElementById('kbProgressFill');
+  if (fill) fill.style.width = '0%';
+  const cnt = document.getElementById('kbProgressCounter');
+  if (cnt) cnt.textContent = '0 / ' + total;
+}
+function bulkTick() {
+  bulk.done++;
+  const fill = document.getElementById('kbProgressFill');
+  const counter = document.getElementById('kbProgressCounter');
+  if (fill) fill.style.width = (bulk.done / bulk.total * 100) + '%';
+  if (counter) counter.textContent = bulk.done + ' / ' + bulk.total;
+  if (bulk.done >= bulk.total) bulkEnd();
+}
+function bulkEnd() {
+  bulk.active = false;
+  const p = document.getElementById('kbProgress');
+  if (p) p.classList.remove('is-on');
+}
+
+function cancelBulk() {
+  if (!bulk.active) return;
+  bulk.cancelled = true;
+  kbBody.querySelectorAll('.kb-row').forEach(row => {
+    if (row._t) { clearInterval(row._t); row._t = null; }
+    if (row._to) { clearTimeout(row._to); row._to = null; }
+    const cur = row.dataset.status;
+    if (cur === 'indexing' || cur === 'checking') {
+      const pre = row._preState || {};
+      row.dataset.status = pre.status || 'indexed';
+      row.classList.remove('is-indexing', 'is-checking');
+      if (pre.status === 'missing') row.classList.add('is-missing');
+      const status = row.querySelector('.kb-row__status');
+      const text   = status.querySelector('.kb-row__status-text');
+      const bar    = row.querySelector('.kb-row__progress-bar');
+      const btn    = row.querySelector('.kb-row__act.is-loading');
+      status.className = 'kb-row__status kb-status--' + row.dataset.status;
+      text.textContent = row.dataset.status === 'indexed' ? 'Indexed'
+                       : row.dataset.status === 'ready'   ? 'Ready'
+                       : row.dataset.status === 'missing' ? 'Missing'
+                       : row.dataset.status === 'error'   ? 'Error'
+                       : 'Ready';
+      bar.style.width = (pre.barWidth != null ? pre.barWidth : 0) + '%';
+      bar.style.background = '';
+      if (btn) btn.classList.remove('is-loading');
+    }
+  });
+  bulkEnd();
+  showKbToast('Cancelled');
+}
+
+function runReindex(row, btn, onDone) {
+  if (row.dataset.kind === 'url') return;
+  const status = row.querySelector('.kb-row__status');
+  const text   = status.querySelector('.kb-row__status-text');
+  const bar    = row.querySelector('.kb-row__progress-bar');
+  row._preState = {
+    status: row.dataset.status,
+    barWidth: parseFloat(bar.style.width) || 0
+  };
+  if (row._t) clearInterval(row._t);
+  row.classList.add('is-indexing');
+  row.dataset.status = 'indexing';
+  status.className = 'kb-row__status kb-status--indexing';
+  text.textContent = 'Indexing 0%';
+  bar.style.width = '0%';
+  btn.classList.add('is-loading');
+
+  let p = 0;
+  row._t = setInterval(() => {
+    if (bulk.cancelled) { clearInterval(row._t); row._t = null; return; }
+    p = Math.min(100, p + Math.random() * 16 + 4);
+    bar.style.width = p + '%';
+    text.textContent = 'Indexing ' + Math.round(p) + '%';
+    if (p >= 100) {
+      clearInterval(row._t); row._t = null;
+      btn.classList.remove('is-loading');
+      row.classList.remove('is-indexing');
+      row.dataset.status = 'indexed';
+      status.className = 'kb-row__status kb-status--indexed';
+      text.textContent = 'Indexed';
+      saveState();
+      if (bulk.active && !bulk.cancelled) bulkTick();
+      else if (!bulk.active) showKbToast('Reindexed ' + row.dataset.name);
+      if (onDone) onDone();
+    }
+  }, 110);
+}
+
+function runCheck(row, btn, onDone) {
+  if (row.dataset.status === 'checking') return;
+  const status = row.querySelector('.kb-row__status');
+  const text   = status.querySelector('.kb-row__status-text');
+  const bar    = row.querySelector('.kb-row__progress-bar');
+  const kind   = row.dataset.kind;
+  row._preState = { status: row.dataset.status, barWidth: parseFloat(bar.style.width) || 0 };
+  row.classList.remove('is-missing');
+  row.classList.add('is-checking');
+  row.dataset.status = 'checking';
+  status.className = 'kb-row__status kb-status--checking';
+  text.textContent = 'Checking…';
+  bar.style.width = '0%';
+  bar.style.background = 'linear-gradient(90deg, var(--kb), var(--accent))';
+  btn.classList.add('is-loading');
+
+  let p = 0;
+  row._t = setInterval(() => {
+    if (bulk.cancelled) { clearInterval(row._t); row._t = null; return; }
+    p = Math.min(90, p + Math.random() * 22 + 6);
+    bar.style.width = p + '%';
+  }, 80);
+
+  const delay = 800 + Math.random() * 700;
+  row._to = setTimeout(() => {
+    clearInterval(row._t); row._t = null;
+    btn.classList.remove('is-loading');
+    row.classList.remove('is-checking');
+    if (bulk.cancelled) return;
+    const ok = Math.random() < 0.7;
+    if (ok) {
+      bar.style.width = '100%';
+      bar.style.background = '';
+      row.dataset.status = (kind === 'url') ? 'ready' : 'indexed';
+      status.className = 'kb-row__status kb-status--' + row.dataset.status;
+      text.textContent = row.dataset.status === 'ready' ? 'Ready' : 'Indexed';
+      row.classList.remove('is-missing');
+      saveState();
+      if (!bulk.active) showKbToast('✓ ' + row.dataset.name + ' — accessible');
+    } else {
+      bar.style.width = '0%';
+      bar.style.background = '';
+      row.classList.add('is-missing');
+      row.dataset.status = 'missing';
+      status.className = 'kb-row__status kb-status--missing';
+      text.textContent = 'Missing';
+      saveState();
+      if (!bulk.active) showKbToast('✗ ' + row.dataset.name + ' — not found');
+    }
+    if (onDone) onDone();
+  }, delay);
+}
+
+function checkAll() {
+  const target = Array.from(kbBody.querySelectorAll('.kb-row'));
+  if (target.length === 0) return;
+  bulkStart('Checking…', target.length);
+  bulk.cancelled = false;
+  let delay = 0;
+  target.forEach(row => {
+    setTimeout(() => {
+      if (bulk.cancelled) return;
+      const btn = row.querySelector('.kb-row__act[data-act="check"]');
+      if (btn) runCheck(row, btn, () => bulkTick());
+    }, delay);
+    delay += 180;
+  });
+}
+
+let confirmTimer = null;
+
+function reindexAllConfirm() {
+  const btn = document.getElementById('kbIndexAll');
+  if (btn.classList.contains('is-confirming')) {
+    clearTimeout(confirmTimer);
+    btn.classList.remove('is-confirming');
+    btn.textContent = 'Index all';
+    confirmTimer = null;
+    reindexAllBulk();
+    return;
+  }
+  const rows = Array.from(kbBody.querySelectorAll('.kb-row'))
+    .filter(r => r.querySelector('.kb-row__act[data-act="reindex"]'));
+  if (rows.length === 0) { showKbToast('Nothing to reindex'); return; }
+  btn.classList.add('is-confirming');
+  btn.textContent = 'Confirm ' + rows.length + '?';
+  clearTimeout(confirmTimer);
+  confirmTimer = setTimeout(() => {
+    btn.classList.remove('is-confirming');
+    btn.textContent = 'Index all';
+    confirmTimer = null;
+  }, 5000);
+}
+
+function reindexAllBulk() {
+  const rows = Array.from(kbBody.querySelectorAll('.kb-row'))
+    .filter(r => r.querySelector('.kb-row__act[data-act="reindex"]'));
+  if (rows.length === 0) { showKbToast('Nothing to reindex'); return; }
+  bulkStart('Indexing…', rows.length);
+  bulk.cancelled = false;
+  let delay = 0;
+  rows.forEach(row => {
+    setTimeout(() => {
+      if (bulk.cancelled) return;
+      const btn = row.querySelector('.kb-row__act[data-act="reindex"]');
+      if (btn) runReindex(row, btn, () => bulkTick());
+    }, delay);
+    delay += 220;
+  });
+}
+
+function runRemove(row) {
+  const name = row.dataset.name;
+  row.style.transition = 'opacity .2s, transform .2s';
+  row.style.opacity = '0';
+  row.style.transform = 'translateX(8px)';
+  setTimeout(() => {
+    row.remove();
+    kbUpdateCounter();
+    applyKbFilter();
+    saveState();
+    broadcastChange();
+    showKbToast('Removed ' + name);
+  }, 200);
+}
+
+function kbUpdateCounter() {
+  if (!kbBody || !kbCounter) return;
+  const total = kbBody.querySelectorAll('.kb-row').length;
+  const on    = kbBody.querySelectorAll('.kb-row.is-on').length;
+  kbCounter.innerHTML = '<b>' + on + '</b> of ' + total + ' active';
+}
+
+function applyKbFilter() {
+  if (!kbBody) return;
+  const q = (kbSearch && kbSearch.value || '').trim().toLowerCase();
+  const rows = kbBody.querySelectorAll('.kb-row');
+  let visible = 0;
+  rows.forEach(r => {
+    const match = !q || r.dataset.name.toLowerCase().includes(q);
+    r.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  const empty = document.getElementById('kbEmpty');
+  if (empty) empty.style.display = visible === 0 ? 'flex' : 'none';
+}
+
+function setAll(state) {
+  kbBody.querySelectorAll('.kb-row').forEach(row => {
+    const check = row.querySelector('.kb-row__check');
+    check.classList.toggle('is-on', state);
+    check.innerHTML = state ? KB_CHECK_ON : '';
+    row.classList.toggle('is-on', state);
+    row.classList.toggle('is-off', !state);
+  });
+  kbUpdateCounter();
+  saveState();
+  broadcastChange();
+  showKbToast(state ? 'All sources enabled' : 'All sources disabled');
+}
+
+function toggleAddForm(force) {
+  const open = force !== undefined ? force : !kbAddForm.classList.contains('is-on');
+  kbAddForm.classList.toggle('is-on', open);
+  kbAddBtnLabel.textContent = open ? 'Cancel' : 'Add source';
+  if (open) setTimeout(() => kbAddName.focus(), 30);
+  else { kbAddName.value = ''; kbAddPath.value = ''; updateAddSubmit(); }
+}
+
+function updateAddPickBtn() {
+  const row = kbAddPath.parentElement;
+  const pick = row.querySelector('.kb-add-pick');
+  if (!pick) return;
+  if (addKind === 'url') {
+    pick.style.display = 'none';
+  } else {
+    pick.style.display = 'flex';
+    pick.innerHTML = KB_PICK_ICON[addKind];
+    pick.title = addKind === 'folder' ? 'Browse for folder' : 'Browse for file';
+  }
+}
+
+function wireAddForm() {
+  if (kbSearch) kbSearch.addEventListener('input', applyKbFilter);
+
+  kbAddKinds.addEventListener('click', e => {
+    const btn = e.target.closest('.kb-add-kind');
+    if (!btn) return;
+    kbAddKinds.querySelectorAll('.kb-add-kind').forEach(b => b.classList.toggle('is-on', b === btn));
+    addKind = btn.dataset.kind;
+    kbAddPath.placeholder = KB_PATH_PLACEHOLDER[addKind];
+    kbAddPathIcon.innerHTML = KB_PATH_ICON_INNER[addKind];
+    updateAddPickBtn();
+    updateAddSubmit();
+  });
+
+  const kbAddPick = document.getElementById('kbAddPick');
+  if (kbAddPick) kbAddPick.addEventListener('click', () => {
+    showKbToast('Native picker — backend integration Phase 6');
+  });
+
+  [kbAddName, kbAddPath].forEach(inp => {
+    inp.addEventListener('input', updateAddSubmit);
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !kbAddSubmit.disabled) {
+        e.preventDefault();
+        addSource();
+      }
+    });
+  });
+}
+
+function updateAddSubmit() {
+  if (!kbAddName || !kbAddPath) return;
+  const name = kbAddName.value.trim();
+  const path = kbAddPath.value.trim();
+  kbAddSubmit.disabled = !(name && path);
+}
+
+function addSource() {
+  const name = kbAddName.value.trim();
+  const path = kbAddPath.value.trim();
+  if (!name || !path) return;
+
+  const newSource = {
+    kind: addKind,
+    name, path,
+    on: true,
+    status: addKind === 'url' ? 'ready' : 'indexed',
+    meta: ''
+  };
+
+  const empty = document.getElementById('kbEmpty');
+  if (empty) empty.insertAdjacentHTML('beforebegin', rowHTML(newSource));
+  else kbBody.insertAdjacentHTML('beforeend', rowHTML(newSource));
+
+  const newRow = kbBody.querySelector('.kb-row:last-of-type');
+  wireSingleRow(newRow);
+
+  toggleAddForm(false);
+  applyKbFilter();
+  kbUpdateCounter();
+  saveState();
+  broadcastChange();
+  showKbToast('Added ' + name);
+}
+
+let kbToastT = null;
+function showKbToast(msg) {
+  if (!kbToast) return;
+  kbToast.textContent = msg;
+  kbToast.classList.add('is-on');
+  clearTimeout(kbToastT);
+  kbToastT = setTimeout(() => kbToast.classList.remove('is-on'), 1800);
+}
+
+// ─── boot: дождаться partials, потом fetch KB-данных и инициализация ───
+function bindDOMElements() {
+  kbBody        = document.getElementById('kbBody');
+  kbSearch      = document.getElementById('kbSearch');
+  kbCounter     = document.getElementById('kbCounter');
+  kbToast       = document.getElementById('kbToast');
+  kbAddForm     = document.getElementById('kbAddForm');
+  kbAddKinds    = document.getElementById('kbAddKinds');
+  kbAddName     = document.getElementById('kbAddName');
+  kbAddPath     = document.getElementById('kbAddPath');
+  kbAddPathIcon = document.getElementById('kbAddPathIcon');
+  kbAddSubmit   = document.getElementById('kbAddSubmit');
+  kbAddBtnLabel = document.getElementById('kbAddBtnLabel');
+}
+
+function loadKnowledgeData() {
+  return fetch(KB_DATA_URL, { credentials: 'same-origin' })
+    .then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .catch(err => {
+      console.error('[kb] не удалось загрузить knowledge.json:', err);
+      return [];
+    });
+}
+
+function bootKbPicker() {
+  bindDOMElements();
+  wireAddForm();
+  loadKnowledgeData().then(jsonData => {
+    const initial = loadState();
+    renderAll(initial || jsonData);
+    if (!initial) saveState();
+    updateAddPickBtn();
+    applyKbFilter();
+    if (kbSearch) setTimeout(() => kbSearch.focus(), 80);
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('partials:loaded', bootKbPicker, { once: true });
+  });
+} else {
+  document.addEventListener('partials:loaded', bootKbPicker, { once: true });
+}
+</script>
+
 </body>
 </html>
