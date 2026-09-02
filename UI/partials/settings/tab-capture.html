@@ -1,0 +1,39 @@
+<section class="tab-content" data-tab="capture">
+      <header class="tab-head">
+        <div class="tab-head__title">
+          <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+          Capture
+        </div>
+        <div class="tab-head__sub">Screenshot format, compression and file size. Region and trigger are set during a session via the floating toolbar.</div>
+      </header>
+
+      <div class="section">
+        <div class="section__head">Format <span class="section__hint">png &rarr; jpeg</span></div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <div>Windows gives us raw <b>PNG</b> screenshots (lossless, big). Toggle on to convert them to <b>JPEG</b> before sending to the AI  -  about <b>20? smaller</b>, faster upload, cheaper API calls. Original PNG is still saved locally for diagnostics.</div>
+        </div>
+        <div class="field" style="margin-top:14px" data-help="fCompress">
+          <label class="switch">
+            <input type="checkbox" id="fCompress" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Compress screenshots to JPEG before AI</span>
+          </label>
+        </div>
+        <div class="field" data-help="fJpeg">
+          <div class="field__label"><span>Picture quality</span><span class="field__hint">lower = smaller file sent to AI</span></div>
+          <div class="range-row">
+            <input type="range" class="range" id="fJpeg" min="40" max="100" step="5" value="70">
+            <div class="range__val" id="fJpegVal">70%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head">Region &amp; Trigger <span class="section__hint">runtime</span></div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>Capture region and screenshot trigger are set during a session via the floating toolbar (or hotkeys <kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">Shift</kbd>+<kbd class="kbd">A</kbd> / <kbd class="kbd">S</kbd>). Nothing to configure here  -  this tab is only for the screenshot <b>format</b>.</div>
+        </div>
+      </div>
+    </section>
