@@ -1,13 +1,339 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru" data-theme="1-obsidian">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quistant — Control Panel</title>
-  <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/themes.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quistan — control panel</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<link rel="stylesheet" href="css/panels.css">
 </head>
-<body>
-  <!-- Компактный пульт управления с микрофоном -->
+
+<body class="control-page">
+
+<div class="demo">
+
+  <!-- декоративный фон-маркер -->
+  <div class="demo__bg">
+    <div class="demo__bg-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>
+      control panel · drag the header · resize from corner
+    </div>
+    <div class="demo__bg-sub">drag the header · resize from corner</div>
+  </div>
+
+  <!-- ════════════ PULTIK (маленькая квадратная форма) ════════════ -->
+  <div class="pultik" id="pultik">
+    <div class="pultik__drag-hint"></div>
+
+    <!-- HEADER -->
+    <div class="pultik__head" id="pultikHead">
+      <span class="pultik__name" id="pultikName">control panel</span>
+
+      <div class="pultik__acts">
+        <button class="pultik__btn pultik__btn--pin" id="pultikPin" title="Pin to top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v6M5 10h14l-2 4H7l-2-4zM12 14v8"/></svg>
+        </button>
+        <button class="pultik__btn" title="Minimize">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="pultik__btn pultik__btn--close" id="pultikClose" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- BODY — variant-chat с двумя подключаемыми partial'ами -->
+    <div class="pultik__body" id="pultikBody">
+      <div class="variant-chat" id="variantChat">
+        <div data-mount="#chatPresetHost"></div>
+        <div data-mount="#chatAudioHost"></div>
+      </div>
+    </div>
+
+    <!-- RESIZE GRIP -->
+    <div class="pultik__grip" id="pultikGrip"></div>
+  </div>
+
+  <!-- ════════════ INSPECTOR (размеры) ════════════ -->
+  <div class="inspector">
+    <span>size</span>
+    <b id="sizeW">320</b><span class="inspector__sep">×</span><b id="sizeH">320</b>
+    <span class="inspector__sep">·</span>
+    <span>pos</span>
+    <b id="posX">—</b><span class="inspector__sep">,</span><b id="posY">—</b>
+  </div>
+
+</div>
+
+<!-- partials -->
+<script type="text/x-partial" data-src="partials/control/preset-buttons.html" data-mount="#chatPresetHost"></script>
+<script type="text/x-partial" data-src="partials/control/audio-controls.html" data-mount="#chatAudioHost"></script>
+<script src="js/partials-loader.js"></script>
+
+<script>
+// ─── chat variant wiring ───
+let chatBarsIn  = null;
+let chatBarsOut = null;
+let chatTickInt = null;
+
+function wireChat() {
+  const buildBars = (id, n) => {
+    const el = document.getElementById(id);
+    if (!el) return null;
+    el.innerHTML = '';
+    const bars = [];
+    for (let i = 0; i < n; i++) {
+      const b = document.createElement('span');
+      b.className = 'chat__bar';
+      b.style.height = '20%';
+      el.appendChild(b);
+      bars.push(b);
+    }
+    return bars;
+  };
+
+  chatBarsIn  = buildBars('chatBarsIn',  10);
+  chatBarsOut = buildBars('chatBarsOut', 10);
+
+  const tick = (bars) => {
+    if (!bars) return;
+    const lvl = Math.floor(Math.random() * bars.length * 0.9);
+    bars.forEach((b, i) => {
+      b.classList.toggle('is-on', i < lvl);
+      b.style.height = (30 + Math.random() * 70) + '%';
+    });
+  };
+  if (chatTickInt) clearInterval(chatTickInt);
+  chatTickInt = setInterval(() => { tick(chatBarsIn); tick(chatBarsOut); }, 120);
+
+  document.querySelectorAll('.chat__mic').forEach(m => {
+    m.addEventListener('click', () => m.classList.toggle('is-muted'));
+  });
+
+  const pauseBtn = document.getElementById('chatPause');
+  if (pauseBtn) {
+    const PAUSE_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+    const PLAY_ICON  = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    pauseBtn.addEventListener('click', () => {
+      const playing = pauseBtn.classList.toggle('is-on');
+      pauseBtn.title = playing ? 'Pause' : 'Play';
+      pauseBtn.innerHTML = playing ? PAUSE_ICON : PLAY_ICON;
+      if (playing) {
+        if (!chatTickInt) chatTickInt = setInterval(() => { tick(chatBarsIn); tick(chatBarsOut); }, 120);
+      } else {
+        if (chatTickInt) { clearInterval(chatTickInt); chatTickInt = null; }
+      }
+    });
+  }
+
+  const capRegion = document.getElementById('chatCapRegion');
+  if (capRegion) capRegion.addEventListener('click', (e) => {
+    e.currentTarget.classList.toggle('is-active');
+    send('cap:region', { state: e.currentTarget.className });
+  });
+  const capPhoto = document.getElementById('chatCapPhoto');
+  if (capPhoto) capPhoto.addEventListener('click', () => send('cap:photo'));
+
+  const chatAttach = document.getElementById('chatAttach');
+  if (chatAttach) chatAttach.addEventListener('click', (e) => {
+    e.currentTarget.classList.toggle('is-active');
+    send('chat:attach', { active: e.currentTarget.classList.contains('is-active') });
+  });
+
+  document.querySelectorAll('.chat__pill[data-id]').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('.chat__pill[data-id]').forEach(x => x.classList.remove('is-active'));
+      p.classList.add('is-active');
+      send('windows:update', { id: p.dataset.id });
+    });
+  });
+
+  const pillRefresh = document.getElementById('chatPillRefresh');
+  if (pillRefresh) pillRefresh.addEventListener('click', () => {
+    if (pillRefresh.classList.contains('is-loading')) return;
+    pillRefresh.classList.add('is-loading');
+    send('windows:refresh');
+    setTimeout(() => pillRefresh.classList.remove('is-loading'), 1500);
+  });
+
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('chatSendBtn');
+  const refresh = document.getElementById('chatRefresh');
+  function doSend() {
+    if (!input || !refresh) return;
+    const v = (input.value || '').trim();
+    if (!v) return;
+    refresh.classList.add('is-loading');
+    send('chat:add', { text: v });
+    setTimeout(() => refresh.classList.remove('is-loading'), 600);
+    input.value = '';
+  }
+  if (refresh) refresh.addEventListener('click', doSend);
+  if (sendBtn) sendBtn.addEventListener('click', doSend);
+  if (input) input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); doSend(); }
+  });
+}
+
+// ─── postMessage helper ───
+function send(type, payload) {
+  if (window.opener && !window.opener.closed) {
+    try { window.opener.postMessage(Object.assign({ type }, payload || {}), '*'); } catch (e) {}
+  }
+}
+
+// ─── pultik DOM refs ───
+const pultik     = document.getElementById('pultik');
+const pultikBody = document.getElementById('pultikBody');
+const sizeW      = document.getElementById('sizeW');
+const sizeH      = document.getElementById('sizeH');
+const posX       = document.getElementById('posX');
+const posY       = document.getElementById('posY');
+
+// ─── auto-fit window to content ───
+let userResized = false;
+let fitRaf = null;
+function fitToContent() {
+  if (!pultik || userResized) return;
+  const headH = pultik.querySelector('.pultik__head')?.offsetHeight || 0;
+  const prevFlex = pultikBody.style.flex;
+  pultikBody.style.flex = '0 0 auto';
+  const bodyH = pultikBody.scrollHeight;
+  pultikBody.style.flex = prevFlex;
+
+  const totalH = Math.max(200, headH + bodyH + 2);
+
+  let widest = 0;
+  pultikBody.querySelectorAll(':scope > *').forEach(el => {
+    widest = Math.max(widest, el.scrollWidth);
+  });
+  const totalW = Math.max(210, widest + 20);
+
+  if (fitRaf) cancelAnimationFrame(fitRaf);
+  fitRaf = requestAnimationFrame(() => {
+    pultik.style.height = totalH + 'px';
+    pultik.style.width  = totalW + 'px';
+  });
+}
+
+if (pultikBody) {
+  const roFit = new ResizeObserver(fitToContent);
+  roFit.observe(pultikBody);
+}
+
+function updateInspector() {
+  if (!pultik) return;
+  sizeW.textContent = pultik.offsetWidth;
+  sizeH.textContent = pultik.offsetHeight;
+  const r = pultik.getBoundingClientRect();
+  posX.textContent = Math.round(r.left);
+  posY.textContent = Math.round(r.top);
+}
+
+// ─── drag по header ───
+(function makeDraggable() {
+  const head = document.getElementById('pultikHead');
+  if (!head) return;
+  let startX = 0, startY = 0, origLeft = 0, origTop = 0, dragging = false;
+
+  head.addEventListener('mousedown', e => {
+    if (e.target.closest('button')) return;
+    dragging = true;
+    const rect = pultik.getBoundingClientRect();
+    pultik.style.left = rect.left + 'px';
+    pultik.style.top  = rect.top + 'px';
+    pultik.style.transform = 'none';
+    origLeft = rect.left;
+    origTop  = rect.top;
+    startX = e.clientX;
+    startY = e.clientY;
+    document.body.style.userSelect = 'none';
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    const maxL = window.innerWidth  - pultik.offsetWidth;
+    const maxT = window.innerHeight - pultik.offsetHeight;
+    pultik.style.left = Math.max(0, Math.min(maxL, origLeft + dx)) + 'px';
+    pultik.style.top  = Math.max(0, Math.min(maxT, origTop + dy)) + 'px';
+    updateInspector();
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (dragging) { dragging = false; document.body.style.userSelect = ''; }
+  });
+})();
+
+// ─── resize за grip ───
+(function makeResizable() {
+  const grip = document.getElementById('pultikGrip');
+  if (!grip) return;
+  let resizing = false, startX = 0, startY = 0, origW = 0, origH = 0;
+  grip.addEventListener('mousedown', e => {
+    e.stopPropagation();
+    resizing = true;
+    userResized = true;
+    startX = e.clientX; startY = e.clientY;
+    origW = pultik.offsetWidth; origH = pultik.offsetHeight;
+    document.body.style.userSelect = 'none';
+  });
+  window.addEventListener('mousemove', e => {
+    if (!resizing) return;
+    const nw = Math.max(210, origW + (e.clientX - startX));
+    const nh = Math.max(260, origH + (e.clientY - startY));
+    pultik.style.width  = nw + 'px';
+    pultik.style.height = nh + 'px';
+    updateInspector();
+  });
+  window.addEventListener('mouseup', () => {
+    if (resizing) { resizing = false; document.body.style.userSelect = ''; }
+  });
+})();
+
+// ─── close ───
+const pultikClose = document.getElementById('pultikClose');
+if (pultikClose) pultikClose.addEventListener('click', () => {
+  pultik.style.display = 'none';
+});
+
+// ─── pin ───
+const pultikPin = document.getElementById('pultikPin');
+if (pultikPin) {
+  let pultikPinned = false;
+  pultikPin.addEventListener('click', () => {
+    pultikPinned = !pultikPinned;
+    pultikPin.classList.toggle('is-pinned', pultikPinned);
+    pultik.style.zIndex = pultikPinned ? 9999 : 40;
+    pultik.style.boxShadow = pultikPinned
+      ? '0 24px 70px rgba(0,0,0,.7), 0 0 0 1px rgba(84,84,143,.35), 0 0 80px rgba(84,84,143,.35)'
+      : '';
+    pultik.style.borderColor = pultikPinned ? 'var(--accent)' : '';
+  });
+}
+
+// ─── init: дождаться partials, потом wire чат и fit ───
+function bootPultik() {
+  wireChat();
+  updateInspector();
+  fitToContent();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('partials:loaded', bootPultik, { once: true });
+  });
+} else {
+  document.addEventListener('partials:loaded', bootPultik, { once: true });
+}
+</script>
+
 </body>
 </html>

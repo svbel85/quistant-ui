@@ -1,1 +1,29 @@
-<!-- preset-buttons.html — заглушка. --><!-- /preset-buttons.html -->
+<!-- preset-buttons.html — список кнопок-пресетов для пульта управления.
+     Подключается в UI/control_panel.html.
+     Идентификаторы и data-id совпадают с эталоном Sourse_1/control_panel.html,
+     чтобы JS-обвязка пульта работала без изменений. -->
+<div class="chat__sessions">
+  <button class="chat__pill chat__pill--refresh" id="chatPillRefresh" title="Refresh all windows">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12a9 9 0 1 1-3.5-7.1"/><path d="M21 4v5h-5"/>
+    </svg>
+    Refresh all
+    <span class="chat__pill-kbd">Ctrl+R</span>
+  </button>
+  <button class="chat__pill" data-id="coding" style="--win-color: var(--live)" title="Coding Helper">
+    <span class="chat__pill-dot"></span>Coding
+    <span class="chat__pill-kbd">Ctrl+1</span>
+  </button>
+  <button class="chat__pill" data-id="behavioral" style="--win-color: var(--solo)" title="Behavioral Coach">
+    <span class="chat__pill-dot"></span>Behav
+    <span class="chat__pill-kbd">Ctrl+2</span>
+  </button>
+  <button class="chat__pill" data-id="salary" style="--win-color: var(--warn)" title="Salary Negotiator">
+    <span class="chat__pill-dot"></span>Salary
+    <span class="chat__pill-kbd">Ctrl+3</span>
+  </button>
+  <button class="chat__pill" data-id="lecture" style="--win-color: var(--kb)" title="Lecture Notes">
+    <span class="chat__pill-dot"></span>Lecture
+    <span class="chat__pill-kbd">Ctrl+4</span>
+  </button>
+</div>

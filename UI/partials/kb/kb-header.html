@@ -1,1 +1,34 @@
-<!-- kb-header.html — заглушка. --><!-- /kb-header.html -->
+<!-- kb-header.html — заголовок и панель поиска/фильтров окна баз знаний.
+     Содержит:
+     • .kb-modal__head — заголовок, иконка, кнопка закрытия
+     • .kb-modal__toolbar — поиск, счётчик, Check all, Index all, Enable/Disable
+     Подключается в UI/kb_picker.html. -->
+
+<header class="kb-modal__head">
+  <div class="kb-modal__title-wrap">
+    <div class="kb-modal__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    </div>
+    <div>
+      <div class="kb-modal__title" id="kbModalTitle">Knowledge sources</div>
+      <div class="kb-modal__sub">Folders, files and links available to RAG</div>
+    </div>
+  </div>
+  <button class="kb-modal__close" onclick="closeKbPicker()" title="Close (Esc)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+  </button>
+</header>
+
+<div class="kb-modal__toolbar">
+  <div class="kb-modal__search-wrap">
+    <svg class="kb-modal__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+    <input class="kb-modal__search" id="kbSearch" type="text" placeholder="Search by name…" spellcheck="false"/>
+  </div>
+  <div class="kb-modal__counter" id="kbCounter">0 of 0 active</div>
+  <button class="kb-modal__bulk" id="kbCheckAll" onclick="checkAll()" title="Check all sources">Check all</button>
+  <span class="kb-toolbar__divider"></span>
+  <button class="kb-modal__bulk kb-bulk--heavy" id="kbIndexAll" onclick="reindexAllConfirm()" title="Reindex all folder/file sources (long operation)">Index all</button>
+  <span class="kb-toolbar__divider"></span>
+  <button class="kb-modal__bulk" onclick="setAll(true)" title="Enable all">Enable all</button>
+  <button class="kb-modal__bulk" onclick="setAll(false)" title="Disable all">Disable all</button>
+</div>

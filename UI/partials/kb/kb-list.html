@@ -1,1 +1,13 @@
-<!-- kb-list.html — заглушка. --><!-- /kb-list.html -->
+<!-- kb-list.html — контейнер списка баз знаний (body модального окна).
+     Конкретные .kb-row рендерятся JS-обвязкой страницы из UI/data/knowledge.json.
+     Внутри также — пустое состояние, прогресс-бар индексации и блок toast-уведомлений.
+     Подключается в UI/kb_picker.html. -->
+
+<div class="kb-modal__body" id="kbBody"></div>
+
+<div class="kb-progress" id="kbProgress">
+  <span class="kb-progress__label" id="kbProgressLabel">Indexing…</span>
+  <div class="kb-progress__fill-wrap"><div class="kb-progress__fill" id="kbProgressFill"></div></div>
+  <span class="kb-progress__counter" id="kbProgressCounter">0 / 0</span>
+  <button class="kb-progress__cancel" id="kbProgressCancel" onclick="cancelBulk()" title="Stop and rollback">Cancel</button>
+</div>
