@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="forest">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,50 +8,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../themes.css">
 
 <style>
-:root {
-  /* FOREST: Base_Hue=150° (хвойный тёмный — мох, ель, северная тайга).
-     Подложка наследует зелень, акцент — глубокий лесной зелёный.
-     Тексты — приглушённый sage, без «кислоты». */
-  --bg:         #0A130D;
-  --bg-1:       #0F1B12;
-  --bg-2:       #15271A;
-  --bg-3:       #1F3524;
-  --sidebar:    #0A130D;
-  --sidebar-2:  #0F1B12;
-  --border:     #29442E;
-  --border-2:   #34533A;
-  --text:       #D2DCC8;
-  --text-2:     #9CB89F;
-  --muted:      #7A8E7D;
-  --muted-2:    #566958;
-  --accent:     #3A7C4F;
-  --accent-2:   #4F9568;
-  --accent-soft:rgba(58,124,79,.18);
-  --live:       #6E9C5E;
-  --solo:       #7E73AA;
-  --kb:         #669AB2;
-  --warn:       #B89A6A;
-  --danger:     #A86E68;
-  --shadow-sm:  0 1px 2px rgba(0,0,0,.5);
-  --shadow-md:  0 4px 16px rgba(0,0,0,.45);
-  --shadow-lg:  0 12px 40px rgba(0,0,0,.55);
-  --radius-sm:  6px;
-  --radius-md:  10px;
-  --radius-lg:  14px;
-  --radius-xl:  20px;
-  --surface:    rgba(255,255,255,.025);
-  --surface-2:  rgba(255,255,255,.06);
-  --surface-bd: rgba(255,255,255,.05);
-}
+/* Токены темы и базовые компоненты — ../themes.css (data-theme="forest") */
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 html, body { height: 100%; }
 body {
-  background-color: #0A130D;
+  background-color: var(--bg-primary);
   background-image:
     url('3-forest.png'),
     radial-gradient(ellipse 70% 55% at 25% 15%, rgba(58,124,79,.10) 0%, transparent 65%),

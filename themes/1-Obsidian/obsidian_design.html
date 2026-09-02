@@ -1,63 +1,24 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="obsidian">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Куистант — Obsidian Design (HSL-anchor 240°)</title>
+<title>Куистант — Obsidian Design (HSL-anchor 248°)</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../themes.css">
 
 <style>
-:root {
-  /* ОБСИДИАН: Base_Hue=248° (нейтральный холодный, баланс синего и фиолета).
-     Поверхности — низкая S = «вулканическое стекло» сливается с фоном.
-     Акцент — глубже (L=64%, не пастель), это «отблеск обсидиана», не леденец. */
-  --bg:         #0A0A10;
-  --bg-1:       #111119;
-  --bg-2:       #1B1B25;
-  --bg-3:       #25252F;
-  --sidebar:    #0A0A10;
-  --sidebar-2:  #111119;
-  --border:     #2D2D3A;
-  --border-2:   #3A3A4C;
-  /* Тексты: cool gray, не белый жжёт */
-  --text:       #A8A8B5;   /* HSL(248,  7%, 68%) */
-  --text-2:     #8C8C99;   /* HSL(248,  7%, 57%) */
-  --muted:      #6F6F7A;
-  --muted-2:    #4A4A55;
-  /* Акценты: DEEP violet, не candy */
-  --accent:     #54548F;   /* HSL(245, 32%, 45%) */
-  --accent-2:   #6868A2;   /* HSL(245, 32%, 52%) */
-  --accent-soft:rgba(84,84,143,.18);
-  --live:       #6E9C5E;
-  --solo:       #7E73AA;
-  --kb:         #669AB2;
-  --warn:       #B89A6A;
-  --danger:     #A86E68;
-  --shadow-sm:  0 1px 2px rgba(0,0,0,.5);
-  --shadow-md:  0 4px 16px rgba(0,0,0,.45);
-  --shadow-lg:  0 12px 40px rgba(0,0,0,.55);
-  --radius-sm:  6px;
-  --radius-md:  10px;
-  --radius-lg:  14px;
-  --radius-xl:  20px;
-  /* glass-поверхности: едва видимая белая вуаль над обсидианом.
-     Используется когда нужно "посадить" контрол на поверхность без
-     серой плиты — кнопки/инпуты/шапка сливаются с фоном,
-     проявляются только на hover (surface-2) или в активном состоянии. */
-  --surface:    rgba(255,255,255,.025);
-  --surface-2:  rgba(255,255,255,.06);
-  --surface-bd: rgba(255,255,255,.05);
-}
+/* Токены темы и базовые компоненты — ../themes.css (data-theme="obsidian") */
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 html, body { height: 100%; }
 body {
-  background-color: #0A0A10;
+  background-color: var(--bg-primary);
   background-image:
     url('1-obsidian.png?v=4'),
     radial-gradient(ellipse 70% 55% at 25% 15%, rgba(84,84,143,.10) 0%, transparent 65%),

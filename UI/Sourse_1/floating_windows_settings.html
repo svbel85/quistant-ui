@@ -1,0 +1,1510 @@
+<!doctype html>
+<html lang="ru" data-theme="obsidian">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Floating Windows — Quistan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../themes/themes.css">
+<style>
+/* ??????? ? ?????????? � ../themes/themes.css (data-theme="obsidian") */
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  background:
+    radial-gradient(1100px 540px at 80% -10%, rgba(132,132,214,.10), transparent 60%),
+    radial-gradient(900px 500px at 0% 100%, rgba(180,151,215,.06), transparent 55%),
+    var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: .2px;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─────────── TOP BAR ─────────── */
+.topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  background: linear-gradient(180deg, var(--bg-2), rgba(20,20,25,.7));
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  backdrop-filter: blur(8px);
+}
+.topbar__brand {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 14px;
+  color: var(--text);
+}
+.topbar__brand-mark {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--solo));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(132,132,214,.35);
+}
+.topbar__title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+.topbar__sub {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.topbar__spacer { flex: 1; }
+.topbar__btn {
+  height: 32px;
+  padding: 0 14px;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+}
+.topbar__btn:hover { background: var(--bg-3); color: var(--text); border-color: var(--border-2); }
+.topbar__btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0B0B0E;
+  font-weight: 600;
+}
+.topbar__btn--primary:hover {
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+  color: #0B0B0E;
+  box-shadow: 0 4px 14px rgba(132,132,214,.35);
+}
+.topbar__btn svg { width: 13px; height: 13px; }
+
+/* ─────────── LAYOUT ─────────── */
+.layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 0;
+}
+
+/* SIDEBAR — ѝпиѝок окон */
+.sidebar {
+  border-right: 1px solid var(--border);
+  background: rgba(20,20,25,.4);
+  display: flex; flex-direction: column;
+  min-height: 0;
+}
+.sidebar__head {
+  padding: 14px 16px 10px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted-2);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sidebar__head button {
+  background: transparent; border: none;
+  color: var(--muted);
+  cursor: pointer;
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .12s;
+}
+.sidebar__head button:hover { background: var(--bg-3); color: var(--accent-2); }
+.sidebar__head button svg { width: 13px; height: 13px; }
+
+.list { flex: 1; overflow-y: auto; padding: 0 8px 12px; }
+.list::-webkit-scrollbar { width: 6px; }
+.list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+.item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px;
+  margin-bottom: 2px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .12s;
+  border: 1px solid transparent;
+  position: relative;
+}
+.item:hover { background: var(--bg-2); }
+.item.is-on {
+  background: var(--bg-2);
+  border-color: var(--border);
+}
+.item.is-on::before {
+  content: '';
+  position: absolute;
+  left: -8px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--accent);
+}
+.item__dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+.item__name {
+  flex: 1;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.item__meta {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  color: var(--muted-2);
+  flex-shrink: 0;
+}
+.item__toggle {
+  width: 14px; height: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--border-2);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-1);
+  color: transparent;
+  cursor: pointer;
+  transition: all .12s;
+  flex-shrink: 0;
+}
+.item__toggle.is-on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0B0B0E;
+}
+.item__toggle svg { width: 10px; height: 10px; }
+
+/* MAIN */
+.main {
+  overflow-y: auto;
+  padding: 22px 26px 80px;
+}
+.main::-webkit-scrollbar { width: 8px; }
+.main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+/* EMPTY / NEW STATE */
+.empty {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: var(--muted);
+  gap: 14px;
+}
+.empty__icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: var(--bg-2);
+  border: 1px dashed var(--border-2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted-2);
+}
+.empty__icon svg { width: 26px; height: 26px; }
+.empty__title { font-size: 14px; font-weight: 600; color: var(--text); }
+.empty__sub { font-size: 12px; color: var(--muted); max-width: 320px; line-height: 1.55; }
+
+/* FORM */
+.form {
+  display: none;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.form.is-visible { display: block; }
+
+.form__head {
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 22px;
+}
+.form__preview {
+  width: 46px; height: 46px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-weight: 700; font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: 0 0 18px currentColor, 0 6px 16px rgba(0,0,0,.4);
+}
+.form__title-block { flex: 1; min-width: 0; }
+.form__title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.form__sub {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  color: var(--muted-2);
+  display: flex; align-items: center; gap: 8px;
+}
+.form__sub .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.form__actions { display: flex; gap: 6px; }
+.icon-btn {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .12s;
+}
+.icon-btn:hover { color: var(--text); border-color: var(--border-2); background: var(--bg-3); }
+.icon-btn--danger:hover { color: var(--danger); border-color: rgba(210,128,121,.4); background: rgba(210,128,121,.08); }
+.icon-btn svg { width: 14px; height: 14px; }
+
+/* SECTION */
+.section {
+  margin-bottom: 26px;
+}
+.section__head {
+  display: flex; align-items: center; gap: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.section .section__head:first-of-type { border-bottom: none; padding-bottom: 0; margin-bottom: 8px; }
+.section__head::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+}
+.section__hint {
+  margin-left: auto;
+  font-size: 10.5px;
+  color: var(--muted-2);
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: inherit;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 0;
+  margin: 6px 0 24px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border-radius: 0;
+}
+.tab:hover { color: var(--text); background: var(--surface); }
+.tab.is-on {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+.tab svg { width: 14px; height: 14px; opacity: .75; }
+.tab.is-on svg { opacity: 1; color: var(--accent-2); }
+
+.tab-pane { display: none; }
+.tab-pane.is-on {
+  display: block;
+  animation: tabFadeIn .15s ease;
+}
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* TOOLTIP */
+.section__head { position: relative; cursor: help; }
+.tooltip {
+  position: fixed;
+  z-index: 200;
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  padding: 14px 16px 16px;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-size: 12.5px;
+  line-height: 1.55;
+  box-shadow: 0 16px 40px rgba(0,0,0,.55), 0 0 24px rgba(84,84,143,.18);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px) scale(.98);
+  transition: opacity .14s ease, transform .14s ease;
+}
+.tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.tooltip__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.tooltip__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(84,84,143,.3);
+}
+.tooltip__icon svg { width: 16px; height: 16px; }
+.tooltip__heading { flex: 1; min-width: 0; }
+.tooltip__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: .2px;
+}
+.tooltip__sub {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-top: 2px;
+}
+.tooltip__body {
+  color: var(--text-2);
+  margin-bottom: 12px;
+}
+.tooltip__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+.tooltip__list li {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  font-size: 11.5px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.tooltip__list li::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 7px;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px var(--accent);
+}
+.tooltip__list b {
+  font-weight: 500;
+  color: var(--text);
+  margin-right: 4px;
+}
+.tooltip__arrow {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+}
+.tooltip[data-side="right"] { margin-left: 12px; }
+.tooltip[data-side="right"] .tooltip__arrow {
+  left: -7px;
+  top: 22px;
+  border-right: none;
+  border-bottom: none;
+  transform: rotate(-45deg);
+}
+.tooltip[data-side="bottom"] { margin-top: 10px; }
+.tooltip[data-side="bottom"] .tooltip__arrow {
+  top: -7px;
+  left: 24px;
+  border-right: none;
+  border-bottom: none;
+  transform: rotate(135deg);
+}
+
+/* FIELD */
+.field { margin-bottom: 14px; }
+.field__label {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.field__hint {
+  font-size: 10.5px;
+  font-weight: 400;
+  color: var(--muted-2);
+  font-family: 'Geist Mono', monospace;
+}
+.field__row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.input, .textarea, .select {
+  width: 100%;
+  padding: 9px 11px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: all .15s;
+}
+.input:focus, .textarea:focus, .select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.55;
+  font-family: inherit;
+}
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239090A1' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  padding-right: 32px;
+}
+
+
+
+/* COLOR PICKER */
+.colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 4px 0;
+}
+.color {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform .12s, border-color .12s;
+}
+.color:hover { transform: scale(1.12); }
+.color.is-on {
+  border-color: #fff;
+  box-shadow: 0 0 0 1px var(--bg), 0 0 8px currentColor;
+}
+
+/* SEGMENTED */
+.seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+.seg__btn {
+  padding: 7px 10px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .12s;
+}
+.seg__btn:hover { color: var(--text); }
+.seg__btn.is-on {
+  background: var(--bg-3);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+
+/* SWITCH */
+.switch {
+  display: inline-flex; align-items: center; gap: 9px;
+  cursor: pointer;
+  user-select: none;
+}
+.switch__track {
+  width: 34px; height: 19px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  position: relative;
+  transition: all .15s;
+}
+.switch__thumb {
+  position: absolute;
+  top: 1px; left: 1px;
+  width: 15px; height: 15px;
+  background: var(--muted);
+  border-radius: 50%;
+  transition: all .15s;
+}
+.switch input:checked ~ .switch__track {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.switch input:checked ~ .switch__track .switch__thumb {
+  transform: translateX(15px);
+  background: #fff;
+}
+.switch input { display: none; }
+.switch__label { font-size: 12.5px; color: var(--text-2); }
+
+/* RANGE */
+.range-row { display: flex; align-items: center; gap: 12px; }
+.range {
+  flex: 1;
+  appearance: none;
+  height: 4px;
+  background: var(--bg-3);
+  border-radius: 999px;
+  outline: none;
+}
+.range::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px; height: 16px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(132,132,214,.4);
+}
+.range::-moz-range-thumb {
+  width: 16px; height: 16px;
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.range__val {
+  min-width: 44px;
+  text-align: center;
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-2);
+  padding: 4px 8px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* TAGS */
+.kb-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 8px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-height: 38px;
+}
+.kb-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 8px 3px 9px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-size: 11.5px;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all .12s;
+}
+.kb-tag.is-on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-2);
+}
+.kb-tag .x {
+  width: 12px; height: 12px;
+  display: flex; align-items: center; justify-content: center;
+  opacity: .55;
+}
+.kb-tag:hover .x { opacity: 1; }
+.kb-tag-add {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px dashed var(--border-2);
+  border-radius: 5px;
+  font-size: 11.5px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .12s;
+}
+.kb-tag-add:hover { border-color: var(--accent); color: var(--accent-2); }
+.kb-tag-add svg { width: 11px; height: 11px; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 18px; right: 18px;
+  padding: 10px 16px;
+  background: var(--bg-2);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12.5px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 0 18px var(--accent-soft);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: all .25s;
+  z-index: 100;
+  display: flex; align-items: center; gap: 8px;
+}
+.toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toast svg { width: 14px; height: 14px; color: var(--accent-2); }
+</style>
+</head>
+<body>
+
+<!-- ─────────── TOP BAR ─────────── -->
+<div class="topbar">
+  <div class="topbar__brand">
+    <div class="topbar__brand-mark">Q</div>
+    <div>
+      <div class="topbar__title">Floating Windows</div>
+      <div class="topbar__sub">Settings · <span id="winCount">0</span> configured</div>
+    </div>
+  </div>
+
+  <div class="topbar__spacer"></div>
+
+  <button class="topbar__btn" onclick="resetDefaults()" title="Reset all windows to defaults">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+    Reset
+  </button>
+  <button class="topbar__btn topbar__btn--primary" onclick="newWindow()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    New window
+  </button>
+</div>
+
+<!-- ─────────── LAYOUT ─────────── -->
+<div class="layout">
+
+  <!-- SIDEBAR — ѝпиѝок окон -->
+  <aside class="sidebar">
+    <div class="sidebar__head">
+      <span>Windows</span>
+      <button onclick="newWindow()" title="Add new window">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+    <div class="list" id="list"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- EMPTY STATE -->
+    <div class="empty" id="empty">
+      <div class="empty__icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>
+      </div>
+      <div class="empty__title">No floating windows configured</div>
+      <div class="empty__sub">Floating windows show context-aware hints above the main chat. Create one to monitor knowledge base, behavioral prompts, salary notes, or anything you want side-by-side.</div>
+      <button class="topbar__btn topbar__btn--primary" onclick="newWindow()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Create first window
+      </button>
+    </div>
+
+    <!-- FORM -->
+    <div class="form" id="form">
+
+      <div class="form__head">
+        <div class="form__preview" id="preview">?</div>
+        <div class="form__title-block">
+          <div class="form__title" id="formTitle">Window</div>
+          <div class="form__sub">
+            <span class="dot" id="formDot"></span>
+            <span id="formType">custom</span>
+            <span>·</span>
+            <span id="formId">—</span>
+          </div>
+        </div>
+        <div class="form__actions">
+          <button class="icon-btn" onclick="duplicateWindow()" title="Duplicate">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <button class="icon-btn icon-btn--danger" onclick="deleteWindow()" title="Delete">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <nav class="tabs" id="tabs">
+        <button class="tab is-on" data-tab="identity">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Identity
+        </button>
+        <button class="tab" data-tab="behavior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Behavior
+        </button>
+        <button class="tab" data-tab="sources">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+          Sources
+        </button>
+        <button class="tab" data-tab="window">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          Window
+        </button>
+        <button class="tab" data-tab="shortcuts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>
+          Shortcuts
+        </button>
+      </nav>
+
+      <!-- IDENTITY -->
+      <div class="tab-pane is-on" data-pane="identity">
+        <div class="section__head" data-tooltip="identity">
+          Identity
+          <span class="section__hint">who this window is</span>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Display name</span>
+            <span class="field__hint">shown in window header</span>
+          </div>
+          <input class="input" id="fName" placeholder="e.g. Coding Helper">
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Accent color</span>
+            <span class="field__hint">tints the window border &amp; dot</span>
+          </div>
+          <div class="colors" id="colors"></div>
+        </div>
+      </div>
+
+      <!-- BEHAVIOR -->
+      <div class="tab-pane" data-pane="behavior">
+        <div class="section__head" data-tooltip="behavior">
+          Behavior
+          <span class="section__hint">how it responds</span>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Model</span>
+            <span class="field__hint">speed vs depth</span>
+          </div>
+          <div class="seg" id="segModel">
+            <button class="seg__btn is-on" data-val="fast">Fast</button>
+            <button class="seg__btn" data-val="heavy">Heavy</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>System prompt</span>
+            <span class="field__hint">role &amp; tone for this window's hints</span>
+          </div>
+          <textarea class="textarea" id="fPrompt" placeholder="You are a coding interview helper..."></textarea>
+        </div>
+
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fWeb">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Internet search</span>
+          </label>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Output length (W)</span>
+            <span class="field__hint">max words in the hint</span>
+          </div>
+          <div class="range-row">
+            <input type="range" class="range" id="fW" min="20" max="500" step="10" value="120">
+            <div class="range__val" id="fWVal">W=120</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOURCES -->
+      <div class="tab-pane" data-pane="sources">
+        <div class="section__head" data-tooltip="sources">
+          Sources
+          <span class="section__hint">what it reads</span>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Replies (R)</span>
+            <span class="field__hint">recent lines from main chat for analysis</span>
+          </div>
+          <div class="range-row">
+            <input type="range" class="range" id="fR" min="0" max="40" value="10">
+            <div class="range__val" id="fRVal">R=10</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Knowledge bases</span>
+            <span class="field__hint">selected sources for retrieval</span>
+          </div>
+          <div class="kb-tags" id="kbTags"></div>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Knowledge base (Chunks)</span>
+            <span class="field__hint">rows from knowledge base</span>
+          </div>
+          <div class="range-row">
+            <input type="range" class="range" id="fN" min="1" max="20" value="10">
+            <div class="range__val" id="fNVal">C=10</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW -->
+      <div class="tab-pane" data-pane="window">
+        <div class="section__head" data-tooltip="window">Window <span class="section__hint">placement &amp; chrome</span></div>
+
+
+
+        <div class="field">
+          <div class="field__label">
+            <span>Window size</span>
+          </div>
+          <div class="seg" id="segSize">
+            <button class="seg__btn" data-val="S">S · 320×420</button>
+            <button class="seg__btn is-on" data-val="M">M · 440×560</button>
+            <button class="seg__btn" data-val="L">L · 560×680</button>
+            <button class="seg__btn" data-val="XL">XL · 720×820</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Default position</span>
+          </div>
+          <div class="seg" id="segPos">
+            <button class="seg__btn" data-val="tl">↖ Top-left</button>
+            <button class="seg__btn is-on" data-val="tr">↗ Top-right</button>
+            <button class="seg__btn" data-val="bl">↙ Bot-left</button>
+            <button class="seg__btn" data-val="br">↘ Bot-right</button>
+            <button class="seg__btn" data-val="ctr">◉ Center</button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- SHORTCUTS -->
+      <div class="tab-pane" data-pane="shortcuts">
+        <div class="section__head" data-tooltip="shortcuts">Shortcuts <span class="section__hint">how to trigger</span></div>
+
+        <div class="field">
+          <div class="field__label">
+            <span>Hotkey to toggle window</span>
+            <span class="field__hint">open if closed �B7 refresh if open</span>
+          </div>
+          <input class="input" id="fHotkey" placeholder="e.g. Ctrl+Shift+1" readonly>
+        </div>
+
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fAsk" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Show prompt input at the bottom of window</span>
+          </label>
+        </div>
+
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fPin">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Pin window on top of others (always-on-top)</span>
+          </label>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+<!-- TOOLTIP -->
+<div class="tooltip" id="tooltip" data-side="right">
+  <div class="tooltip__arrow"></div>
+  <div class="tooltip__head">
+    <div class="tooltip__icon" id="ttIcon"></div>
+    <div class="tooltip__heading">
+      <div class="tooltip__title" id="ttTitle"></div>
+      <div class="tooltip__sub" id="ttSub"></div>
+    </div>
+  </div>
+  <div class="tooltip__body" id="ttBody"></div>
+  <ul class="tooltip__list" id="ttList"></ul>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+  <span id="toastMsg">Saved</span>
+</div>
+
+<script>
+// ─── коллекциѝ цветов (Obsidian palette + Hermes-раѝширениѝ) ───
+
+const KB_LIBRARY = [
+  'System-Design-Primer',
+  'HighScalability',
+  'Behavioral Bank',
+  '3Blue1Brown transcripts',
+  'Salary Notes',
+  'MIT 6.006',
+  'LeetCode patterns',
+  'PM interview prep',
+  'Refactoring (Fowler)',
+  'DDIA',
+];
+
+const PALETTE = [
+  '#94D07A', // live (green)
+  '#B497D7', // solo (violet)
+  '#84BFD6', // kb (cyan)
+  '#D6BC84', // warn (amber)
+  '#D28079', // danger (coral)
+  '#8484D6', // accent (indigo)
+  '#9C9CE0', // accent-2
+  '#DBDBE0', // text
+];
+
+
+
+// ─── преѝеты по умолчанию ───
+const DEFAULTS = [
+  {
+    id: 'coding', name: 'Coding Helper', color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
+    size: 'M', pos: 'tr', model: 'heavy', n: 10, r: 10,
+    w: 120, kbs: ['System-Design-Primer', 'HighScalability'],
+    prompt: 'You are a senior staff engineer helping in a live coding interview. Reply with concise hints: 3–5 bullets, prioritised. Include trade-offs only if material.',
+    hotkey: 'Ctrl+Shift+1', ask: true, pin: false, enabled: true,
+    web: true,  },
+  {
+    id: 'behavioral', name: 'Behavioral Coach', color: '#B497D7',
+    size: 'S', pos: 'bl', model: 'fast', n: 5, r: 10,
+    w: 120, kbs: ['Behavioral Bank'],
+    prompt: 'Coach the user through behavioral answers. Use STAR structure. Keep responses under 2 min spoken time. Emphasise "I" over "we".',
+    hotkey: 'Ctrl+Shift+2', ask: true, pin: false, enabled: true,
+    web: true,  },
+  {
+    id: 'salary', name: 'Salary Negotiator', color: '#D6BC84',
+    size: 'S', pos: 'br', model: 'fast', n: 8, r: 10,
+    w: 120, kbs: ['Salary Notes'],
+    prompt: 'Help with salary / offer negotiation. Provide counter-scripts, total-comp breakdowns, market data. Be concrete with numbers.',
+    hotkey: 'Ctrl+Shift+3', ask: true, pin: false, enabled: true,
+    web: true,  },
+  {
+    id: 'lecture', name: 'Lecture Notes', color: '#84BFD6',
+    size: 'M', pos: 'ctr', model: 'fast', n: 20, r: 10,
+    w: 120, kbs: ['MIT 6.006', '3Blue1Brown transcripts'],
+    prompt: 'Capture and explain lecture concepts in real time. Use the notation from the source. Add short worked examples when helpful.',
+    hotkey: 'Ctrl+Shift+4', ask: false, pin: true, enabled: false,
+    web: true,  },
+];
+
+// ─── state ───
+const STORAGE_KEY = 'quistant.floatingWindows.v6';
+let windows = [];
+let activeId = null;
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      windows = JSON.parse(raw);
+      if (!Array.isArray(windows) || !windows.length) throw 0;
+    } else throw 0;
+  } catch {
+    windows = JSON.parse(JSON.stringify(DEFAULTS));
+    save();
+  }
+}
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(windows)); } catch {}
+}
+function uid() { return 'w_' + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-3); }
+
+// ─── render sidebar ───
+function renderList() {
+  const list = document.getElementById('list');
+  const empty = document.getElementById('empty');
+  const form  = document.getElementById('form');
+
+  document.getElementById('winCount').textContent = windows.length;
+
+  if (!windows.length) {
+    list.innerHTML = '';
+    empty.style.display = 'flex';
+    form.classList.remove('is-visible');
+    activeId = null;
+    return;
+  }
+
+  list.innerHTML = windows.map(w => `
+    <div class="item ${w.id === activeId ? 'is-on' : ''}" data-id="${w.id}">
+      <span class="item__dot" style="background:${w.color};color:${w.color}"></span>
+      <span class="item__name">${escapeHtml(w.name)}</span>
+      <span class="item__meta">${w.model === 'heavy' ? 'H' : 'F'}·N${w.n}</span>
+      <button class="item__toggle ${w.enabled ? 'is-on' : ''}" data-toggle="${w.id}" title="${w.enabled ? 'Disable' : 'Enable'}">
+        ${w.enabled ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>' : ''}
+      </button>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('.item').forEach(el => {
+    el.addEventListener('click', e => {
+      if (e.target.closest('.item__toggle')) return;
+      selectWindow(el.dataset.id);
+    });
+  });
+  list.querySelectorAll('[data-toggle]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const w = windows.find(x => x.id === btn.dataset.toggle);
+      if (!w) return;
+      w.enabled = !w.enabled;
+      save(); renderList(); renderForm();
+      toast(w.enabled ? 'Window enabled' : 'Window disabled');
+    });
+  });
+}
+
+function selectWindow(id) {
+  activeId = id;
+  document.getElementById('empty').style.display = 'none';
+  document.getElementById('form').classList.add('is-visible');
+  renderList();
+  renderForm();
+}
+
+// ─── render form ───
+function renderForm() {
+  const w = windows.find(x => x.id === activeId);
+  if (!w) return;
+
+  document.getElementById('formTitle').textContent = w.name || 'Untitled';
+  document.getElementById('formType').textContent = w.model === 'heavy' ? 'heavy · deep reasoning' : 'fast · quick hints';
+  document.getElementById('formId').textContent = w.id;
+  document.getElementById('preview').textContent = (w.name || '?').trim().charAt(0).toUpperCase();
+  const preview = document.getElementById('preview');
+  preview.style.background = w.color;
+  preview.style.color = '#0B0B0E';
+  document.getElementById('formDot').style.color = w.color;
+
+  document.getElementById('fName').value = w.name;
+  document.getElementById('fPrompt').value = w.prompt;
+  document.getElementById('fHotkey').value = w.hotkey || '';
+  document.getElementById('fN').value = w.n;
+  document.getElementById('fNVal').textContent = 'C=' + w.n;
+  document.getElementById('fR').value = w.r || 10;
+  document.getElementById('fRVal').textContent = 'R=' + (w.r || 10);
+  document.getElementById('fW').value = w.w || 120;
+  document.getElementById('fWVal').textContent = 'W=' + (w.w || 120);
+  document.getElementById('fAsk').checked = !!w.ask;
+  document.getElementById('fWeb').checked = !!w.web;
+  document.getElementById('fPin').checked = !!w.pin;
+
+  // colors
+  const colors = document.getElementById('colors');
+  colors.innerHTML = PALETTE.map(c => `
+    <div class="color ${c.toLowerCase() === (w.color||'').toLowerCase() ? 'is-on' : ''}" style="background:${c};color:${c}" data-color="${c}"></div>
+  `).join('');
+  colors.querySelectorAll('.color').forEach(el => {
+    el.addEventListener('click', () => {
+      w.color = el.dataset.color;
+      save(); renderForm(); renderList();
+    });
+  });
+
+  // segments
+  paintSeg('segSize', w.size, v => { w.size = v; save(); renderForm(); });
+  paintSeg('segPos',  w.pos,  v => { w.pos  = v; save(); renderForm(); });
+  paintSeg('segModel', w.model, v => { w.model = v; save(); renderForm(); });
+
+  // KB tags
+  const tagsEl = document.getElementById('kbTags');
+  tagsEl.innerHTML = '';
+  KB_LIBRARY.forEach(kb => {
+    const on = w.kbs.includes(kb);
+    const el = document.createElement('button');
+    el.className = 'kb-tag' + (on ? ' is-on' : '');
+    el.innerHTML = kb + (on ? '<span class="x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span>' : '');
+    el.onclick = () => {
+      if (on) w.kbs = w.kbs.filter(k => k !== kb);
+      else w.kbs.push(kb);
+      save(); renderForm();
+    };
+    tagsEl.appendChild(el);
+  });
+  const add = document.createElement('button');
+  add.className = 'kb-tag-add';
+  add.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> add';
+  add.onclick = () => {
+    const name = prompt('Knowledge base name:');
+    if (name && name.trim() && !KB_LIBRARY.includes(name.trim())) {
+      KB_LIBRARY.push(name.trim());
+      w.kbs.push(name.trim());
+      save(); renderForm();
+    }
+  };
+  tagsEl.appendChild(add);
+}
+
+function paintSeg(id, val, cb) {
+  const el = document.getElementById(id);
+  el.querySelectorAll('.seg__btn').forEach(b => {
+    b.classList.toggle('is-on', b.dataset.val === val);
+    b.onclick = () => cb(b.dataset.val);
+  });
+}
+
+// ─── field bindings ───
+function bindFields() {
+  document.getElementById('fName').addEventListener('input', e => {
+    const w = getActive(); if (!w) return;
+    w.name = e.target.value;
+    document.getElementById('formTitle').textContent = w.name || 'Untitled';
+    document.getElementById('preview').textContent = (w.name || '?').trim().charAt(0).toUpperCase();
+    save(); renderList();
+  });
+
+
+  document.getElementById('fPrompt').addEventListener('input', e => {
+    const w = getActive(); if (!w) return;
+    w.prompt = e.target.value; save();
+  });
+
+  document.getElementById('fN').addEventListener('input', e => {
+    const w = getActive(); if (!w) return;
+    w.n = parseInt(e.target.value, 10);
+    document.getElementById('fNVal').textContent = 'C=' + w.n;
+    save(); renderList();
+  });
+
+  document.getElementById('fR').addEventListener('input', e => {
+    const w = getActive(); if (!w) return;
+    w.r = parseInt(e.target.value, 10);
+    document.getElementById('fRVal').textContent = 'R=' + w.r;
+    save();
+  });
+
+  document.getElementById('fW').addEventListener('input', e => {
+    const w = getActive(); if (!w) return;
+    w.w = parseInt(e.target.value, 10);
+    document.getElementById('fWVal').textContent = 'W=' + w.w;
+    save();
+  });
+
+  ['fAsk', 'fPin', 'fWeb'].forEach(id => {
+    document.getElementById(id).addEventListener('change', e => {
+      const w = getActive(); if (!w) return;
+      w[id === 'fAsk' ? 'ask' : id === 'fPin' ? 'pin' : 'web'] = e.target.checked;
+      save();
+    });
+  });
+
+  document.getElementById('fHotkey').addEventListener('keydown', e => {
+    e.preventDefault();
+    const parts = [];
+    if (e.ctrlKey) parts.push('Ctrl');
+    if (e.shiftKey) parts.push('Shift');
+    if (e.altKey) parts.push('Alt');
+    let k = e.key;
+    if (k.length === 1) k = k.toUpperCase();
+    if (['Control', 'Shift', 'Alt', 'Meta'].includes(k)) return;
+    parts.push(k);
+    const w = getActive(); if (!w) return;
+    w.hotkey = parts.join('+');
+    e.target.value = w.hotkey;
+    save();
+  });
+
+  // Esc to clear hotkey
+  document.getElementById('fHotkey').addEventListener('keydown', e => {
+    if (e.key === 'Escape' || e.key === 'Backspace') {
+      e.target.value = '';
+      const w = getActive(); if (w) { w.hotkey = ''; save(); }
+    }
+  });
+}
+
+function getActive() { return windows.find(x => x.id === activeId); }
+
+// ─── actions ───
+function newWindow() {
+  const w = {
+    id: uid(),
+    name: 'New window',
+    color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
+    size: 'M', pos: 'tr', model: 'fast', n: 5, r: 10,
+    w: 120, kbs: [], prompt: '', hotkey: '', ask: true, pin: false,
+    enabled: true,
+    web: true,  };
+  windows.push(w);
+  save();
+  selectWindow(w.id);
+  document.getElementById('fName').focus();
+  document.getElementById('fName').select();
+  toast('Window created');
+}
+
+function duplicateWindow() {
+  const w = getActive(); if (!w) return;
+  const copy = JSON.parse(JSON.stringify(w));
+  copy.id = uid();
+  copy.name = w.name + ' copy';
+  copy.enabled = false;
+  windows.push(copy);
+  save();
+  selectWindow(copy.id);
+  toast('Duplicated');
+}
+
+function deleteWindow() {
+  const w = getActive(); if (!w) return;
+  if (!confirm('Delete "' + w.name + '"?')) return;
+  windows = windows.filter(x => x.id !== w.id);
+  save();
+  activeId = windows[0]?.id || null;
+  renderList();
+  if (activeId) selectWindow(activeId);
+  else document.getElementById('empty').style.display = 'flex';
+  toast('Deleted');
+}
+
+function resetDefaults() {
+  if (!confirm('Reset all floating windows to defaults? Your customizations will be lost.')) return;
+  windows = JSON.parse(JSON.stringify(DEFAULTS));
+  save();
+  activeId = null;
+  renderList();
+  toast('Reset to defaults');
+}
+
+// ─── util ───
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+let toastT;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('is-visible');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('is-visible'), 1800);
+}
+
+// tabs
+function bindTabs() {
+  const tabs = document.querySelectorAll('#tabs .tab');
+  const panes = document.querySelectorAll('.tab-pane');
+  tabs.forEach(t => {
+    t.addEventListener('click', () => {
+      const id = t.dataset.tab;
+      tabs.forEach(x => x.classList.toggle('is-on', x === t));
+      panes.forEach(p => p.classList.toggle('is-on', p.dataset.pane === id));
+      hideTooltip();
+    });
+  });
+}
+
+// tooltips
+const TOOLTIPS = {
+  identity: {
+    title: 'Identity',
+    sub: 'who this window is',
+    body: 'Identity defines how the window presents itself. Tweak this first when adding a new floating window � it is what you see in the chat header and the small color dot beside the title.',
+    items: [
+      ['Display name', 'shown in the window header'],
+      ['Accent color', 'tints the border and status dot'],
+    ],
+  },
+  behavior: {
+    title: 'Behavior',
+    sub: 'how it responds',
+    body: 'Behavior shapes what the assistant says and how it thinks. Pick the engine (fast or heavy), then set its personality via the system prompt. Internet search expands its knowledge and output length keeps responses focused and easy to scan.',
+    items: [
+      ['Model', 'fast for quick hints, heavy for deeper reasoning'],
+      ['System prompt', 'role and tone for this window'],
+      ['Internet search', 'look up current facts on the web'],
+      ['Output length (W)', 'max words per hint'],
+    ],
+  },
+  sources: {
+    title: 'Sources',
+    sub: 'what it reads',
+    body: 'Sources determine what context the window has access to. Replies from the main chat give immediate context, knowledge bases provide reference material, and chunks limit how much is pulled per query.',
+    items: [
+      ['Replies (R)', 'recent lines from main chat for context'],
+      ['Knowledge bases', 'retrieval sources to pull from'],
+      ['Chunks (C)', 'rows per base � cap on retrieval size'],
+    ],
+  },
+  window: {
+    title: 'Window',
+    sub: 'placement & chrome',
+    body: 'Window controls the physical footprint of the floating panel. Pick a size that fits the content and a default corner so the window never covers the main chat.',
+    items: [
+      ['Window size', 'S / M / L / XL preset dimensions'],
+      ['Default position', 'corner where the window spawns'],
+    ],
+  },
+  shortcuts: {
+    title: 'Shortcuts',
+    sub: 'how to trigger',
+    body: 'Shortcuts let you summon and shape the window without leaving the chat. The hotkey toggles or refreshes it, the prompt input sends a direct question, and pin keeps it visible above everything else.',
+    items: [
+      ['Hotkey', 'toggle or refresh the window'],
+      ['Prompt input', 'ask the window a direct question'],
+      ['Pin', 'keep window above everything (always-on-top)'],
+    ],
+  },
+};
+
+function showTooltip(head) {
+  const tt = document.getElementById('tooltip');
+  const key = head.dataset.tooltip;
+  const data = TOOLTIPS[key];
+  if (!data) return;
+
+  const ttIcon = document.getElementById('ttIcon');
+  const srcIcon = document.querySelector(`.tab[data-tab="${key}"] svg`);
+  ttIcon.innerHTML = '';
+  if (srcIcon) ttIcon.appendChild(srcIcon.cloneNode(true));
+
+  document.getElementById('ttTitle').textContent = data.title;
+  document.getElementById('ttSub').textContent = data.sub;
+  document.getElementById('ttBody').textContent = data.body;
+  document.getElementById('ttList').innerHTML = data.items
+    .map(([n, d]) => `<li><b>${escapeHtml(n)}</b> ${escapeHtml(d)}</li>`)
+    .join('');
+
+  positionTooltip(head, tt);
+  tt.classList.add('is-visible');
+}
+
+function hideTooltip() {
+  const tt = document.getElementById('tooltip');
+  if (tt) tt.classList.remove('is-visible');
+}
+
+function positionTooltip(head, tt) {
+  const r = head.getBoundingClientRect();
+  const tw = tt.offsetWidth;
+  const th = tt.offsetHeight;
+  const m = 12;
+  const rightX = r.right + m;
+  if (rightX + tw < window.innerWidth - 20) {
+    tt.dataset.side = 'right';
+    tt.style.left = rightX + 'px';
+    tt.style.top = (r.top + 14) + 'px';
+  } else {
+    tt.dataset.side = 'bottom';
+    tt.style.left = Math.max(20, Math.min(r.left, window.innerWidth - tw - 20)) + 'px';
+    tt.style.top = (r.bottom + m) + 'px';
+  }
+}
+
+function setupTooltips() {
+  document.querySelectorAll('.section__head[data-tooltip]').forEach(head => {
+    head.addEventListener('mouseenter', () => showTooltip(head));
+    head.addEventListener('mouseleave', hideTooltip);
+  });
+  window.addEventListener('scroll', hideTooltip, true);
+  window.addEventListener('resize', hideTooltip);
+}
+
+// ─── init ───
+load();
+renderList();
+bindFields();
+bindTabs();
+setupTooltips();
+
+if (windows.length) {
+  // open first enabled, else first
+  const first = windows.find(w => w.enabled) || windows[0];
+  selectWindow(first.id);
+}
+</script>
+
+</body>
+</html>

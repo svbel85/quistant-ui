@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="paper">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,51 +8,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../themes.css">
 
 <style>
-:root {
-  /* PAPER: Base_Hue=40° (тёплая кремовая бумага, светлая тема).
-     Подложка — слои крема/слоновой кости, акцент — тёмный тёплый коричневый.
-     Тексты — тёмные чернила на светлой бумаге, без #fff.
-     glass-поверхности инвертированы: чёрная вуаль вместо белой. */
-  --bg:         #F5F2EA;
-  --bg-1:       #EBE5D6;
-  --bg-2:       #DDD6C2;
-  --bg-3:       #CDC4AC;
-  --sidebar:    #F5F2EA;
-  --sidebar-2:  #EBE5D6;
-  --border:     rgba(58,51,40,.18);
-  --border-2:   rgba(58,51,40,.32);
-  --text:       #3A3328;
-  --text-2:     #6E6248;
-  --muted:      #8E8266;
-  --muted-2:    #A89E80;
-  --accent:     #8E7344;
-  --accent-2:   #A68858;
-  --accent-soft:rgba(142,115,68,.15);
-  --live:       #5E8850;
-  --solo:       #6E6398;
-  --kb:         #558098;
-  --warn:       #9A8050;
-  --danger:     #985E58;
-  --shadow-sm:  0 1px 2px rgba(58,51,40,.10);
-  --shadow-md:  0 4px 16px rgba(58,51,40,.18);
-  --shadow-lg:  0 12px 40px rgba(58,51,40,.22);
-  --radius-sm:  6px;
-  --radius-md:  10px;
-  --radius-lg:  14px;
-  --radius-xl:  20px;
-  --surface:    rgba(58,51,40,.02);
-  --surface-2:  rgba(58,51,40,.05);
-  --surface-bd: rgba(58,51,40,.06);
-}
+/* Токены темы и базовые компоненты — ../themes.css (data-theme="paper") */
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 html, body { height: 100%; }
 body {
-  background-color: #F5F2EA;
+  background-color: var(--bg-primary);
   background-image:
     url('5-paper.png'),
     radial-gradient(ellipse 70% 55% at 25% 15%, rgba(110,98,72,.10) 0%, transparent 65%),

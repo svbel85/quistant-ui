@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="midnight">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,50 +8,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../themes.css">
 
 <style>
-:root {
-  /* MIDNIGHT: Base_Hue=215° (глубокий сланцевый/синий — ночное небо над океаном).
-     Поверхности — низкая S, акцент — «отблеск луны на воде», не плакатный.
-     Тексты наследуют синеву, но приглушены до «печати на тёмном камне». */
-  --bg:         #08080F;
-  --bg-1:       #0E131C;
-  --bg-2:       #161D29;
-  --bg-3:       #1F2837;
-  --sidebar:    #08080F;
-  --sidebar-2:  #0E131C;
-  --border:     #283447;
-  --border-2:   #344158;
-  --text:       #C8D2E2;
-  --text-2:     #9DB5D1;
-  --muted:      #6A7B91;
-  --muted-2:    #485669;
-  --accent:     #3D6FB5;
-  --accent-2:   #5C8AC8;
-  --accent-soft:rgba(61,111,181,.18);
-  --live:       #6E9C5E;
-  --solo:       #7E73AA;
-  --kb:         #669AB2;
-  --warn:       #B89A6A;
-  --danger:     #A86E68;
-  --shadow-sm:  0 1px 2px rgba(0,0,0,.5);
-  --shadow-md:  0 4px 16px rgba(0,0,0,.45);
-  --shadow-lg:  0 12px 40px rgba(0,0,0,.55);
-  --radius-sm:  6px;
-  --radius-md:  10px;
-  --radius-lg:  14px;
-  --radius-xl:  20px;
-  --surface:    rgba(255,255,255,.025);
-  --surface-2:  rgba(255,255,255,.06);
-  --surface-bd: rgba(255,255,255,.05);
-}
+/* Токены темы и базовые компоненты — ../themes.css (data-theme="midnight") */
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 html, body { height: 100%; }
 body {
-  background-color: #08080F;
+  background-color: var(--bg-primary);
   background-image:
     url('2-midnight.png'),
     radial-gradient(ellipse 70% 55% at 25% 15%, rgba(61,111,181,.10) 0%, transparent 65%),

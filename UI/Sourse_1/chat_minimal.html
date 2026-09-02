@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="obsidian">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -9,38 +9,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+<link rel="stylesheet" href="../themes/themes.css">
 <style>
-:root {
-  /* ОБСИДИАН v4: глубокий фиолет, НЕ ядрёный */
-  --bg:         #0A0A10;   /* HSL(248, 22%,  4%) — НЕ ТРОГАЕМ */
-  --bg-1:       #111119;
-  --bg-2:       #1B1B25;
-  --bg-3:       #25252F;
-  --border:     #2D2D3A;
-  --border-2:   #3A3A4C;
-  /* Тексты: cool gray, не белый жжёт */
-  --text:       #A8A8B5;   /* HSL(248,  7%, 68%) */
-  --text-2:     #8C8C99;   /* HSL(248,  7%, 57%) */
-  --muted:      #6F6F7A;
-  --muted-2:    #4A4A55;
-  /* Акценты: DEEP violet, не candy */
-  --accent:     #54548F;   /* HSL(245, 32%, 45%) */
-  --accent-2:   #6868A2;   /* HSL(245, 32%, 52%) */
-  --accent-soft:rgba(84,84,143,.18);
-  --live:       #6E9C5E;
-  --solo:       #7E73AA;
-  --kb:         #669AB2;
-  --warn:       #B89A6A;
-  --danger:     #A86E68;
-  --radius-sm:  6px;
-  --radius-md:  10px;
-  --radius-lg:  14px;
-}
+/* Палитра и компоненты — ../themes/themes.css (data-theme="obsidian") */
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; height: 100%; }
 body {
-  background-color: #0A0A10;
+  background-color: var(--bg-primary);
   background-image:
     url('1-obsidian.png?v=4'),
     radial-gradient(ellipse 70% 55% at 25% 15%, rgba(84,84,143,.10) 0%, transparent 65%),
