@@ -1,13 +1,120 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="1-obsidian">
+<html lang="en" data-theme="obsidian">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quistant — Floating Window</title>
+  <title>Quistan — Floating Window</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/floating.css" />
 </head>
 <body>
-  <!-- Шаблон отдельного компактного всплывающего окна подсказок -->
+
+  <div class="fw-demo">
+
+    <!-- декоративный фон-маркер, чтобы было понятно что окно "летающее" -->
+    <div class="fw-demo__bg">
+      <div class="fw-demo__bg-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>
+        floating window · drag the header
+      </div>
+      <div class="fw-demo__bg-mark fw-demo__bg-mark--info" style="margin-top:8px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+        bottom-left <b>↻</b> pulls the current question from the <b>main window context</b> (<span id="winCount">…</span> floating windows open · count depends on settings)
+      </div>
+    </div>
+
+    <!-- ════════════ FLOATING WINDOW (каркас) ════════════
+         Карточки подсказок рендерятся в #fwinBody по выбранному типу.
+         Шаблон одной карточки — partials/floating-window/answer-card.html. -->
+    <div class="fw" id="fwin" style="--w-color: var(--live)">
+      <div class="fw__drag-hint"></div>
+
+      <div class="fw__head" id="fwinHead">
+        <span class="fw__dot"></span>
+        <span class="fw__name" id="fwinName">Coding Helper</span>
+
+        <div class="fw__acts">
+          <button class="fw__btn" title="Pin to top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v6M5 10h14l-2 4H7l-2-4zM12 14v8"/></svg>
+          </button>
+          <button class="fw__btn" title="Minimize">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="fw__btn fw__btn--close" title="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- BEGIN partial: partials/floating-window/answer-card.html
+           Лента карточек-ответов. Рендерится JS-ом по выбранному типу окна.
+           Базовая разметка одной карточки:
+             <div class="fw-hint [fw-hint--behavioral|salary|lecture]">
+               <div class="fw-hint__head">...</div>
+               <h4>title</h4>
+               <ul>...bullets</ul>
+               <div class="fw-hint__src">source</div>
+             </div> -->
+      <div class="fw__body" id="fwinBody"></div>
+      <!-- END partial: answer-card.html -->
+
+      <div class="fw__foot is-collapsed" id="fwinFoot">
+        <button class="fw__ask-btn fw__refresh-btn" id="fwinRefresh" title="Pull current question from main window context (this window's type decides which one)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 1 1-3.5-7.1"/>
+            <path d="M21 4v5h-5"/>
+          </svg>
+        </button>
+        <input class="fw__ask" id="fwinAsk" placeholder="Ask a quick question…">
+        <button class="fw__ask-btn" title="Ask">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="fw__handle" id="fwinHandle" title="Toggle input panel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+
+      <div class="fw__grip" id="fwinGrip"></div>
+
+      <button class="fw__refresh-mini" id="fwinRefreshMini" title="Pull current question from main window context (this window's type decides which one)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12a9 9 0 1 1-3.5-7.1"/>
+          <path d="M21 4v5h-5"/>
+        </svg>
+        <span class="fw__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+    </div>
+
+    <!-- ════════════ PICKER — выбор типа окна ════════════ -->
+    <div class="fw-picker" id="picker">
+      <span class="fw-picker__label">Window</span>
+      <button class="fw-picker__chip is-on" data-id="coding">
+        <span class="d" style="background:var(--live);box-shadow:0 0 6px var(--live)"></span>Coding Helper
+      </button>
+      <button class="fw-picker__chip" data-id="behavioral">
+        <span class="d" style="background:var(--solo)"></span>Behavioral
+      </button>
+      <button class="fw-picker__chip" data-id="salary">
+        <span class="d" style="background:var(--warn)"></span>Salary
+      </button>
+      <button class="fw-picker__chip" data-id="lecture">
+        <span class="d" style="background:var(--kb)"></span>Lecture
+      </button>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { initFloatingWindow } from './js/floating-window.js';
+    initFloatingWindow();
+  </script>
+
 </body>
 </html>

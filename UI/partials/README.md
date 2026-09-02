@@ -7,7 +7,9 @@
 - `main-window/` — компоненты главного окна (чат, шапка, инпут, нижний бар).
 - `drawers/` — выезжающие боковые шторки.
 - `settings/` — вкладки окна параметров (`settings.html`).
-- `floating-settings/` — вкладки настройки плавающих окон
-  (Identity, Behavior и т.д.).
+- `floating-settings/` — вкладки настройки плавающих окон и
+  левый сайдбар со списком окон (Identity, Behavior и т.д.).
+- `floating-window/` — шаблоны карточек подсказок мини-окна
+  (`floating_window.html`).
 - `control/` — блоки мини-пульта управления (`control_panel.html`).
 - `kb/` — компоненты окна выбора баз знаний (`kb_picker.html`).
