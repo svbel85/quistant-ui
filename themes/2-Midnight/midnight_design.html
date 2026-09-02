@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Куистант — Obsidian Design (HSL-anchor 240°)</title>
+<title>Куистант — Midnight Design (HSL-anchor 215°)</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,27 +11,29 @@
 
 <style>
 :root {
-  --bg:         #0B0B0E;
-  --bg-1:       #141419;
-  --bg-2:       #1E1E24;
-  --bg-3:       #27272F;
-  --sidebar:    #0B0B0E;
-  --sidebar-2:  #141419;
-  --border:     #2D2D38;
-  --border-2:   #38384A;
-  /* тексты по правилу HSL (Base_Hue=240° обсидиан) */
-  --text:       #DBDBE0;   /* HSL(240, 7%, 87%) — text-main: основной + заголовки (правило: одно значение) */
-  --text-2:     #B0B0BD;   /* HSL(240, 8%, 75%) — промежуточный */
-  --muted:      #9090A1;   /* HSL(240, 8%, 60%) — text-muted: второстепенный, подсказки, иконки */
-  --muted-2:    #5E5E70;
-  --accent:     #8484D6;
-  --accent-2:   #9C9CE0;
-  --accent-soft:rgba(132,132,214,.12);
-  --live:       #94D07A;
-  --solo:       #B497D7;
-  --kb:         #84BFD6;
-  --warn:       #D6BC84;
-  --danger:     #D28079;
+  /* MIDNIGHT: Base_Hue=215° (глубокий сланцевый/синий — ночное небо над океаном).
+     Поверхности — низкая S, акцент — «отблеск луны на воде», не плакатный.
+     Тексты наследуют синеву, но приглушены до «печати на тёмном камне». */
+  --bg:         #08080F;
+  --bg-1:       #0E131C;
+  --bg-2:       #161D29;
+  --bg-3:       #1F2837;
+  --sidebar:    #08080F;
+  --sidebar-2:  #0E131C;
+  --border:     #283447;
+  --border-2:   #344158;
+  --text:       #C8D2E2;
+  --text-2:     #9DB5D1;
+  --muted:      #6A7B91;
+  --muted-2:    #485669;
+  --accent:     #3D6FB5;
+  --accent-2:   #5C8AC8;
+  --accent-soft:rgba(61,111,181,.18);
+  --live:       #6E9C5E;
+  --solo:       #7E73AA;
+  --kb:         #669AB2;
+  --warn:       #B89A6A;
+  --danger:     #A86E68;
   --shadow-sm:  0 1px 2px rgba(0,0,0,.5);
   --shadow-md:  0 4px 16px rgba(0,0,0,.45);
   --shadow-lg:  0 12px 40px rgba(0,0,0,.55);
@@ -39,14 +41,29 @@
   --radius-md:  10px;
   --radius-lg:  14px;
   --radius-xl:  20px;
+  --surface:    rgba(255,255,255,.025);
+  --surface-2:  rgba(255,255,255,.06);
+  --surface-bd: rgba(255,255,255,.05);
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
+html, body { height: 100%; }
 body {
-  background: #0B0B0E url('obsidian.png') center / cover no-repeat fixed;
-  background-blend-mode: luminosity;
+  background-color: #08080F;
+  background-image:
+    url('2-midnight.png'),
+    radial-gradient(ellipse 70% 55% at 25% 15%, rgba(61,111,181,.10) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 78% 78%, rgba(96,165,206,.08) 0%, transparent 65%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(40,80,120,.12) 0%, transparent 75%),
+    radial-gradient(circle at 15% 90%, rgba(35,65,110,.07) 0%, transparent 50%),
+    radial-gradient(circle at 85% 10%, rgba(110,140,180,.05) 0%, transparent 45%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: normal, screen, screen, screen, screen, screen;
   color: var(--text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 14px;
@@ -56,23 +73,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-body::before {
-  content: ''; position: fixed; inset: 0; pointer-events: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><g stroke='%23e8e1d2' stroke-width='0.3' opacity='0.015'><line x1='-20' y1='40' x2='80' y2='-10'/><line x1='60' y1='120' x2='180' y2='80'/><line x1='150' y1='200' x2='260' y2='150'/><line x1='220' y1='280' x2='340' y2='240'/><line x1='-20' y1='180' x2='60' y2='140'/><line x1='100' y1='40' x2='200' y2='-10'/><line x1='250' y1='90' x2='340' y2='60'/></g></svg>");
-  z-index: 0;
-}
-body > * { position: relative; z-index: 1; }
 section { scroll-margin-top: 90px; }
 a { color: inherit; text-decoration: none; }
 
-/* ───────── layout shell (как у Hermes One) ───────── */
 .shell {
   display: grid;
   grid-template-columns: 260px 1fr;
   min-height: 100vh;
 }
 
-/* ───────── sidebar ───────── */
 .sidebar {
   background: var(--sidebar);
   border-right: 1px solid var(--border);
@@ -172,7 +181,6 @@ a { color: inherit; text-decoration: none; }
   flex-shrink: 0;
 }
 
-/* ───────── main content ───────── */
 .main {
   padding: 32px 40px 60px;
   max-width: 1100px;
@@ -180,7 +188,6 @@ a { color: inherit; text-decoration: none; }
   width: 100%;
 }
 
-/* ───────── typography ───────── */
 .font-mono { font-family: 'Geist Mono', monospace; }
 .h-display { font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: -.02em; }
 .sec-title {
@@ -191,7 +198,6 @@ a { color: inherit; text-decoration: none; }
 }
 .sec-sub { color: var(--muted); font-size: 14px; margin: 0 0 24px; max-width: 600px; }
 
-/* ───────── buttons ───────── */
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 9px 14px;
@@ -208,9 +214,9 @@ a { color: inherit; text-decoration: none; }
   background: var(--accent);
   border-color: var(--accent);
   color: var(--bg);
-  box-shadow: 0 0 12px rgba(123,168,217,.25);
+  box-shadow: 0 0 12px rgba(61,111,181,.25);
 }
-.btn--primary:hover { background: var(--accent-2); border-color: var(--accent-2); box-shadow: 0 0 16px rgba(123,168,217,.35); }
+.btn--primary:hover { background: var(--accent-2); border-color: var(--accent-2); box-shadow: 0 0 16px rgba(61,111,181,.35); }
 .btn--ghost { background: transparent; color: var(--text-2); border-color: transparent; }
 .btn--ghost:hover { background: var(--bg-2); }
 .btn--danger { background: var(--danger); border-color: var(--danger); color: #fff; }
@@ -219,7 +225,6 @@ a { color: inherit; text-decoration: none; }
 .btn[disabled] { opacity: .45; cursor: not-allowed; pointer-events: none; }
 .btn .icon { width: 16px; height: 16px; flex-shrink: 0; }
 
-/* pill-action кнопки (как у Hermes в hero) */
 .action-pill {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 10px 16px;
@@ -234,7 +239,6 @@ a { color: inherit; text-decoration: none; }
 .action-pill:hover { background: var(--bg-3); border-color: var(--border-2); color: var(--text); }
 .action-pill .icon { width: 16px; height: 16px; color: var(--muted); }
 
-/* ───────── карточки ───────── */
 .card {
   background: var(--bg-1);
   border: 1px solid var(--border);
@@ -242,14 +246,13 @@ a { color: inherit; text-decoration: none; }
   padding: 22px;
 }
 .card--accent {
-  border-color: rgba(123,168,217,.30);
-  background: linear-gradient(180deg, rgba(79,124,255,.06), transparent), var(--bg-1);
+  border-color: rgba(61,111,181,.30);
+  background: linear-gradient(180deg, rgba(61,111,181,.06), transparent), var(--bg-1);
 }
 .card--soft {
   background: var(--bg-2);
 }
 
-/* ───────── инпуты ───────── */
 .input {
   width: 100%; padding: 10px 12px;
   background: var(--bg-1); color: var(--text);
@@ -261,7 +264,7 @@ a { color: inherit; text-decoration: none; }
 }
 .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .input--err  { border-color: var(--danger); }
-.input--err:focus { box-shadow: 0 0 0 3px rgba(201,123,123,.15); }
+.input--err:focus { box-shadow: 0 0 0 3px rgba(168,110,104,.15); }
 .input[disabled] { opacity: .5; cursor: not-allowed; }
 .input::placeholder { color: var(--muted-2); }
 .input--mono { font-family: 'Geist Mono', monospace; font-size: 12.5px; }
@@ -274,7 +277,6 @@ a { color: inherit; text-decoration: none; }
 .helper { font-size: 12px; color: var(--muted); margin-top: 6px; }
 .helper--err { color: var(--danger); }
 
-/* ───────── pill / тег ───────── */
 .tag {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 3px 10px;
@@ -282,14 +284,14 @@ a { color: inherit; text-decoration: none; }
   border-radius: 999px;
   border: 1px solid transparent;
 }
-.tag--live { color: var(--live); background: rgba(74,222,128,.1); border-color: rgba(143,191,110,.25); }
-.tag--solo { color: var(--solo); background: rgba(192,132,252,.1); border-color: rgba(184,156,212,.25); }
-.tag--kb   { color: var(--kb);   background: rgba(56,189,248,.1); border-color: rgba(127,191,212,.25); }
-.tag--accent { color: var(--accent-2); background: var(--accent-soft); border-color: rgba(123,168,217,.30); }
+.tag--live { color: var(--live); background: rgba(110,156,94,.10); border-color: rgba(110,156,94,.25); }
+.tag--solo { color: var(--solo); background: rgba(126,115,170,.10); border-color: rgba(126,115,170,.25); }
+.tag--kb   { color: var(--kb);   background: rgba(102,154,178,.10); border-color: rgba(102,154,178,.25); }
+.tag--accent { color: var(--accent-2); background: var(--accent-soft); border-color: rgba(61,111,181,.30); }
 .tag--muted { color: var(--muted); background: var(--bg-2); border-color: var(--border); }
-.tag--warn { color: var(--warn); background: rgba(251,191,36,.1); border-color: rgba(251,191,36,.25); }
-.tag--danger { color: var(--danger); background: rgba(248,113,113,.1); border-color: rgba(201,123,123,.25); }
-.tag--success { color: var(--live); background: rgba(74,222,128,.1); border-color: rgba(143,191,110,.25); }
+.tag--warn { color: var(--warn); background: rgba(184,154,106,.10); border-color: rgba(184,154,106,.25); }
+.tag--danger { color: var(--danger); background: rgba(168,110,104,.10); border-color: rgba(168,110,104,.25); }
+.tag--success { color: var(--live); background: rgba(110,156,94,.10); border-color: rgba(110,156,94,.25); }
 
 .dot {
   width: 6px; height: 6px; border-radius: 50%;
@@ -299,11 +301,10 @@ a { color: inherit; text-decoration: none; }
 .dot--live {
   width: 8px; height: 8px; border-radius: 50%;
   background: var(--live);
-  box-shadow: 0 0 0 0 rgba(143,191,110,.4);
+  box-shadow: 0 0 0 0 rgba(110,156,94,.4);
   animation: pulse-soft 1.6s ease-in-out infinite;
 }
 
-/* ───────── checkbox ───────── */
 .checkbox {
   width: 18px; height: 18px;
   border: 1.5px solid var(--border-2);
@@ -317,7 +318,6 @@ a { color: inherit; text-decoration: none; }
 .checkbox.ind { background: var(--accent); border-color: var(--accent); }
 .checkbox:hover { border-color: var(--accent); }
 
-/* ───────── switch ───────── */
 .switch {
   position: relative; display: inline-block;
   width: 38px; height: 22px;
@@ -333,7 +333,6 @@ a { color: inherit; text-decoration: none; }
 .switch.on { background: var(--accent); border-color: var(--accent); }
 .switch.on::after { left: 18px; background: #fff; }
 
-/* ───────── slider ───────── */
 .range {
   -webkit-appearance: none; appearance: none;
   width: 100%; height: 4px; background: var(--bg-3);
@@ -344,7 +343,7 @@ a { color: inherit; text-decoration: none; }
   width: 16px; height: 16px; border-radius: 50%;
   background: var(--accent); border: 2px solid var(--bg);
   cursor: pointer;
-  box-shadow: 0 0 0 3px rgba(123,168,217,.15);
+  box-shadow: 0 0 0 3px rgba(61,111,181,.15);
 }
 .range::-moz-range-thumb {
   width: 16px; height: 16px; border-radius: 50%;
@@ -352,9 +351,8 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
 }
 
-/* ───────── chat bubble ───────── */
 .bubble {
-  padding: 12px 16px;
+  padding: 8px 12px;
   font-size: 14px; line-height: 1.55;
   border-radius: var(--radius-md);
   max-width: 75%;
@@ -399,7 +397,6 @@ a { color: inherit; text-decoration: none; }
 .avatar-sm--ai { background: linear-gradient(135deg, var(--accent), var(--solo)); }
 .avatar-sm--user { background: var(--bg-3); color: var(--text); }
 
-/* ───────── spinner ───────── */
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinner {
   width: 18px; height: 18px; border-radius: 50%;
@@ -407,7 +404,6 @@ a { color: inherit; text-decoration: none; }
   animation: spin .8s linear infinite;
 }
 
-/* ───────── toast ───────── */
 .toast {
   display: flex; align-items: flex-start; gap: 12px;
   padding: 12px 14px;
@@ -420,7 +416,6 @@ a { color: inherit; text-decoration: none; }
 .toast--warn  { border-left: 3px solid var(--warn); }
 .toast--info  { border-left: 3px solid var(--accent); }
 
-/* ───────── hero (как у Hermes) ───────── */
 .hero {
   text-align: center;
   padding: 60px 20px 40px;
@@ -432,7 +427,7 @@ a { color: inherit; text-decoration: none; }
   background: linear-gradient(135deg, var(--accent), var(--solo));
   display: flex; align-items: center; justify-content: center;
   font-size: 22px; font-weight: 700; color: #fff;
-  box-shadow: 0 6px 24px rgba(123,168,217,.18);
+  box-shadow: 0 6px 24px rgba(61,111,181,.18);
 }
 .hero__title {
   font-size: 38px; font-weight: 600;
@@ -452,13 +447,12 @@ a { color: inherit; text-decoration: none; }
   max-width: 640px; margin: 0 auto;
 }
 
-/* ───────── composer (поле ввода как у Hermes) ───────── */
 .composer {
   margin-top: 28px;
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 14px 14px 12px;
+  padding: 4px 8px 6px;
 }
 .composer__input {
   width: 100%;
@@ -499,13 +493,12 @@ a { color: inherit; text-decoration: none; }
   background: var(--accent); color: var(--bg);
   border: none; border-radius: var(--radius-md);
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(123,168,217,.22);
+  box-shadow: 0 0 8px rgba(61,111,181,.22);
   transition: all .15s;
 }
-.composer__send:hover { background: var(--accent-2); box-shadow: 0 0 12px rgba(123,168,217,.35); }
+.composer__send:hover { background: var(--accent-2); box-shadow: 0 0 12px rgba(61,111,181,.35); }
 .composer__send:disabled { opacity: .4; cursor: not-allowed; }
 
-/* ───────── grid helpers ───────── */
 .grid { display: grid; gap: 16px; }
 .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -517,7 +510,6 @@ a { color: inherit; text-decoration: none; }
   .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; }
 }
 
-/* ───────── swatch ───────── */
 .swatch {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -526,7 +518,6 @@ a { color: inherit; text-decoration: none; }
 .swatch__chip { height: 80px; }
 .swatch__meta { padding: 10px 12px; background: var(--bg-1); }
 
-/* ───────── code block ───────── */
 .code-block {
   background: var(--bg-1);
   border: 1px solid var(--border);
@@ -543,7 +534,6 @@ a { color: inherit; text-decoration: none; }
 .code-block .c-num     { color: var(--warn); }
 .code-block .c-fn      { color: var(--accent); }
 
-/* ───────── misc ───────── */
 .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 .col { display: flex; flex-direction: column; gap: 12px; }
 .muted { color: var(--muted); }
@@ -562,7 +552,6 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-2);
 }
 
-/* hand-drawn filter — subtle only on btn + composer */
 .btn { filter: url(#hand-drawn); }
 .composer { filter: url(#hand-drawn); }
 </style>
@@ -570,7 +559,6 @@ a { color: inherit; text-decoration: none; }
 
 <body>
 
-<!-- hand-drawn SVG filter (subtle, scale 0.6) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <filter id="hand-drawn">
     <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="5"/>
@@ -580,12 +568,11 @@ a { color: inherit; text-decoration: none; }
 
 <div class="shell">
 
-  <!-- ════════════ SIDEBAR (как у Hermes One) ════════════ -->
   <aside class="sidebar">
     <div class="sidebar__brand">
       <div class="sidebar__logo">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#8484D6"/>
+          <circle cx="12" cy="12" r="10" fill="#3D6FB5"/>
           <text x="12" y="16" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="Inter">Q</text>
         </svg>
         Куистант
@@ -665,10 +652,8 @@ a { color: inherit; text-decoration: none; }
     </div>
   </aside>
 
-  <!-- ════════════ MAIN CONTENT ════════════ -->
   <main class="main">
 
-    <!-- ─── Hero (как у Hermes: центральный логотип + действия) ─── -->
     <section class="hero">
       <div class="hero__logo">
         <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -698,7 +683,6 @@ a { color: inherit; text-decoration: none; }
         </button>
       </div>
 
-      <!-- Composer (как у Hermes: большое поле ввода снизу) -->
       <div class="composer" style="max-width:760px;margin:28px auto 0">
         <textarea class="composer__input" rows="1" placeholder="Спросить Куистанта... (Shift+Enter для новой строки)"></textarea>
         <div class="composer__toolbar">
@@ -734,42 +718,41 @@ a { color: inherit; text-decoration: none; }
       </div>
     </section>
 
-    <!-- ════════════ TOKENS ════════════ -->
     <section id="tokens" style="margin-top:64px">
       <h2 class="sec-title">Токены</h2>
       <p class="sec-sub">Цвета, отступы, радиусы. Один источник правды для Figma, CSS и Flet.</p>
 
       <h3 class="section-title">Цветовая палитра</h3>
       <div class="grid grid-5 mb-10">
-        <div class="swatch"><div class="swatch__chip" style="background:#0B0B0E"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-warm</div><div class="font-mono" style="font-size:11px">#0B0B0E</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#141419"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-1</div><div class="font-mono" style="font-size:11px">#141419</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#1E1E24"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-2</div><div class="font-mono" style="font-size:11px">#1E1E24</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#27272F"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-3</div><div class="font-mono" style="font-size:11px">#27272F</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#27272F"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">border</div><div class="font-mono" style="font-size:11px">#27272F</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#08080F"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-warm</div><div class="font-mono" style="font-size:11px">#08080F</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#0E131C"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-1</div><div class="font-mono" style="font-size:11px">#0E131C</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#161D29"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-2</div><div class="font-mono" style="font-size:11px">#161D29</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#1F2837"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">bg-3</div><div class="font-mono" style="font-size:11px">#1F2837</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#283447"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">border</div><div class="font-mono" style="font-size:11px">#283447</div></div></div>
 
-        <div class="swatch"><div class="swatch__chip" style="background:#8484D6"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">accent</div><div class="font-mono text-accent" style="font-size:11px">#8484D6</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#94D07A"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">live</div><div class="font-mono text-live" style="font-size:11px">#94D07A</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#B497D7"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">solo</div><div class="font-mono text-solo" style="font-size:11px">#B497D7</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#7FBFD4"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">keyboard</div><div class="font-mono text-kb" style="font-size:11px">#7FBFD4</div></div></div>
-        <div class="swatch"><div class="swatch__chip" style="background:#D28079"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">danger</div><div class="font-mono text-danger" style="font-size:11px">#D28079</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#3D6FB5"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">accent</div><div class="font-mono text-accent" style="font-size:11px">#3D6FB5</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#6E9C5E"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">live</div><div class="font-mono text-live" style="font-size:11px">#6E9C5E</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#7E73AA"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">solo</div><div class="font-mono text-solo" style="font-size:11px">#7E73AA</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#669AB2"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">keyboard</div><div class="font-mono text-kb" style="font-size:11px">#669AB2</div></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#A86E68"></div><div class="swatch__meta"><div class="muted" style="font-size:11px">danger</div><div class="font-mono text-danger" style="font-size:11px">#A86E68</div></div></div>
       </div>
 
       <h3 class="section-title">Mode-индикаторы</h3>
       <div class="grid grid-3 mb-10">
         <div class="card text-center">
           <span class="tag tag--live" style="font-size:13px;padding:5px 12px"><span class="dot--live"></span>LIVE</span>
-          <div class="font-mono mt-6" style="font-size:11px;color:var(--live)">#94D07A · идёт созвон</div>
+          <div class="font-mono mt-6" style="font-size:11px;color:var(--live)">#6E9C5E · идёт созвон</div>
         </div>
         <div class="card text-center">
           <span class="tag tag--solo" style="font-size:13px;padding:5px 12px"><span class="dot"></span>SOLO</span>
-          <div class="font-mono mt-6" style="font-size:11px;color:var(--solo)">#B497D7 · без собеседника</div>
+          <div class="font-mono mt-6" style="font-size:11px;color:var(--solo)">#7E73AA · без собеседника</div>
         </div>
         <div class="card text-center">
           <span class="tag tag--kb" style="font-size:13px;padding:5px 12px">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
             KEYBOARD
           </span>
-          <div class="font-mono mt-6" style="font-size:11px;color:var(--kb)">#7FBFD4 · ввод с клавы</div>
+          <div class="font-mono mt-6" style="font-size:11px;color:var(--kb)">#669AB2 · ввод с клавы</div>
         </div>
       </div>
 
@@ -828,7 +811,6 @@ a { color: inherit; text-decoration: none; }
       </div>
     </section>
 
-    <!-- ════════════ BUTTONS ════════════ -->
     <section id="button" style="margin-top:64px">
       <h2 class="sec-title">Кнопки</h2>
       <p class="sec-sub">4 варианта × 3 размера × иконки. Чистый flat-стиль без лишних эффектов.</p>
@@ -878,7 +860,6 @@ a { color: inherit; text-decoration: none; }
       </div>
     </section>
 
-    <!-- ════════════ INPUTS ════════════ -->
     <section id="input" style="margin-top:64px">
       <h2 class="sec-title">Инпуты</h2>
       <p class="sec-sub">Text / Password / Search / Number. С лейблом и хинтером.</p>
@@ -925,7 +906,6 @@ a { color: inherit; text-decoration: none; }
       </div>
     </section>
 
-    <!-- ════════════ FORM CONTROLS ════════════ -->
     <section id="form" style="margin-top:64px">
       <h2 class="sec-title">Контролы</h2>
       <p class="sec-sub">Checkbox, Switch, Slider, Select — единый стиль.</p>
@@ -989,7 +969,6 @@ a { color: inherit; text-decoration: none; }
       </div>
     </section>
 
-    <!-- ════════════ CHAT ════════════ -->
     <section id="chat" style="margin-top:64px">
       <h2 class="sec-title">Чат-лента</h2>
       <p class="sec-sub">3 типа пузырей: собеседник / ИИ (слева), ты (справа).</p>
@@ -1051,7 +1030,6 @@ a { color: inherit; text-decoration: none; }
       </div>
     </section>
 
-    <!-- ════════════ WINDOWS ════════════ -->
     <section id="window" style="margin-top:64px">
       <h2 class="sec-title">Плавающие окна</h2>
       <p class="sec-sub">Frameless, drag-handle сверху, кнопки pin/close/menu, Mode Indicator, Freeze Badge.</p>
@@ -1135,7 +1113,6 @@ a { color: inherit; text-decoration: none; }
       </div>
     </section>
 
-    <!-- ════════════ FEEDBACK ════════════ -->
     <section id="feedback" style="margin-top:64px">
       <h2 class="sec-title">Фидбек</h2>
       <p class="sec-sub">Toast, Modal, Tooltip, Spinner, Tag/Chip.</p>
@@ -1153,7 +1130,7 @@ a { color: inherit; text-decoration: none; }
       <h3 class="section-title">Toast / SnackBar</h3>
       <div class="col mb-8" style="gap:10px;max-width:480px">
         <div class="toast toast--ok">
-          <div style="width:24px;height:24px;border-radius:50%;background:rgba(74,222,128,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(110,156,94,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--live)" stroke-width="3" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg>
           </div>
           <div style="flex:1;font-size:13.5px">
@@ -1163,7 +1140,7 @@ a { color: inherit; text-decoration: none; }
           <button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px">×</button>
         </div>
         <div class="toast toast--err">
-          <div style="width:24px;height:24px;border-radius:50%;background:rgba(201,123,123,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(168,110,104,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
           </div>
           <div style="flex:1;font-size:13.5px">
@@ -1172,7 +1149,7 @@ a { color: inherit; text-decoration: none; }
           </div>
         </div>
         <div class="toast toast--warn">
-          <div style="width:24px;height:24px;border-radius:50%;background:rgba(212,177,106,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(184,154,106,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2.5" stroke-linecap="round"><path d="M10 3 2 18h20z"/><path d="M12 9v4M12 17h.01"/></svg>
           </div>
           <div style="flex:1;font-size:13.5px">
@@ -1206,7 +1183,6 @@ a { color: inherit; text-decoration: none; }
       </div>
     </section>
 
-    <!-- ════════════ MISC ════════════ -->
     <section id="misc" style="margin-top:64px">
       <h2 class="sec-title">Прочее</h2>
       <p class="sec-sub">Side Panel, Slice Card, Empty State, Error State.</p>
@@ -1280,7 +1256,7 @@ a { color: inherit; text-decoration: none; }
         <div>
           <h3 class="section-title">Empty State</h3>
           <div class="card text-center" style="padding:40px 24px">
-            <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#B497D7);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(123,168,217,.12)">
+            <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#7E73AA);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(61,111,181,.12)">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             </div>
             <div style="font-weight:600;font-size:17px;margin-bottom:6px">Нет реплик</div>
@@ -1294,8 +1270,8 @@ a { color: inherit; text-decoration: none; }
 
         <div>
           <h3 class="section-title">Error State</h3>
-          <div class="card text-center" style="padding:40px 24px;border-color:rgba(201,123,123,.4)">
-            <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:50%;background:rgba(201,123,123,.15);display:flex;align-items:center;justify-content:center">
+          <div class="card text-center" style="padding:40px 24px;border-color:rgba(168,110,104,.4)">
+            <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:50%;background:rgba(168,110,104,.15);display:flex;align-items:center;justify-content:center">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
             </div>
             <div style="font-weight:600;font-size:17px;margin-bottom:6px">Не удалось подключиться</div>
@@ -1324,7 +1300,7 @@ a { color: inherit; text-decoration: none; }
     </section>
 
     <footer style="margin-top:64px;padding-top:24px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font-size:12.5px">
-      <div>Куистант / Quistant — Design System <span class="font-mono text-accent" style="margin-left:6px">v4.0 · Hermes · Raycast warmth</span></div>
+      <div>Куистант / Quistant — Design System <span class="font-mono text-accent" style="margin-left:6px">v4.0 · Midnight · Deep slate 215°</span></div>
       <div class="row" style="gap:16px;align-items:center">
         <a href="#tokens" class="text-accent" style="text-decoration:none">наверх ↑</a>
       </div>

@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -637,6 +637,7 @@ body {
 .range-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .range {
   flex: 1 1 auto;
+  width: 100%;
   min-width: 0;
   appearance: none;
   height: 4px;
@@ -663,6 +664,31 @@ body {
   flex-shrink: 0;
   min-width: 70px;
   text-align: center;
+}
+.length-slider {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.length-slider__ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7px;
+  margin-top: 6px;
+  pointer-events: none;
+}
+.length-slider__ticks span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-2);
+  transition: background .15s, box-shadow .15s, transform .15s;
+}
+.length-slider__ticks span.is-on {
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(84,84,143,.5);
+  transform: scale(1.15);
+}
   font-family: 'Geist Mono', monospace;
   font-size: 12px;
   color: var(--accent-2);
@@ -915,6 +941,22 @@ body {
   margin-top: 1px;
 }
 .device-row__act { display: flex; gap: 4px; flex-shrink: 0; }
+.device-row.is-this {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, var(--accent-soft), var(--bg-1) 80%);
+}
+.device-row__pill {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  border: 1px solid rgba(84,84,143,.3);
+  flex-shrink: 0;
+}
 
 /* ======= Audio meters ======= */
 .meter-row {
@@ -1071,6 +1113,84 @@ body {
   display: flex; flex-wrap: wrap; gap: 6px;
 }
 
+/* ======= API key row (dynamic list) ======= */
+.api-key-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+.api-key-row {
+  padding: 12px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color .12s;
+}
+.api-key-row.is-on { border-color: var(--accent); }
+.api-key-row.is-off { opacity: .6; }
+.api-key-row__head {
+  display: flex; align-items: center; gap: 8px;
+}
+.api-key-row__name {
+  flex: 1; min-width: 0;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 7px 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: inherit;
+}
+.api-key-row__name:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.api-key-row__preset {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--muted-2);
+  padding: 3px 6px;
+  background: var(--bg-2);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.api-key-row__del {
+  width: 26px; height: 26px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted-2);
+  font-size: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.api-key-row__del:hover { background: rgba(168,110,104,.12); border-color: var(--danger); color: var(--danger); }
+.api-key-row__inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.api-key-row__inputs .input { font-family: 'Geist Mono', monospace; font-size: 12px; }
+.api-key-row__status {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  flex-shrink: 0;
+}
+.api-key-row__status.is-on  { color: var(--live); }
+.api-key-row__status.is-off { color: var(--muted-2); }
+.api-key-row__status.is-warn { color: var(--warn); }
+
 /* ======= Danger zone ======= */
 .dz {
   padding: 16px;
@@ -1173,7 +1293,7 @@ body {
           <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
           General
         </div>
-        <div class="tab-head__sub">Language, theme, startup behavior and system integration.</div>
+        <div class="tab-head__sub">Language, look, startup and how Quistan behaves on your PC.</div>
       </header>
 
       <div class="section">
@@ -1184,9 +1304,9 @@ body {
             <option value="en">English</option>
             <option value="ru">Русский</option>
             <option value="de">Deutsch</option>
-            <option value="fr">Français</option>
-            <option value="es">Español</option>
-            <option value="zh">中文 (简体)</option>
+            <option value="fr">Francais</option>
+            <option value="es">Espanol</option>
+            <option value="zh">?? (??)</option>
 <option value="ja">Japanese</option>
           </select>
         </div>
@@ -1246,6 +1366,36 @@ body {
           </div>
         </div>
       </div>
+
+      <div class="section is-warn">
+        <div class="section__head">Stealth <span class="section__hint">anti-detection</span></div>
+        <div class="info info--warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>Some video conferencing apps detect window-capture exclusion. Disabling this may reveal the assistant to the interlocutor.</div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label class="switch">
+            <input type="checkbox" id="fWda" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Exclude floating windows from screen capture (WDA)</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fHideFrame" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Hide region frame on interlocutor's screen-share</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="fHideSelf" checked>
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Hide self-preview from screen-share</span>
+          </label>
+        </div>
+      </div>
+
     </section>
     <!-- ACCOUNT -->
     <section class="tab-content" data-tab="account">
@@ -1277,7 +1427,7 @@ body {
         <div class="field">
           <div class="field__label">
             <span>Mode</span>
-            <span class="pill pill--info" id="planPill"><span class="d"></span>Trial  -  14 days left</span>
+            <span class="pill pill--live" id="planPill"><span class="d"></span>Active</span>
           </div>
           <div class="seg" id="segMode">
             <button class="seg__btn is-on" data-val="subscription">Subscription  -  managed by Quistan</button>
@@ -1296,55 +1446,86 @@ body {
         </div>
 
 <div id="modeSubExtras">
+          <div class="field" data-help="subPlan">
+            <div id="planCard" style="display:flex;align-items:center;gap:14px;padding:16px;background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border:1px solid var(--accent);border-radius:var(--radius-md)"></div>
+          </div>
+
           <div class="field" data-help="subPeriod">
             <dl class="kv" style="margin-bottom:14px">
-              <div class="kv-row"><dt>Subscription ends</dt><dd>Sep 16, 2026</dd></div>
-              <div class="kv-row"><dt>Remaining this period</dt><dd><code>336 h</code></dd></div>
+              <div class="kv-row"><dt>Subscription ends</dt><dd id="planPeriodEnds">Sep 16, 2026</dd></div>
+              <div class="kv-row"><dt>Current period</dt><dd id="planPeriodRange">Sep 1 - Sep 30, 2026</dd></div>
+              <div class="kv-row"><dt>Period resets in</dt><dd id="planPeriodResets">14 days</dd></div>
+              <div class="kv-row"><dt>Limits</dt><dd><span id="planLimitWindows">3</span> windows  /  <span id="planLimitFolders">5</span> folders</dd></div>
+              <div class="kv-row"><dt>Rollover policy</dt><dd id="planRollover"><span class="pill pill--info"><span class="d"></span>Unused hours carry over</span></dd></div>
             </dl>
           </div>
-          <div class="field" data-help="usageApi">
-            <div class="field__label"><span>API requests this month</span><span class="field__hint">quota</span></div>
+
+          <div id="planHours" class="field" data-help="usageHours">
+            <div class="field__label">
+              <span>Hours pool</span>
+              <span class="field__hint">monthly + rollover</span>
+            </div>
             <div class="usage">
-              <div class="usage__head"><b>1,247 / 5,000</b><span>25%</span></div>
-              <div class="usage__bar"><div class="usage__bar-fill" style="width:25%"></div></div>
-              <div class="usage__sub">3,753 requests left</div>
+              <div class="usage__head"><b>43 h available</b><span>used 12 of 43</span></div>
+              <div class="usage__bar"><div class="usage__bar-fill" style="width:28%"></div></div>
+              <div class="usage__sub">25 h this month  +  18 h rollover  -  12 h used</div>
             </div>
           </div>
-          <div class="field" data-help="usageStt">
-            <div class="field__label"><span>Audio minutes this month</span><span class="field__hint">stt quota</span></div>
-            <div class="usage">
-              <div class="usage__head"><b>48 / 120 min</b><span>40%</span></div>
-              <div class="usage__bar"><div class="usage__bar-fill is-warn" style="width:40%"></div></div>
-              <div class="usage__sub">72 min left</div>
+
+          <div class="field" data-help="manageSub">
+            <div class="btn-row">
+              <button class="topbar__btn topbar__btn--primary" onclick="manageSub()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                Manage subscription
+              </button>
+              <button class="topbar__btn" onclick="switchPlan()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
+                Switch plan
+              </button>
             </div>
-          </div>
-<div class="field" data-help="manageSub">
-            <button class="topbar__btn topbar__btn--primary" onclick="manageSub()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-              Manage subscription
-            </button>
           </div>
         </div>
       </div>
 
       <div class="section">
-        <div class="section__head">Hardware Binding <span class="section__hint">hwid</span></div>
+        <div class="section__head">Devices <span class="section__hint">this installation</span></div>
+
         <div class="info">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          <div>Your license is bound to this machine. Changing major hardware (motherboard, CPU) will require re-activation. You can deactivate on this device to free up a seat.</div>
+          <div>Your license works on up to <b id="devLimit">3</b> devices at the same time. <b>Trial</b> = 1, <b>Paid</b> = 3. See the full list &mdash; and sign out from any device &mdash; in the <b>web cabinet</b>.</div>
         </div>
-<div class="field" style="margin-top:12px" data-help="hwid">
+
+        <div class="field" data-help="devicesThis" style="margin-top:12px">
+          <div class="device-row is-this">
+            <div class="device-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+            <div class="device-row__body">
+              <div class="device-row__name" id="thisDeviceName">DESKTOP-USER</div>
+              <div class="device-row__hint" id="thisDeviceHint">Windows 11  -  x64  -  this PC</div>
+            </div>
+            <span class="device-row__pill">Active here</span>
+          </div>
+        </div>
+
+        <div class="field" data-help="devicesAccount">
           <dl class="kv">
-            <div class="kv-row"><dt>HWID</dt><dd><code id="hwid">a7f3-9c2b-4e81-...</code> <button class="topbar__btn" style="height:24px;padding:0 8px;font-size:11px;margin-left:6px" onclick="copyHwid()">Copy</button></dd></div>
-            <div class="kv-row"><dt>Activated</dt><dd>Sep 14, 2025</dd></div>
-            <div class="kv-row"><dt>Device name</dt><dd id="devName">DESKTOP-USER</dd></div>
-            <div class="kv-row"><dt>Platform</dt><dd>Windows 11  -  x64</dd></div>
+            <div class="kv-row"><dt>Devices on account</dt><dd><code id="devTotal">3</code></dd></div>
+            <div class="kv-row"><dt>Activated</dt><dd><code id="devActive">1</code>  -  this device</dd></div>
+            <div class="kv-row"><dt>Other devices</dt><dd><code id="devOther">2</code>  -  inactive or signed out</dd></div>
           </dl>
+          <div class="info" style="margin-top:10px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <div>To rename, deactivate, or sign out from a specific device, open <b>quistan.com/account/devices</b> in your browser.</div>
+          </div>
         </div>
-<div class="field" data-help="deactivate">
-          <button class="topbar__btn topbar__btn--danger" onclick="deactivate()">
+
+        <div class="btn-row" style="margin-top:10px">
+          <button class="topbar__btn" onclick="openDevicesCabinet()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Open web cabinet
+          </button>
+          <button class="topbar__btn topbar__btn--danger" data-help="devicesDanger" onclick="signOutAll()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-            Deactivate on this device
+            Sign out from all other devices
           </button>
         </div>
       </div>
@@ -1417,68 +1598,16 @@ body {
         </div>
 
         <div class="section">
-          <div class="section__head">Providers <span class="section__hint">api endpoints</span></div>
-          <div class="providers">
-            <div class="provider is-on">
-              <div class="provider__logo">OA</div>
-              <div class="provider__body"><div class="provider__name">OpenAI</div><div class="provider__hint">api.openai.com</div></div>
-              <div class="provider__status">Connected  -  3 keys</div>
-            </div>
-            <div class="provider">
-              <div class="provider__logo">AN</div>
-              <div class="provider__body"><div class="provider__name">Anthropic</div><div class="provider__hint">api.anthropic.com</div></div>
-              <div class="provider__status is-off">No key</div>
-            </div>
-            <div class="provider">
-              <div class="provider__logo">OR</div>
-              <div class="provider__body"><div class="provider__name">OpenRouter</div><div class="provider__hint">openrouter.ai  -  all models</div></div>
-              <div class="provider__status is-warn">Set key</div>
-            </div>
-            <div class="provider">
-              <div class="provider__logo">GM</div>
-              <div class="provider__body"><div class="provider__name">Google Gemini</div><div class="provider__hint">generativelanguage.googleapis.com</div></div>
-              <div class="provider__status is-off">No key</div>
-            </div>
-          </div>
-<div class="field" style="margin-top:10px" data-help="addProvider">
-            <button class="topbar__btn" onclick="addProvider()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-              Add custom endpoint
-            </button>
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section__head">API Keys <span class="section__hint">byok  -  stored locally encrypted</span></div>
+          <div class="section__head">Providers &amp; Keys <span class="section__hint">byok  -  stored locally encrypted</span></div>
           <div class="info">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <div>Keys are stored in the OS keychain (Windows Credential Manager). They never leave this machine. Quistan's proxy uses them only to forward requests.</div>
+            <div>Keys are stored in the OS keychain (Windows Credential Manager). They never leave this machine. Quistan&rsquo;s proxy uses them only to forward requests. Edit the base URL to point at a self-hosted OpenAI-compatible endpoint (Ollama, vLLM, LM Studio, custom proxy).</div>
           </div>
-          <div class="field" style="margin-top:12px">
-            <div class="field__label"><span>OpenAI API key</span><span class="field__hint">sk-...</span></div>
-            <div class="input--suffix">
-              <input class="input" id="fKeyOpenAI" type="password" placeholder="sk-..." value="sk-proj-***********************************">
-              <span class="suf">Active</span>
-            </div>
-          </div>
-          <div class="field">
-            <div class="field__label"><span>Anthropic API key</span><span class="field__hint">sk-ant-...</span></div>
-            <div class="input--suffix">
-              <input class="input" id="fKeyAnthropic" type="password" placeholder="sk-ant-...">
-              <span class="suf">Empty</span>
-            </div>
-          </div>
-          <div class="field">
-            <div class="field__label"><span>OpenRouter API key</span><span class="field__hint">sk-or-...</span></div>
-            <div class="input--suffix">
-              <input class="input" id="fKeyOpenRouter" type="password" placeholder="sk-or-...">
-              <span class="suf">Empty</span>
-            </div>
-          </div>
-<div class="field" data-help="testKeys">
-            <button class="topbar__btn" onclick="testKeys()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              Test all keys
+          <div id="apiKeysList" class="api-key-list"></div>
+          <div class="btn-row" style="margin-top:10px">
+            <button class="topbar__btn" data-help="addProvider" onclick="addApiKey()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              Add Custom Provider
             </button>
           </div>
         </div>
@@ -1486,27 +1615,40 @@ body {
 
       <!-- SHARED GENERATION -->
       <div class="section">
-        <div class="section__head">Generation <span class="section__hint">shared params</span></div>
-        <div class="field">
-          <div class="field__label"><span>Temperature</span><span class="field__hint">creativity 0 - 2</span></div>
-          <div class="range-row">
-            <input type="range" class="range" id="fTemp" min="0" max="20" step="1" value="7">
-            <div class="range__val" id="fTempVal">0.7</div>
+        <div class="section__head">Style of answers <span class="section__hint">for both Fast and Heavy</span></div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>Quistan answers <b>in spoken voice</b> during calls. Pick the style and length that match how you want it to talk. Both settings apply to <b>Fast</b> and <b>Heavy</b> at once.</div>
+        </div>
+
+        <div class="field" style="margin-top:14px" data-help="fTemp">
+          <div class="field__label">
+            <span>Style of answers</span>
+            <span class="field__hint">creativity</span>
+          </div>
+          <div class="seg" id="segTemp">
+            <button class="seg__btn"        data-val="precise">Precise</button>
+            <button class="seg__btn is-on"  data-val="balanced">Balanced</button>
+            <button class="seg__btn"        data-val="creative">Creative</button>
           </div>
         </div>
-        <div class="field">
-          <div class="field__label"><span>Max output tokens</span><span class="field__hint">hint length</span></div>
-          <div class="range-row">
-            <input type="range" class="range" id="fMaxTok" min="40" max="1000" step="20" value="120">
-            <div class="range__val" id="fMaxTokVal">120</div>
+
+        <div class="field" data-help="fMaxTok">
+          <div class="field__label">
+            <span>Length of answer</span>
+            <span class="field__hint" id="fMaxTokHint">a paragraph</span>
+          </div>
+          <div class="length-slider">
+            <input type="range" class="range" id="fMaxTok" min="1" max="5" step="1" value="3">
+            <div class="length-slider__ticks" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
           </div>
         </div>
-        <div class="field">
-          <label class="switch">
-            <input type="checkbox" id="fStream" checked>
-            <span class="switch__track"><span class="switch__thumb"></span></span>
-            <span class="switch__label">Stream responses token-by-token</span>
-          </label>
+
+        <div class="info info--warn" style="margin-top:6px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>Quistan always speaks as it generates  -  no waiting for a full answer. Latency stays low so the call feels natural.</div>
         </div>
       </div>
 
@@ -1591,7 +1733,7 @@ body {
 
         <div class="info">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>
-          <div>The embedding model runs on the selected device. <b>GPU</b> is 5-20× faster than CPU, but requires compatible drivers and at least 2 GB of free VRAM for the bundled models.</div>
+          <div>The embedding model runs on the selected device. <b>GPU</b> is 5-20? faster than CPU, but requires compatible drivers and at least 2 GB of free VRAM for the bundled models.</div>
         </div>
 
         <div class="field" data-help="fEmbDevice">
@@ -1618,7 +1760,7 @@ body {
           <label class="switch">
             <input type="checkbox" id="fEmbFp16" checked>
             <span class="switch__track"><span class="switch__thumb"></span></span>
-            <span class="switch__label">Use half precision (FP16)  -  halves VRAM, minor quality loss</span>
+            <span class="switch__label">Save GPU memory (a little less accurate)</span>
           </label>
         </div>
 
@@ -1675,21 +1817,21 @@ body {
           </label>
         </div>
         <div class="field">
-          <div class="field__label"><span>Chunk size</span><span class="field__hint">tokens per chunk</span></div>
+          <div class="field__label"><span>How big is one memory piece</span><span class="field__hint">smaller = more precise, bigger = faster</span></div>
           <div class="range-row">
             <input type="range" class="range" id="fChunk" min="100" max="1500" step="50" value="500">
             <div class="range__val" id="fChunkVal">500 tok</div>
           </div>
         </div>
         <div class="field">
-          <div class="field__label"><span>Chunk overlap</span><span class="field__hint">tokens between chunks</span></div>
+          <div class="field__label"><span>Overlap between pieces</span><span class="field__hint">helps Quistan not lose context</span></div>
           <div class="range-row">
             <input type="range" class="range" id="fOverlap" min="0" max="300" step="10" value="50">
             <div class="range__val" id="fOverlapVal">50 tok</div>
           </div>
         </div>
         <div class="field">
-          <div class="field__label"><span>Indexing workers</span><span class="field__hint">parallel jobs</span></div>
+          <div class="field__label"><span>How fast to remember</span><span class="field__hint">more workers = faster, but heavier on CPU</span></div>
           <div class="seg" id="segWorkers">
             <button class="seg__btn" data-val="1">1  -  slow</button>
             <button class="seg__btn is-on" data-val="2">2</button>
@@ -1723,11 +1865,11 @@ body {
           <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
           Audio
         </div>
-        <div class="tab-head__sub">Input devices, microphone tuning and noise suppression.</div>
+        <div class="tab-head__sub">Your microphone, speakers and how Quistan cleans up the sound.</div>
       </header>
 
       <div class="section">
-        <div class="section__head">Devices <span class="section__hint">wasapi  -  directsound</span></div>
+        <div class="section__head">Devices <span class="section__hint">plugged into your PC</span></div>
 <div class="field" data-help="micDev">
           <div class="field__label"><span>Microphone (your voice)</span><span class="field__hint">input</span></div>
           <div class="device-row">
@@ -1753,11 +1895,11 @@ body {
       </div>
 
       <div class="section">
-        <div class="section__head">Levels <span class="section__hint">live meters</span></div>
+        <div class="section__head">Sound levels <span class="section__hint">live meters</span></div>
         <div class="meter-row">
           <div class="meter-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v3"/></svg></div>
           <div class="meter-row__body">
-            <div class="meter-row__label"><span>Mic input</span><span class="meter-row__val" id="meterInVal">-? dB</span></div>
+            <div class="meter-row__label"><span>Your voice</span><span class="meter-row__val" id="meterInVal">-? dB</span></div>
             <div class="meter-bars" id="meterInBars"></div>
           </div>
           <button class="meter-row__btn" id="btnTestMic" onclick="testMic()">Test</button>
@@ -1771,7 +1913,7 @@ body {
           <button class="meter-row__btn" id="btnTestSys" onclick="testSys()">Test</button>
         </div>
         <div class="field" style="margin-top:14px">
-          <div class="field__label"><span>Input gain</span><span class="field__hint">boost mic signal</span></div>
+          <div class="field__label"><span>Microphone loudness</span><span class="field__hint">speak quietly? turn it up</span></div>
           <div class="range-row">
             <input type="range" class="range" id="fGain" min="0" max="200" value="100">
             <div class="range__val" id="fGainVal">100%</div>
@@ -1779,44 +1921,10 @@ body {
         </div>
       </div>
 
-      <div class="section">
-        <div class="section__head">Enhancement <span class="section__hint">noise & voice</span></div>
-        <div class="field">
-          <label class="switch">
-            <input type="checkbox" id="fNoiseSup" checked>
-            <span class="switch__track"><span class="switch__thumb"></span></span>
-            <span class="switch__label">Noise suppression (RNNoise)</span>
-          </label>
-        </div>
-        <div class="field">
-          <label class="switch">
-            <input type="checkbox" id="fAec" checked>
-            <span class="switch__track"><span class="switch__thumb"></span></span>
-            <span class="switch__label">Acoustic echo cancellation</span>
-          </label>
-        </div>
-        <div class="field">
-          <label class="switch">
-            <input type="checkbox" id="fAgc">
-            <span class="switch__track"><span class="switch__thumb"></span></span>
-            <span class="switch__label">Auto-gain control (AGC)</span>
-          </label>
-        </div>
-        <div class="field">
-          <div class="field__label"><span>VAD sensitivity</span><span class="field__hint">voice activity</span></div>
-          <div class="seg" id="segVad">
-            <button class="seg__btn" data-val="low">Low  -  chatty</button>
-            <button class="seg__btn is-on" data-val="mid">Medium</button>
-            <button class="seg__btn" data-val="high">High  -  strict</button>
-          </div>
-        </div>
-        <div id="sttManaged" class="field">
-          <div class="field__label"><span>Transcription</span><span class="field__hint">stt</span></div>
-          <div class="info info--ok">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-            <div>STT is <b>managed by Quistan</b> under your Subscription. No setup needed - Quistan picks the engine.</div>
-          </div>
-        </div>
+      <!-- HIDDEN FROM UI — audio cleanup is auto-tuned by Quistan.
+       The values below are read by the backend as best-practice defaults.
+       See DEFAULTS comments and `// -- hidden audio defaults --` block. -->
+<div class="section">
         <div id="sttByok" style="display:none">
           <div class="field">
             <div class="field__label"><span>Transcription engine</span><span class="field__hint">stt</span></div>
@@ -1829,7 +1937,7 @@ body {
           <div id="sttByokLocal" class="field">
             <div class="info">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M21 7V5a2 2 0 0 0-2-2h-2M3 17v2a2 2 0 0 0 2 2h2M21 17v2a2 2 0 0 1-2 2h-2"/></svg>
-              <div>Uses the bundled <b>bge-small-en-v1.5</b>... <b>Whisper</b> model that ships with the installer. No API key, fully offline. Slow on CPU; enable <b>GPU Whisper</b> in Advanced for a 5-10x speedup.</div>
+              <div>Uses the bundled <b>Whisper</b> model that ships with the installer. No API key, fully offline. Slow on CPU; enable <b>GPU Whisper</b> in Advanced for a 5-10x speedup.</div>
             </div>
           </div>
           <div id="sttByokApi" class="field" style="display:none">
@@ -1857,55 +1965,26 @@ body {
       <header class="tab-head">
         <div class="tab-head__title">
           <div class="tab-head__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-          Screen Capture
+          Capture
         </div>
-        <div class="tab-head__sub">Region screenshots from the interlocutor's screen, anti-detection.</div>
+        <div class="tab-head__sub">Screenshot format, compression and file size. Region and trigger are set during a session via the floating toolbar.</div>
       </header>
 
       <div class="section">
-        <div class="section__head">Region <span class="section__hint">screenshot target</span></div>
-<div class="field" data-help="selectRegion">
-          <div class="field__label">
-            <span>Active region</span>
-            <span class="pill pill--off"><span class="d"></span>Not set</span>
-          </div>
-          <div class="info">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M21 7V5a2 2 0 0 0-2-2h-2"/><path d="M3 17v2a2 2 0 0 0 2 2h2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/></svg>
-            <div>Press <kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">Shift</kbd>+<kbd class="kbd">A</kbd> to drag-select a region on any screen. Screenshots are taken from this area only.</div>
-          </div>
-          <div class="btn-row" style="margin-top:10px">
-            <button class="topbar__btn topbar__btn--primary" onclick="selectRegion()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M21 7V5a2 2 0 0 0-2-2h-2M3 17v2a2 2 0 0 0 2 2h2M21 17v2a2 2 0 0 1-2 2h-2"/></svg>
-              Select region
-            </button>
-<button class="topbar__btn" onclick="clearRegion()">Clear</button>
-          </div>
+        <div class="section__head">Format <span class="section__hint">png &rarr; jpeg</span></div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <div>Windows gives us raw <b>PNG</b> screenshots (lossless, big). Toggle on to convert them to <b>JPEG</b> before sending to the AI  -  about <b>20? smaller</b>, faster upload, cheaper API calls. Original PNG is still saved locally for diagnostics.</div>
         </div>
-        <div class="field" data-help="takeScreenshot">
-          <div class="field__label">
-            <span>Trigger</span>
-            <span class="field__hint">manual</span>
-          </div>
-          <div class="info">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            <div>Screenshots are taken <b>only on demand</b>  -  press the button below or use the global hotkey <kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">Shift</kbd>+<kbd class="kbd">S</kbd> (rebind in <b>Shortcuts</b>).</div>
-          </div>
-          <div class="btn-row" style="margin-top:10px">
-            <button class="topbar__btn topbar__btn--primary" onclick="takeScreenshot()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-              Take screenshot now
-            </button>
-          </div>
-        </div>
-        <div class="field">
+        <div class="field" style="margin-top:14px" data-help="fCompress">
           <label class="switch">
             <input type="checkbox" id="fCompress" checked>
             <span class="switch__track"><span class="switch__thumb"></span></span>
             <span class="switch__label">Compress screenshots to JPEG before AI</span>
           </label>
         </div>
-        <div class="field">
-          <div class="field__label"><span>JPEG quality</span><span class="field__hint">%  -  lower = smaller</span></div>
+        <div class="field" data-help="fJpeg">
+          <div class="field__label"><span>Picture quality</span><span class="field__hint">lower = smaller file sent to AI</span></div>
           <div class="range-row">
             <input type="range" class="range" id="fJpeg" min="40" max="100" step="5" value="70">
             <div class="range__val" id="fJpegVal">70%</div>
@@ -1913,32 +1992,11 @@ body {
         </div>
       </div>
 
-      <div class="section is-warn">
-        <div class="section__head">Stealth <span class="section__hint">anti-detection</span></div>
-        <div class="info info--warn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <div>Some video conferencing apps detect window-capture exclusion. Disabling this may reveal the assistant to the interlocutor.</div>
-        </div>
-        <div class="field" style="margin-top:14px">
-          <label class="switch">
-            <input type="checkbox" id="fWda" checked>
-            <span class="switch__track"><span class="switch__thumb"></span></span>
-            <span class="switch__label">Exclude floating windows from screen capture (WDA)</span>
-          </label>
-        </div>
-        <div class="field">
-          <label class="switch">
-            <input type="checkbox" id="fHideFrame" checked>
-            <span class="switch__track"><span class="switch__thumb"></span></span>
-            <span class="switch__label">Hide region frame on interlocutor's screen-share</span>
-          </label>
-        </div>
-        <div class="field">
-          <label class="switch">
-            <input type="checkbox" id="fHideSelf" checked>
-            <span class="switch__track"><span class="switch__thumb"></span></span>
-            <span class="switch__label">Hide self-preview from screen-share</span>
-          </label>
+      <div class="section">
+        <div class="section__head">Region &amp; Trigger <span class="section__hint">runtime</span></div>
+        <div class="info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>Capture region and screenshot trigger are set during a session via the floating toolbar (or hotkeys <kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">Shift</kbd>+<kbd class="kbd">A</kbd> / <kbd class="kbd">S</kbd>). Nothing to configure here  -  this tab is only for the screenshot <b>format</b>.</div>
         </div>
       </div>
     </section>
@@ -2502,17 +2560,13 @@ const HELP = {
 
   fModelHeavy: 'The big, slow, smart model used for hard reasoning (long answers, multi-step analysis, complex instructions). <b>How to choose:</b> flagship class - gpt-4o, claude-sonnet/opus, gemini-pro. <b>What it affects:</b> quality of deep analysis turns.',
 
-  fTemp: 'How "creative" vs "predictable" the model is. <b>Drag left</b> = strict, repeats itself, factual. <b>Drag right</b> = creative, varied, may go off-topic or invent. <b>0.3</b> for code/factual Q&A; <b>0.7</b> default for normal chat; <b>1.2+</b> for brainstorming and creative writing.',
+  fTemp: 'How Quistan answers. <b>Precise</b> = strict, repeats the question back, sticks to facts (good for technical/legal/medical). <b>Balanced</b> = natural conversation, default. <b>Creative</b> = varied wording, may invent or go on tangents (good for brainstorming).',
 
-  fMaxTok: 'How long each suggestion can be, in tokens (~4 chars each). <b>Drag right</b> for longer multi-paragraph answers; <b>drag left</b> for short one-liners only. Default 120 ≈ one paragraph.',
+  fMaxTok: 'How much Quistan says before stopping. <b>1</b> = one line, <b>2</b> = a few lines, <b>3</b> = a paragraph (default, best for live calls), <b>4</b> = a few paragraphs, <b>5</b> = multiple paragraphs (essay-like, costs more and is slower). Each step roughly doubles the token budget.',
 
-  fStream: 'ON = answer appears word-by-word as the model thinks (feels faster). OFF = answer pops in fully formed (better for copy-paste). <b>Keep ON</b> unless your PC freezes mid-stream.',
+  fKeyOpenAI: 'One row per provider. <b>Name</b> is what shows in the model picker. <b>Key</b> is the API secret - stored in Windows Credential Manager. <b>Base URL</b> is the OpenAI-compatible endpoint (e.g. <code>https://api.openai.com/v1</code>, <code>http://localhost:11434/v1</code> for Ollama). <b>Models</b> whitelist is optional comma-separated list - leave empty to use all models the provider offers. Toggle <b>Enabled</b> off to keep a key saved but unused.',
 
-  fKeyOpenAI: 'Paste your OpenAI key here (looks like <code>sk-proj-...</code>) to enable OpenAI models in BYOK mode. Stored encrypted in Windows Credential Manager; sent only to api.openai.com.',
-
-  fKeyAnthropic: 'Paste your Anthropic key (<code>sk-ant-...</code>) to enable Claude models in BYOK mode. Same security as OpenAI key.',
-
-  fKeyOpenRouter: 'Paste your OpenRouter key (<code>sk-or-...</code>) to enable any model from any provider through one endpoint. <b>Tip:</b> cheaper and simpler than juggling 5 separate provider keys.',
+  addProvider: 'Add any provider that speaks an OpenAI-compatible API: OpenAI, Anthropic, Google Gemini, Mistral, Groq, xAI, DeepSeek, Cohere, Together, Fireworks, Perplexity, Ollama, LM Studio, or your own self-hosted endpoint. Each card is independent  -  add as many as you need.',
 
   // ===== Indexing & Embeddings =====
   fReindexWatch: 'ON = Quistan watches your KB folders and re-embeds files automatically when they change. <b>When to enable:</b> for active KBs that get updated often (notes, docs). <b>When to disable:</b> for static archives that never change.',
@@ -2532,7 +2586,7 @@ const HELP = {
 
   applyEmbModel: 'Reload the embedding model after changing the picker. Quistan unloads the old model, loads the new one, and (because dimensions changed) starts a full reindex in the background.',
 
-  fEmbDevice: 'Where the embedding model runs. <b>CPU</b> = always works, slowest. <b>CUDA</b> = NVIDIA GPU, fastest, needs CUDA 12.x driver + the small CUDA redistributable that ships with Quistan. <b>DirectML</b> = any DirectX 12 GPU (AMD / Intel / NVIDIA), almost as fast as CUDA on NVIDIA, slower on AMD but still 5-10× over CPU. <b>If unsure</b>, leave on CPU; the bundled model is small enough.',
+  fEmbDevice: 'Where the embedding model runs. <b>CPU</b> = always works, slowest. <b>CUDA</b> = NVIDIA GPU, fastest, needs CUDA 12.x driver + the small CUDA redistributable that ships with Quistan. <b>DirectML</b> = any DirectX 12 GPU (AMD / Intel / NVIDIA), almost as fast as CUDA on NVIDIA, slower on AMD but still 5-10? over CPU. <b>If unsure</b>, leave on CPU; the bundled model is small enough.',
 
   fEmbGpu: 'Enable GPU execution provider for embeddings. <b>Why:</b> 5-20x faster embedding on supported hardware. <b>When to enable:</b> you selected CUDA or DirectML as device and have a working GPU/driver setup. <b>When to disable:</b> if you see ONNX Runtime GPU crashes on startup.',
 
@@ -2547,14 +2601,6 @@ const HELP = {
   // ===== Audio =====
   fGain: 'Boosts the microphone signal before STT. <b>Drag right</b> if you speak quietly and the meter barely moves; <b>drag left</b> if the meter pegs into red (clipped). 100% is unity.',
 
-  fNoiseSup: 'ON = background noise (fans, typing, street) gets stripped before STT using local RNNoise. <b>Keep ON</b> for normal rooms - it is the single biggest quality win. Turn OFF only for studio mics in dead-silent rooms.',
-
-  fAec: 'Acoustic Echo Cancellation. <b>Turn ON</b> if you use speakers (otherwise Quistan hears itself and triggers double responses). <b>Turn OFF</b> with headphones.',
-
-  fAgc: 'Auto-Gain Control. ON = mic level auto-adjusts as you move closer/farther from the mic. OFF = level stays fixed (usually more natural). Enable when you vary distance a lot.',
-
-  fVad: 'Voice-Activity Detection sensitivity - how aggressively Quistan decides "this is speech" vs "this is silence". <b>Low</b> catches every breath; <b>Medium</b> balanced; <b>High</b> skips noise but may cut soft speakers. <b>Pick Low</b> for quiet speakers, <b>High</b> for noisy cafés.',
-
   fStt: 'STT is handled differently per mode. <b>Subscription:</b> Quistan picks the engine - no setup. <b>BYOK:</b> you choose between Cloud API (Deepgram / OpenAI Whisper), Local model (bundled Whisper, offline, free, slower on CPU), or Ollama / custom endpoint (any OpenAI-compatible STT server you run). Switch your mode in <b>Account</b> first.',
 
   fSttMode: 'Which STT backend to use in BYOK mode. <b>Local model</b> = bundled Whisper, offline, free, slower on CPU. <b>Cloud API</b> = Deepgram or OpenAI Whisper over the network, fast, paid. <b>Ollama / custom</b> = your own OpenAI-compatible STT server (Ollama, vLLM whisper, self-hosted).',
@@ -2566,7 +2612,7 @@ const HELP = {
   // ===== Capture =====
   fCompress: 'ON = PNG screenshots get converted to JPEG before being sent to the AI. <b>Why:</b> PNG can be 2-5 MB; JPEG at 70% is 50-200 KB - 20x smaller, faster, cheaper. <b>Turn OFF</b> only for lossless text/OCR-critical screenshots.',
 
-  fJpeg: 'JPEG quality when compression is ON. <b>Drag right</b> for crystal-clear text; <b>drag left</b> for tiny blurry files. 70% is the sweet spot.',
+  fJpeg: 'JPEG quality when compression is ON. <b>Drag right</b> for crystal-clear text; <b>drag left</b> for tiny blurry files. 70% is the sweet spot for AI consumption.',
 
   fWda: 'Windows Display API - hides Quistan\'s floating windows from screen capture. <b>Why:</b> when you share screen on Zoom/Meet, the interlocutor should not see your private AI window. Keep ON during calls.',
 
@@ -2656,17 +2702,15 @@ const HELP = {
   // ===== Buttons / actions =====
   manageSub: 'Open the Quistan billing portal in your browser - change plan, view invoices, cancel. Changes sync on next launch.',
 
-  deactivate: 'Free this machine\'s license seat so you can sign in elsewhere. <b>Important:</b> does NOT cancel your subscription - it only frees this machine.',
+  devicesThis: 'The PC where Quistan is currently running. Always shown so you can confirm the installation is on a device you trust. The full device list lives in the <b>web cabinet</b>.',
 
-  addProvider: 'Add a custom OpenAI-compatible endpoint (Ollama, vLLM, LM Studio) and route Fast or Heavy to it.',
+  devicesAccount: 'Read-only summary of how many devices are bound to your account and how many of them are active right now. <b>Renaming or signing out from individual devices is only available in the web cabinet</b> - keeping that surface focused on account-management UI instead of crowding it into this app.',
 
-  testKeys: 'Send a tiny ping through every configured API key and show latency + quota. <b>Use after</b> pasting a new key.',
+  devicesDanger: 'Emergency: signs out from every other device in one click. Use if you lost a laptop or suspect unauthorized access. Your other devices will need to sign in again.',
+
+  testKeys: 'Send a tiny ping through every enabled API key and show latency + quota. <b>Use after</b> pasting a new key.',
 
   reindexAll: 'Rebuild the entire vector index from scratch. <b>Use</b> after switching embedding model, after KB restructure, when retrieval is broken. Slow on big KBs.',
-
-  selectRegion: 'Click then drag a rectangle on any monitor to pick the capture region. Equivalent to hotkey Ctrl+Shift+A. <b>Tip:</b> keep the region tight - smaller = faster AI.',
-
-  takeScreenshot: 'Capture the active region right now and feed it through the AI pipeline. Equivalent to hotkey Ctrl+Shift+S. <b>Use</b> to verify the region is correct.',
 
   testTg: 'Send a test message to your Telegram via the bot. <b>Use</b> after setting up the bot to verify token + chat ID.',
 
@@ -2704,13 +2748,17 @@ const HELP = {
   hotkey_send: 'Global hotkey - send current pending dialog to chat. <b>Default</b> Ctrl+Enter.',
 
   // ===== Read-only displays =====
-  usageApi: 'Subscription quota: requests used vs limit this billing period. Bar turns yellow >75%, red >90%. Resets at the date shown above.',
+  usageApi: 'Hours pool: <b>total available</b> = current period allowance + unused hours rolled over from previous periods. Unused hours <b>never burn</b> on Standard / Hustler / BYOK — they roll over forever. On <b>Offer</b> hours expire after 7 days (no rollover). On <b>BYOK</b> the pool is unlimited — no meter. Bar turns yellow >75%, red >90%.',
 
-  usageStt: 'Subscription quota: STT minutes used vs limit. Separate from API quota (priced per minute of audio). Resets at the same date as the API quota.',
+  usageStt: 'STT minutes are <b>included in the same hours pool</b>. Audio transcription costs are debited from the same rollover balance as model calls  -  no separate quota.',
 
-  subPeriod: 'Subscription timeline - when the current billing period ends and how many hours remain. Read-only - updates from the billing server.',
+  usageHours: 'Plan-level quota pool shared between AI requests and audio minutes. Hours instead of separate counters - what you spend on chat and STT draws from the same bucket. Resets on the date shown.',
 
-  hwid: 'Hardware-bound ID. Send to support if activation fails after replacing motherboard or CPU.',
+  subPlan: 'Your current plan card. Shows emoji, name, regional price, hours pool, limits and rollover policy. <b>5 plans</b>: Test-Craster (free, 30 min/week), Offer (8 h for 7 days, no rollover), Standard (25 h/month, rollover), Hustler PRO (100 h/month, rollover), Your Key / BYOK (unlimited, you pay providers). Currency auto-detects from system locale (RU > ?, else > $).',
+
+  subPeriod: 'Read-only subscription timeline: <b>ends</b> = next renewal/cancel date, <b>current period</b> = billing window, <b>resets in</b> = days left, <b>limits</b> = how many floating windows & knowledge folders your plan allows, <b>rollover policy</b> = whether unused hours carry to next period.',
+
+  hwid: 'Internal opaque device fingerprint. You don\'t need this anymore - sign in with your account on the new PC and it shows up in this list. Used only as a stable identifier for the server.',
 
   embModel: 'Read-only info: bge-small-en-v1.5 bundled embedding model. 384 dimensions. ChromaDB vector store. Runs offline, no API key needed.',
 
@@ -2741,35 +2789,31 @@ const DEV = {
 
   manageSub: '<b>Краткое:</b> Открыть биллинг-портал.<br><br><b>Зачем:</b> Смена плана, инвойсы, пауза.<br><b>Связано:</b> Внешний billing URL, квота usage.<br><b>Размещение:</b> Account — рядом с usage-барами.',
 
-  deactivate: '<b>Краткое:</b> Деактивировать лицензию на этом ПК.<br><br><b>Зачем:</b> Освободить seat, чтобы залогиниться на другом железе.<br><b>Связано:</b> HWID, сервер лицензий.<br><b>Размещение:</b> Hardware Binding.',
+  deactivate: '<b>Краткое:</b> Кнопка «Sign out from all other devices» — экстренный сброс всех остальных устройств.<br><br><b>Зачем:</b> Потерял ноут / подозрение на чужой доступ. Другие устройства вылетят, их надо будет снова логинить.<br><b>Связано:</b> devicesThis, devicesAccount, сервер лицензий.<br><b>Размещение:</b> Account — Devices.',
 
-  usageApi: '<b>Краткое:</b> Счётчик API-запросов за период.<br><br><b>Зачем:</b> Показать, сколько осталось до лимита.<br><b>Связано:</b> Сервер квот, billing cycle, subPeriod выше.<br><b>Размещение:</b> Account — usage виден только в Subscription.',
+  devicesThis: '<b>Краткое:</b> Текущий ПК, на котором запущен Куистан.<br><br><b>Зачем:</b> Пользователь видит, что установка привязана к доверенному устройству.<br><b>Связано:</b> devicesAccount, web cabinet.<br><b>Размещение:</b> Account — Devices.',
 
-  usageStt: '<b>Краткое:</b> Счётчик минут STT.<br><br><b>Зачем:</b> Отдельная квота на аудио.<br><b>Связано:</b> Сервер квот, subPeriod.<br><b>Размещение:</b> Account.',
+  devicesAccount: '<b>Краткое:</b> Read-only сводка: сколько устройств привязано к аккаунту и сколько активно.<br><br><b>Зачем:</b> Дать понимание лимитов без полноценного UI управления устройствами.<br><b>Связано:</b> devicesThis, web cabinet (там переименование / sign-out per device).<br><b>Размещение:</b> Account — Devices.',
 
-  subPeriod: '<b>Краткое:</b> Сроки подписки: дата конца периода и остаток часов.<br><br><b>Зачем:</b> Показать когда списается следующая оплата / закончится Trial.<br><b>Связано:</b> Сервер биллинга, usage-бары.<br><b>Размещение:</b> Account — рядом с usage.',
+  usageApi: '<b>Краткое:</b> Часы пула: месячная квота + rollover.<br><br><b>Зачем:</b> Показать сколько часов доступно всего и сколько использовано в текущем периоде.<br><b>Связано:</b> Сервер биллинга, rollover balance, subPeriod.<br><b>Размещение:</b> Account — usage виден только в Subscription.',
 
-  hwid: '<b>Краткое:</b> Hardware ID.<br><br><b>Зачем:</b> Привязка лицензии к машине, защита от шаринга.<br><b>Связано:</b> Сервер лицензий, deactivate.<br><b>Размещение:</b> Hardware Binding.',
+  usageStt: '<b>Краткое:</b> STT минуты идут из того же пула часов.<br><br><b>Зачем:</b> Не разделять квоты — всё из одного баланса.<br><b>Связано:</b> usageHours, billing server.<br><b>Размещение:</b> Account.',
+
+  subPeriod: '<b>Краткое:</b> Сроки подписки + лимиты окон/папок + rollover policy.<br><br><b>Зачем:</b> Показать дату конца периода, диапазон, лимиты плана и переносится ли остаток.<br><b>Связано:</b> Сервер биллинга, PLANS{}, fPlan.<br><b>Размещение:</b> Account — рядом с usage.',
+
+  hwid: '<b>Краткое:</b> Не показывается пользователю — внутренний opaque device_id.<br><br><b>Зачем:</b> Сервер лицензий использует как стабильный идентификатор устройства.<br><b>Связано:</b> Сервер лицензий, devicesList.<br><b>Размещение:</b> Скрыт от пользователя.',
 
   fModelFast: '<b>Краткое:</b> Лёгкая модель для быстрых подсказок.<br><br><b>Зачем:</b> Naming entities, короткие репразы — должны быть дёшевы и быстры.<br><b>Связано:</b> fModelHeavy, BYOK-секция, per-window выбор роли.<br><b>Размещение:</b> AI & Models — BYOK, секция Models.',
 
   fModelHeavy: '<b>Краткое:</b> Тяжёлая модель для рассуждений.<br><br><b>Зачем:</b> Длинный контекст, multi-step reasoning, драфты.<br><b>Связано:</b> fModelFast, fallback.<br><b>Размещение:</b> AI & Models — BYOK.',
 
-  fTemp: '<b>Краткое:</b> Temperature 0-2.<br><br><b>Зачем:</b> Баланс между строгостью и креативностью для всех ролей.<br><b>Связано:</b> Generation-параметры.<br><b>Размещение:</b> AI & Models — Generation.',
+  fTemp: '<b>Краткое:</b> Стиль ответов (Precise / Balanced / Creative).<br><br><b>Зачем:</b> Баланс между точностью и живостью речи ассистента.<br><b>Связано:</b> segTemp, Fast и Heavy модели используют это.<br><b>Размещение:</b> AI & Models — Style of answers.',
 
-  fMaxTok: '<b>Краткое:</b> Max output tokens.<br><br><b>Зачем:</b> Длина подсказки. Больше = дороже и медленнее.<br><b>Связано:</b> Cost, latency.<br><b>Размещение:</b> AI & Models — Generation.',
+  fMaxTok: '<b>Краткое:</b> Длина ответа — ползунок 1-5 с подписью (one line / few lines / paragraph / few paragraphs / multiple paragraphs).<br><br><b>Зачем:</b> Сколько Куистан говорит перед тем как замолчать.<br><b>Связано:</b> LENGTH_LABELS[], fMaxTok, cost, latency, TTS duration.<br><b>Размещение:</b> AI & Models — Style of answers.',
 
-  fStream: '<b>Краткое:</b> Стримить токены.<br><br><b>Зачем:</b> Быстрее воспринимается; UX-улучшение.<br><b>Связано:</b> Backend SSE.<br><b>Размещение:</b> AI & Models — Generation.',
+  fKeyOpenAI: '<b>Краткое:</b> Динамический список ключей любых провайдеров.<br><br><b>Зачем:</b> BYOK-доступ к моделям без жёсткой привязки к вендору.<br><b>Связано:</b> Credential Manager, OpenAI-compatible endpoints (Ollama, vLLM, LM Studio), fApiKeys[] в state.<br><b>Размещение:</b> AI & Models — BYOK, API Keys.',
 
-  fKeyOpenAI: '<b>Краткое:</b> OpenAI API key.<br><br><b>Зачем:</b> Авторизация запросов BYOK.<br><b>Связано:</b> Credential Manager, OpenAI endpoint.<br><b>Размещение:</b> AI & Models — BYOK, API Keys.',
-
-  fKeyAnthropic: '<b>Краткое:</b> Anthropic API key.<br><br><b>Зачем:</b> BYOK-доступ к Claude.<br><b>Связано:</b> Credential Manager, Anthropic endpoint.<br><b>Размещение:</b> AI & Models — BYOK, API Keys.',
-
-  fKeyOpenRouter: '<b>Краткое:</b> OpenRouter API key.<br><br><b>Зачем:</b> Один ключ для всех моделей всех провайдеров.<br><b>Связано:</b> OpenRouter endpoint, llama-* модели.<br><b>Размещение:</b> AI & Models — BYOK, API Keys.',
-
-  addProvider: '<b>Краткое:</b> Добавить кастомный OpenAI-совместимый endpoint.<br><br><b>Зачем:</b> Ollama, vLLM, LM Studio, self-hosted.<br><b>Связано:</b> providers[], routing config.<br><b>Размещение:</b> AI & Models — BYOK, Providers.',
-
-  testKeys: '<b>Краткое:</b> Пинг всех ключей.<br><br><b>Зачем:</b> Проверить latency, валидность, квоту.<br><b>Связано:</b> fKey*.<br><b>Размещение:</b> AI & Models — BYOK, API Keys.',
+  addProvider: '<b>Краткое:</b> Добавить нового провайдера (OpenAI-compatible).<br><br><b>Зачем:</b> Ollama, vLLM, LM Studio, self-hosted, любой вендор.<br><b>Связано:</b> renderApiKeys(), addApiKey(), fApiKeys[].<br><b>Размещение:</b> AI & Models — BYOK, Providers & Keys.',
 
   embModel: '<b>Краткое:</b> Read-only: модель эмбеддингов.<br><br><b>Зачем:</b> Показать пользователю что используется локально bge-small-en-v1.5.<br><b>Связано:</b> KB index, ChromaDB.<br><b>Размещение:</b> AI & Models — Indexing.',
 
@@ -2789,11 +2833,11 @@ const DEV = {
 
   embModel: '<b>Краткое:</b> Read-only карточка активной модели.<br><br><b>Зачем:</b> Показать пользователю что лежит на диске.<br><b>Связано:</b> fEmbModel, applyEmbModel.<br><b>Размещение:</b> Embeddings & Vector Store.',
 
-  applyEmbModel: '<b>Краткое:</b> Перезагрузить модель после смены.<br><br><b>Зачем:</b> Unload old → load new → если dim другой, авто-reindex.<br><b>Связано:</b> fEmbModel, fEmbDevice.<br><b>Размещение:</b> Embeddings & Vector Store — Active Model.',
+  applyEmbModel: '<b>Краткое:</b> Перезагрузить модель после смены.<br><br><b>Зачем:</b> Unload old > load new > если dim другой, авто-reindex.<br><b>Связано:</b> fEmbModel, fEmbDevice.<br><b>Размещение:</b> Embeddings & Vector Store — Active Model.',
 
-  fEmbDevice: '<b>Краткое:</b> CPU / CUDA (NVIDIA) / DirectML (любой GPU).<br><br><b>Зачем:</b> Ускорить embedding inference в 5-20×.<br><b>Связано:</b> ONNX Runtime EP, драйверы GPU, fEmbGpu.<br><b>Размещение:</b> Embeddings & Vector Store — Compute Device.',
+  fEmbDevice: '<b>Краткое:</b> CPU / CUDA (NVIDIA) / DirectML (любой GPU).<br><br><b>Зачем:</b> Ускорить embedding inference в 5-20?.<br><b>Связано:</b> ONNX Runtime EP, драйверы GPU, fEmbGpu.<br><b>Размещение:</b> Embeddings & Vector Store — Compute Device.',
 
-  fEmbGpu: '<b>Краткое:</b> Включить GPU для эмбеддингов.<br><br><b>Зачем:</b> 5-20× ускорение.<br><b>Связано:</b> ONNX Runtime, драйверы, fEmbDevice.<br><b>Размещение:</b> Embeddings — рядом с fEmbDevice.',
+  fEmbGpu: '<b>Краткое:</b> Включить GPU для эмбеддингов.<br><br><b>Зачем:</b> 5-20? ускорение.<br><b>Связано:</b> ONNX Runtime, драйверы, fEmbDevice.<br><b>Размещение:</b> Embeddings — рядом с fEmbDevice.',
 
   fEmbFp16: '<b>Краткое:</b> FP16-веса для эмбеддингов.<br><br><b>Зачем:</b> Вдвое меньше VRAM, точность почти не падает.<br><b>Связано:</b> GPU-режим, fEmbGpu.<br><b>Размещение:</b> Embeddings — рядом с fEmbGpu.',
 
@@ -2809,13 +2853,13 @@ const DEV = {
 
   fGain: '<b>Краткое:</b> Mic gain 0-200%.<br><br><b>Зачем:</b> Усилить тихий голос или убрать клиппинг.<br><b>Связано:</b> Mic input level, clipping.<br><b>Размещение:</b> Audio — Levels.',
 
-  fNoiseSup: '<b>Краткое:</b> RNNoise шумоподавление.<br><br><b>Зачем:</b> Убрать фоновые шумы (вентилятор, набор текста).<br><b>Связано:</b> STT quality.<br><b>Размещение:</b> Audio — Enhancement.',
+  // fNoiseSup: '<b>Краткое:</b> RNNoise шумоподавление.<br><br><b>Зачем:</b> Убрать фоновые шумы (вентилятор, набор текста).<br><b>Связано:</b> STT quality.<br><b>Размещение:</b> Audio — Enhancement.',
 
-  fAec: '<b>Краткое:</b> Acoustic Echo Cancellation.<br><br><b>Зачем:</b> Не слышать собственный голос через открытые колонки.<br><b>Связано:</b> Open speakers, sys audio.<br><b>Размещение:</b> Audio — Enhancement.',
+  // fAec: '<b>Краткое:</b> Acoustic Echo Cancellation.<br><br><b>Зачем:</b> Не слышать собственный голос через открытые колонки.<br><b>Связано:</b> Open speakers, sys audio.<br><b>Размещение:</b> Audio — Enhancement.',
 
-  fAgc: '<b>Краткое:</b> Auto Gain Control.<br><br><b>Зачем:</b> Выровнять громкость при переменном расстоянии до мика.<br><b>Связано:</b> Mic input, clipping.<br><b>Размещение:</b> Audio — Enhancement.',
+  // fAgc: '<b>Краткое:</b> Auto Gain Control.<br><br><b>Зачем:</b> Выровнять громкость при переменном расстоянии до мика.<br><b>Связано:</b> Mic input, clipping.<br><b>Размещение:</b> Audio — Enhancement.',
 
-  fVad: '<b>Краткое:</b> Чувствительность Voice Activity Detection.<br><br><b>Зачем:</b> Больше ловить речь (включая вздохи) или строже (пропускать шум).<br><b>Связано:</b> STT segmentation.<br><b>Размещение:</b> Audio — Enhancement.',
+  // fVad: '<b>Краткое:</b> Чувствительность Voice Activity Detection.<br><br><b>Зачем:</b> Больше ловить речь (включая вздохи) или строже (пропускать шум).<br><b>Связано:</b> STT segmentation.<br><b>Размещение:</b> Audio — Enhancement.',
 
   fStt: '<b>Краткое:</b> STT управляется по-разному в зависимости от режима.<br><br><b>Зачем:</b> Subscription = Quistan сам выбирает движок, без настроек. BYOK = пользователь выбирает Cloud API / Local / Ollama.<br><b>Связано:</b> fMode, segSttMode, sttManaged/sttByok секции.<br><b>Размещение:</b> Audio — Enhancement.',
 
@@ -2825,27 +2869,21 @@ const DEV = {
 
   fSttOllamaUrl: '<b>Краткое:</b> URL локального Ollama или другого OpenAI-compatible STT-сервера.<br><br><b>Зачем:</b> Подключить свой бэкенд STT.<br><b>Связано:</b> Должен expose /v1/audio/transcriptions, модель whisper через ollama pull.<br><b>Размещение:</b> Audio — под segSttMode при выборе Ollama.',
 
-  selectRegion: '<b>Краткое:</b> Выбрать область экрана.<br><br><b>Зачем:</b> Скриншот только из нужного прямоугольника.<br><b>Связано:</b> hotkey_region, fCompress, capture pipeline.<br><b>Размещение:</b> Capture — Region.',
+  fJpeg: '<b>Краткое:</b> Качество JPEG 40-100%.<br><br><b>Зачем:</b> Баланс размер/чёткость для AI. 70% — sweet spot.<br><b>Связано:</b> fCompress toggle (общий on/off).<br><b>Размещение:</b> Capture — Format.',
 
-  takeScreenshot: '<b>Краткое:</b> Сделать скриншот сейчас.<br><br><b>Зачем:</b> Ручной запуск capture pipeline.<br><b>Связано:</b> hotkey_snap, AI inference.<br><b>Размещение:</b> Capture — Region (после selectRegion).',
+  fWda: '<b>Краткое:</b> Windows Display API — скрыть окна Куистана.<br><br><b>Зачем:</b> Не светить ассистента в Zoom/Meet screen-share.<br><b>Связано:</b> Stealth, anti-detection.<br><b>Размещение:</b> General — Stealth.',
 
-  fCompress: '<b>Краткое:</b> PNG → JPEG перед AI.<br><br><b>Зачем:</b> Экономия bandwidth/quota.<br><b>Связано:</b> fJpeg, API cost.<br><b>Размещение:</b> Capture — Region.',
+  fHideFrame: '<b>Краткое:</b> Скрыть рамку региона при screen-share собеседника.<br><br><b>Зачем:</b> Визуальная скрытность.<br><b>Связано:</b> fWda.<br><b>Размещение:</b> General — Stealth.',
 
-  fJpeg: '<b>Краткое:</b> JPEG quality 40-100%.<br><br><b>Зачем:</b> Баланс размер/качество.<br><b>Связано:</b> fCompress.<br><b>Размещение:</b> Capture — Region.',
-
-  fWda: '<b>Краткое:</b> Windows Display API — скрыть окна Куистана.<br><br><b>Зачем:</b> Не светить ассистента в Zoom/Meet screen-share.<br><b>Связано:</b> Stealth, anti-detection.<br><b>Размещение:</b> Capture — Stealth.',
-
-  fHideFrame: '<b>Краткое:</b> Скрыть рамку региона при screen-share собеседника.<br><br><b>Зачем:</b> Визуальная скрытность.<br><b>Связано:</b> fWda.<br><b>Размещение:</b> Capture — Stealth.',
-
-  fHideSelf: '<b>Краткое:</b> Скрыть self-preview из screen-share.<br><br><b>Зачем:</b> Не показывать вебку собеседнику.<br><b>Связано:</b> Webcam pipeline, stealth.<br><b>Размещение:</b> Capture — Stealth.',
+  fHideSelf: '<b>Краткое:</b> Скрыть self-preview из screen-share.<br><br><b>Зачем:</b> Не показывать вебку собеседнику.<br><b>Связано:</b> Webcam pipeline, stealth.<br><b>Размещение:</b> General — Stealth.',
 
   hotkey_open: '<b>Краткое:</b> Открыть Control Panel.<br><br><b>Зачем:</b> Глобальный вызов главного окна из любого приложения.<br><b>Связано:</b> Main window, restore from tray.<br><b>Размещение:</b> Shortcuts — первый в списке.',
 
   hotkey_pause: '<b>Краткое:</b> Пауза/возобновить прослушку.<br><br><b>Зачем:</b> Временно отключить AI (звонок закончился, отошёл).<br><b>Связано:</b> STT pipeline, indicator.<br><b>Размещение:</b> Shortcuts.',
 
-  hotkey_region: '<b>Краткое:</b> Выбрать регион.<br><br><b>Зачем:</b> Быстро переопределить зону capture.<br><b>Связано:</b> selectRegion, Capture tab.<br><b>Размещение:</b> Shortcuts.',
+  hotkey_region: '<b>Краткое:</b> Выбрать регион.<br><br><b>Зачем:</b> Быстро переопределить зону capture.<br><b>Связано:</b> Floating toolbar (runtime), hotkey_region.<br><b>Размещение:</b> Shortcuts.',
 
-  hotkey_snap: '<b>Краткое:</b> Снимок сейчас.<br><br><b>Зачем:</b> Ручной триггер capture из любой точки.<br><b>Связано:</b> takeScreenshot, AI.<br><b>Размещение:</b> Shortcuts.',
+  hotkey_snap: '<b>Краткое:</b> Снимок сейчас.<br><br><b>Зачем:</b> Ручной триггер capture из любой точки.<br><b>Связано:</b> Floating toolbar (runtime).<br><b>Размещение:</b> Shortcuts.',
 
   hotkey_refresh: '<b>Краткое:</b> Рефреш всех floating окон.<br><br><b>Зачем:</b> Перечитать контекст, переоценить ситуацию.<br><b>Связано:</b> Floating windows.<br><b>Размещение:</b> Shortcuts.',
 
@@ -3018,18 +3056,36 @@ fLang: 'en',
   theme: 'obsidian', bg: 'texture',
   fScale: 100,
   fAutoStart: false, fStartMinimized: true, fTrayIcon: true, fStartMode: 'preflight',
-  fMode: 'subscription', fHwid: 'a7f3-9c2b-4e81-...',
-  fTemp: 7, fMaxTok: 120, fStream: true,
+  fMode: 'subscription', fPlan: 'standard', fPlanUsed: 12, fPlanRollover: 18, fPlanEnds: 'Sep 16, 2026', fPlanRange: 'Sep 1 - Sep 30, 2026', fPlanResetsIn: '14 days', fRegion: '', fHwid: 'a7f3-9c2b-4e81-...',
+  fTemp: 'balanced', fMaxTok: 3, fStream: true,
   fModelFast: 'gpt-4o-mini', fModelHeavy: 'gpt-4o',
   fKeyOpenAI: 'sk-proj-' + '*'.repeat(35),
   fKeyAnthropic: '', fKeyOpenRouter: '',
+  fApiKeys: [
+    { id: 'openai',     name: 'OpenAI',        key: 'sk-proj-' + '*'.repeat(35), baseUrl: 'https://api.openai.com/v1',           enabled: true  },
+    { id: 'anthropic',  name: 'Anthropic',     key: '',                            baseUrl: 'https://api.anthropic.com',           enabled: true  },
+    { id: 'openrouter', name: 'OpenRouter',    key: '',                            baseUrl: 'https://openrouter.ai/api/v1',        enabled: true  },
+    { id: 'gemini',     name: 'Google Gemini', key: '',                            baseUrl: 'https://generativelanguage.googleapis.com/v1beta', enabled: false },
+    { id: 'mistral',    name: 'Mistral',       key: '',                            baseUrl: 'https://api.mistral.ai/v1',            enabled: false },
+    { id: 'groq',       name: 'Groq',          key: '',                            baseUrl: 'https://api.groq.com/openai/v1',       enabled: false },
+    { id: 'xai',        name: 'xAI (Grok)',    key: '',                            baseUrl: 'https://api.x.ai/v1',                  enabled: false },
+    { id: 'deepseek',   name: 'DeepSeek',      key: '',                            baseUrl: 'https://api.deepseek.com/v1',          enabled: false },
+    { id: 'cohere',     name: 'Cohere',        key: '',                            baseUrl: 'https://api.cohere.ai/v1',             enabled: false },
+    { id: 'together',   name: 'Together AI',   key: '',                            baseUrl: 'https://api.together.xyz/v1',          enabled: false },
+    { id: 'fireworks',  name: 'Fireworks AI',  key: '',                            baseUrl: 'https://api.fireworks.ai/inference/v1',enabled: false },
+    { id: 'perplexity', name: 'Perplexity',    key: '',                            baseUrl: 'https://api.perplexity.ai',            enabled: false },
+    { id: 'ollama',     name: 'Ollama (local)',key: '',                            baseUrl: 'http://localhost:11434/v1',            enabled: false },
+    { id: 'lmstudio',   name: 'LM Studio',     key: '',                            baseUrl: 'http://localhost:1234/v1',             enabled: false },
+    { id: 'custom',     name: 'Custom endpoint',key:'',                            baseUrl: '',                                     enabled: false },
+  ],
   fReindexWatch: true, fReindexVerify: false,
   fChunk: 500, fOverlap: 50, fWorkers: '2',
   fEmbModel: 'bge-small-en-v1.5', fEmbCustomPath: '', fEmbDevice: 'cpu', fEmbGpu: false, fEmbFp16: true,
+  // -- hidden audio defaults (auto-tuned by Quistan, no UI) --
   fGain: 100, fNoiseSup: true, fAec: true, fAgc: false, fVad: 'mid',
   fSttMode: 'local', fSttApiKey: '', fSttOllamaUrl: 'http://localhost:11434',
-  fCompress: true, fJpeg: 70,
   fWda: true, fHideFrame: true, fHideSelf: true,
+  fCompress: true, fJpeg: 70,
   hotkey_open: 'Ctrl+Shift+Q', hotkey_pause: 'Ctrl+Shift+Space', hotkey_region: 'Ctrl+Shift+A',
   hotkey_snap: 'Ctrl+Shift+S', hotkey_refresh: 'Ctrl+R', hotkey_solo: 'Ctrl+Shift+M', hotkey_send: 'Ctrl+Enter',
   fNotifUpdate: true, fNotifLicense: true, fNotifKb: true, fNotifError: true, fNotifWeekly: false,
@@ -3110,6 +3166,23 @@ function paintSegMulti(id, key) {
     };
   });
 }
+
+// -- length slider (5 gradations) -----------------------
+const LENGTH_LABELS = ['one line', 'a few lines', 'a paragraph', 'a few paragraphs', 'multiple paragraphs'];
+function paintMaxTok() {
+  const inp = document.getElementById('fMaxTok');
+  if (!inp) return;
+  let v = parseInt(inp.value, 10);
+  if (!v || v < 1) v = 1;
+  if (v > 5) v = 5;
+  inp.value = v;
+  state.fMaxTok = v;
+  const hint = document.getElementById('fMaxTokHint');
+  if (hint) hint.textContent = LENGTH_LABELS[v - 1];
+  const ticks = inp.parentElement && inp.parentElement.querySelectorAll('.length-slider__ticks span');
+  if (ticks) ticks.forEach((t, i) => t.classList.toggle('is-on', i < v));
+  inp.oninput = () => { paintMaxTok(); markDirty(); };
+}
 function markDirty() {
   if (dirty) return;
   dirty = true;
@@ -3174,10 +3247,9 @@ function bindFields() {
   // switches
   const swMap = {
     fAutoStart:'fAutoStart', fStartMinimized:'fStartMinimized', fTrayIcon:'fTrayIcon',
-    fStream:'fStream',
     fReindexWatch:'fReindexWatch', fReindexVerify:'fReindexVerify',
-    fNoiseSup:'fNoiseSup', fAec:'fAec', fAgc:'fAgc',
-    fCompress:'fCompress', fWda:'fWda', fHideFrame:'fHideFrame', fHideSelf:'fHideSelf',
+    fWda:'fWda', fHideFrame:'fHideFrame', fHideSelf:'fHideSelf',
+    fCompress:'fCompress',
     fNotifUpdate:'fNotifUpdate', fNotifLicense:'fNotifLicense', fNotifKb:'fNotifKb', fNotifError:'fNotifError', fNotifWeekly:'fNotifWeekly',
     fDoNotDisturb:'fDoNotDisturb', fTelemetry:'fTelemetry', fBeta:'fBeta',
     fEncryptDb:'fEncryptDb', fClearOnExit:'fClearOnExit',
@@ -3197,8 +3269,6 @@ function bindFields() {
   // ranges
 const rangeMap = {
     fScale:    { fmt: v => v + '%',            key: 'fScale' },
-    fTemp:     { fmt: v => (v/10).toFixed(1),  key: 'fTemp' },
-    fMaxTok:   { fmt: v => v + '',             key: 'fMaxTok' },
     fGain:     { fmt: v => v + '%',            key: 'fGain' },
     fJpeg:     { fmt: v => v + '%',            key: 'fJpeg' },
     fChunk:    { fmt: v => v + ' tok',         key: 'fChunk' },
@@ -3235,7 +3305,7 @@ const rangeMap = {
   });
 
   // api key inputs
-  ['fKeyOpenAI','fKeyAnthropic','fKeyOpenRouter','fTgToken','fTgChat','fEmbCustomPath'].forEach(id => {
+  ['fTgToken','fTgChat','fEmbCustomPath'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     el.value = state[id] || '';
@@ -3246,18 +3316,23 @@ const rangeMap = {
   paintSegSingle('segBg','bg', applyBg);
   paintSegSingle('segStartMode','fStartMode');
   paintSegMode();
-paintSegSingle('segVad','fVad');
+// paintSegSingle('segVad','fVad')  -- hidden UI, see DEFAULTS comment
   paintSegSingle('segSttMode','fSttMode', applySttModeVisibility);
   paintSegSingle('segRetention','fRetention');
 paintSegSingle('segWorkers','fWorkers');
   paintSegSingle('segLog','fLogLevel');
   paintSegSingle('segEmbDevice','fEmbDevice', paintEmbDevice);
+  paintSegSingle('segTemp','fTemp');
+  paintMaxTok();
   paintSegMulti('segChannels','fChannels');
 
   applyModeVisibility();
   applySttModeVisibility();
   paintEmbModelInfo();
   paintEmbDevice();
+  renderApiKeys();
+  renderPlan();
+  paintDeviceLimit();
   bindHotkeys();
   applyHelp();
   bindDevHover();
@@ -3432,17 +3507,26 @@ function toast(msg, kind) {
 
 // -- action stubs ------------------------------------
 function signIn()         { toast('Sign-in flow  -  Phase 5'); }
-function manageSub()      { toast('Opening subscription manager - '); }
-function copyHwid()       { navigator.clipboard?.writeText(document.getElementById('hwid').textContent); toast('HWID copied'); }
-function deactivate()     { if (confirm('Deactivate this device? Your license seat will be freed.')) toast('Device deactivated', 'warn'); }
-function addProvider()    { const url = prompt('Provider base URL:'); if (url) toast('Provider added: ' + url); }
-function testKeys()       { toast('Testing keys - '); }
+function manageSub()      { toast('Opening subscription manager  -  ' + PLANS[state.fPlan].name + ' (' + getRegion().toUpperCase() + ')'); }
+function switchPlan()     { toast('Opening plan picker  -  5 plans available'); }
+function signOutDevice(id)    { if (confirm('Sign out from this device? It will stop working on the next launch.')) toast('Device signed out  -  sign in again to restore', 'warn'); }
+function signOutAll()         { if (confirm('Sign out from ALL other devices? Only this PC will stay signed in.')) toast('All other devices signed out', 'warn'); }
+function openDevicesCabinet() { window.open('https://quistan.com/account/devices', '_blank', 'noopener'); }
+function testKeys()       {
+  const keys = (state.fApiKeys || []).filter(k => k.enabled && k.key);
+  if (!keys.length) { toast('No enabled keys to test', 'warn'); return; }
+  toast('Testing ' + keys.length + ' key' + (keys.length > 1 ? 's' : '') + '  -  pinging endpoints');
+}
 function reindexAll()     { if (!confirm('Reindex all knowledge sources? Existing vectors will be rebuilt.')) return; toast('Reindexing started'); }
 function pickDevice(k)    { toast('Native picker  -  backend integration Phase 6'); }
 function testMic()        { document.getElementById('btnTestMic').onclick(); }
 function testSys()        { document.getElementById('btnTestSys').onclick(); }
 function selectRegion()   { toast('Drag-select region on any screen'); }
 function clearRegion()    { toast('Region cleared'); }
+function convertScreenshots(fmt) {
+  void fmt;
+  toast('Format conversion is now automatic  -  toggle in General \u2192 Capture');
+}
 function takeScreenshot() { toast('Screenshot captured from current region'); }
 function testTg()         { toast('Test message sent to Telegram'); }
 function openDataFolder() { toast('Opening data folder - '); }
@@ -3476,6 +3560,139 @@ function dbCopyPath()     { navigator.clipboard?.writeText(document.getElementBy
 function dbClearVectors() { if (!confirm('Wipe vector index for the active database? Sources will need to be reindexed.')) return; toast('Vector index cleared  -  reindex required', 'warn'); }
 function dbClearHistory() { if (!confirm('Wipe dialog history for the active database? Settings and vectors preserved.')) return; toast('Dialog history cleared', 'warn'); }
 function dbWipe()         { if (!confirm('Wipe the ACTIVE database completely? This cannot be undone.')) return; if (!confirm('Are you absolutely sure?')) return; toast('Database wiped', 'warn'); }
+
+// -- plans (subscription tiers) -----------------------------
+const PLANS = {
+  test: {
+    name: 'Test-Craster', initial: 'T',
+    hours: 0.5, period: 'week', periodLabel: '30 min / week', rollover: false, resetDay: 'Every Monday',
+    windows: 1, folders: 1,
+    ru: { price: 0,    currency: 'RUB', per: '' },
+    us: { price: 0,    currency: '$',   per: '' },
+    blurb: 'Just check out the app on your PC.',
+  },
+  offer: {
+    name: 'Offer', initial: 'O',
+    hours: 8, period: 'week', periodLabel: '8 h for 7 days', rollover: false,
+    windows: 3, folders: 3,
+    ru: { price: 690,  currency: 'RUB', per: ' / week' },
+    us: { price: 9.99, currency: '$',   per: ' / week' },
+    blurb: 'Job hunters - pass 1-2 interviews this week.',
+  },
+  standard: {
+    name: 'Standard', initial: 'S',
+    hours: 25, period: 'month', periodLabel: '25 h / month', rollover: true,
+    windows: 3, folders: 5,
+    ru: { price: 1190, currency: 'RUB', per: ' / month' },
+    us: { price: 19.99, currency: '$',   per: ' / mo' },
+    blurb: 'Daily meetings, reports and calls with the boss.',
+  },
+  hustler: {
+    name: 'Hustler PRO', initial: 'H',
+    hours: 100, period: 'month', periodLabel: '100 h / month', rollover: true,
+    windows: 5, folders: 20,
+    ru: { price: 2490, currency: 'RUB', per: ' / month' },
+    us: { price: 39.99, currency: '$',   per: ' / mo' },
+    blurb: 'Pro salespeople and multi-platform freelancers.',
+  },
+  byok: {
+    name: 'Your Key', initial: 'Y',
+    hours: -1, period: 'unlimited', periodLabel: 'UNLIMITED', rollover: true,
+    windows: -1, folders: -1,
+    ru: { price: 500,  currency: 'RUB', per: ' / month' },
+    us: { price: 6.99, currency: '$',   per: ' / mo' },
+    blurb: 'BYOK - for programmers and geeks, 0% AI costs.',
+  },
+};
+
+function getRegion() {
+  if (state && state.fRegion) return state.fRegion;
+  const lang = (navigator.language || (navigator.languages && navigator.languages[0]) || 'en').toLowerCase();
+  if (lang.startsWith('ru') || lang === 'uk' || lang === 'kk' || lang === 'be' || lang === 'uz') return 'ru';
+  return 'us';
+}
+function fmtMoney(plan, region) {
+  const p = plan[region];
+  if (p.price === 0) return 'Free';
+  return p.price.toLocaleString(region === 'ru' ? 'ru-RU' : 'en-US', { minimumFractionDigits: p.price % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' ' + p.currency + p.per;
+}
+function fmtLimit(n) { return n < 0 ? 'UNLIMITED' : n; }
+
+function renderPlan() {
+  const plan = PLANS[state.fPlan] || PLANS.standard;
+  const region = getRegion();
+  const price = fmtMoney(plan, region);
+  const isFree = plan[region].price === 0;
+  const isUnlimited = plan.hours < 0;
+  const monthlyAllowance = plan.hours;
+  const used = state.fPlanUsed || 0;
+  const rollover = state.fPlanRollover || 0;
+  const total = isUnlimited ? -1 : (monthlyAllowance + rollover);
+
+  // Plan card
+  const card = document.getElementById('planCard');
+  if (card) {
+    card.innerHTML = `
+      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--solo));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:24px;flex-shrink:0;box-shadow:0 4px 12px rgba(84,84,143,.35)">${plan.initial || plan.name[0]}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:20px;font-weight:700;color:var(--text);letter-spacing:-.01em">${plan.name}</div>
+        <div style="font-size:12px;color:var(--muted);font-family:'Geist Mono',monospace;margin-top:4px;text-transform:uppercase;letter-spacing:.04em">${price} · ${plan.periodLabel}${plan.rollover ? ' · rollover' : ''}</div>
+        <div style="font-size:11.5px;color:var(--muted-2);margin-top:6px;font-style:italic">${plan.blurb}</div>
+      </div>
+      <span class="pill pill--live"><span class="d"></span>${isFree ? 'Free' : 'Active'}</span>
+    `;
+  }
+
+  // Period kv
+  const periodEnds = document.getElementById('planPeriodEnds');
+  const periodRange = document.getElementById('planPeriodRange');
+  const periodResets = document.getElementById('planPeriodResets');
+  const rolloverEl = document.getElementById('planRollover');
+  if (periodEnds)  periodEnds.textContent  = isUnlimited ? 'Active until cancelled' : (state.fPlanEnds || 'Sep 16, 2026');
+  if (periodRange) periodRange.textContent = isUnlimited ? 'Auto-renew monthly'     : (state.fPlanRange || 'Sep 1 - Sep 30, 2026');
+  if (periodResets)periodResets.textContent= isUnlimited ? 'Never'                  : (state.fPlanResetsIn || '14 days');
+  if (rolloverEl) {
+    if (isUnlimited) {
+      rolloverEl.outerHTML = '<span class="pill pill--info"><span class="d"></span>Always unlimited</span>';
+    } else if (plan.rollover) {
+      rolloverEl.outerHTML = '<span class="pill pill--info"><span class="d"></span>Unused hours carry over</span>';
+    } else {
+      rolloverEl.outerHTML = '<span class="pill pill--warn"><span class="d"></span>No rollover  -  hours expire</span>';
+    }
+  }
+
+  // Limits
+  const limWin = document.getElementById('planLimitWindows');
+  const limFol = document.getElementById('planLimitFolders');
+  if (limWin) limWin.textContent = fmtLimit(plan.windows);
+  if (limFol) limFol.textContent = fmtLimit(plan.folders);
+
+  // Hours usage
+  const hoursBlock = document.getElementById('planHours');
+  if (hoursBlock) {
+    if (isUnlimited) {
+      hoursBlock.outerHTML = `
+        <div class="info" style="margin-top:14px" data-help="usageHours">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="9 12 12 15 22 6"/></svg>
+          <div><b>UNLIMITED hours</b>. You bring your own API keys — Quistan does not meter or bill your usage.</div>
+        </div>`;
+    } else {
+      const pct = total > 0 ? Math.min(100, Math.round(used / total * 100)) : 0;
+      hoursBlock.outerHTML = `
+        <div class="field" data-help="usageHours">
+          <div class="field__label">
+            <span>Hours pool</span>
+            <span class="field__hint">${plan.periodLabel}${plan.rollover ? ' + rollover' : ''}</span>
+          </div>
+          <div class="usage">
+            <div class="usage__head"><b>${total} h available</b><span>used ${used} of ${total}</span></div>
+            <div class="usage__bar"><div class="usage__bar-fill" style="width:${pct}%"></div></div>
+            <div class="usage__sub">${monthlyAllowance} h ${plan.period === 'week' ? 'this week' : 'this month'}${plan.rollover ? '  +  ' + rollover + ' h rollover  -  ' + used + ' h used' : '  -  ' + used + ' h used'}</div>
+          </div>
+        </div>`;
+    }
+  }
+}
 
 // -- embeddings: model picker, device picker, gpu detect -
 const EMB_MODELS = {
@@ -3541,6 +3758,112 @@ function applyEmbModel() {
 
 function unloadEmbModel() {
   toast('Embedding model unloaded');
+}
+
+// -- api keys: dynamic provider list --------------------
+function _apiKeyMask(v) {
+  if (!v) return '';
+  if (v.length <= 8) return '*'.repeat(v.length);
+  return v.slice(0, 4) + '*'.repeat(Math.max(8, v.length - 8)) + v.slice(-4);
+}
+function paintDeviceLimit() {
+  const limitEl = document.getElementById('devLimit');
+  const totalEl = document.getElementById('devTotal');
+  const activeEl = document.getElementById('devActive');
+  const otherEl = document.getElementById('devOther');
+  if (!limitEl) return;
+  const isTrial = state.fPlan === 'trial';
+  const limit = isTrial ? 1 : 3;
+  const active = 1;
+  const total = limit;
+  const other = Math.max(0, total - active);
+  limitEl.textContent = limit;
+  if (totalEl) totalEl.textContent = total;
+  if (activeEl) activeEl.textContent = active;
+  if (otherEl) otherEl.textContent = other;
+}
+function renderApiKeys() {
+  const list = document.getElementById('apiKeysList');
+  if (!list) return;
+  if (!Array.isArray(state.fApiKeys)) state.fApiKeys = [];
+  list.innerHTML = state.fApiKeys.map(k => {
+    const masked = _apiKeyMask(k.key || '');
+    const has = !!k.key;
+    const on = !!k.enabled;
+    let statusText, statusCls;
+    if (!on)         { statusText = 'Disabled'; statusCls = 'is-warn'; }
+    else if (has)    { statusText = 'Active';   statusCls = 'is-on';   }
+    else             { statusText = 'Empty';    statusCls = 'is-off';  }
+    return `
+      <div class="api-key-row ${on ? 'is-on' : 'is-off'}" data-id="${k.id}">
+        <div class="api-key-row__head">
+          <input class="api-key-row__name" type="text" data-field="name" value="${(k.name || '').replace(/"/g,'&quot;')}" placeholder="Provider name">
+          <span class="api-key-row__preset">${k.id}</span>
+          <span class="api-key-row__status ${statusCls}">${statusText}</span>
+          <button class="api-key-row__del" title="Remove this key" data-act="del">&#10005;</button>
+        </div>
+        <div class="input--suffix">
+          <input class="input" type="password" data-field="key" value="${(k.key || '').replace(/"/g,'&quot;')}" placeholder="paste API key here" autocomplete="off">
+          <span class="suf" style="cursor:pointer" data-act="peek" title="Show / hide">${has ? masked : ''}</span>
+        </div>
+        <div class="api-key-row__inputs">
+          <input class="input" type="text" data-field="baseUrl" value="${(k.baseUrl || '').replace(/"/g,'&quot;')}" placeholder="https://api.example.com/v1">
+          <input class="input" type="text" data-field="models" value="${(k.models || '').replace(/"/g,'&quot;')}" placeholder="model whitelist (comma-separated, optional)">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted-2)">
+          <label class="switch" style="font-size:11px">
+            <input type="checkbox" data-field="enabled" ${on ? 'checked' : ''}>
+            <span class="switch__track" style="width:26px;height:14px"><span class="switch__thumb" style="width:11px;height:11px"></span></span>
+            <span class="switch__label">Enabled</span>
+          </label>
+        </div>
+      </div>
+    `;
+  }).join('');
+  list.querySelectorAll('.api-key-row').forEach(row => {
+    const id = row.dataset.id;
+    const item = state.fApiKeys.find(x => x.id === id);
+    if (!item) return;
+    row.querySelectorAll('[data-field]').forEach(inp => {
+      inp.addEventListener('input', () => {
+        const f = inp.dataset.field;
+        let v = inp.type === 'checkbox' ? inp.checked : inp.value;
+        if (f === 'enabled') v = !!v;
+        item[f] = v;
+        markDirty();
+        if (f === 'enabled') renderApiKeys();
+      });
+    });
+    row.querySelector('[data-act="del"]').addEventListener('click', () => removeApiKey(id));
+    const peek = row.querySelector('[data-act="peek"]');
+    const keyInp = row.querySelector('[data-field="key"]');
+    if (peek && keyInp) {
+      peek.addEventListener('click', () => {
+        if (keyInp.type === 'password') { keyInp.type = 'text'; peek.textContent = item.key || ''; }
+        else { keyInp.type = 'password'; peek.textContent = _apiKeyMask(item.key || ''); }
+      });
+    }
+  });
+}
+function addApiKey() {
+  if (!Array.isArray(state.fApiKeys)) state.fApiKeys = [];
+  const id = 'custom_' + Date.now().toString(36);
+  state.fApiKeys.push({ id, name: 'New provider', key: '', baseUrl: '', models: '', enabled: false });
+  markDirty();
+  renderApiKeys();
+  const last = document.querySelector('.api-key-row:last-child .api-key-row__name');
+  if (last) { last.focus(); last.select(); }
+  toast('New provider key added  -  fill name, key, baseUrl');
+}
+function removeApiKey(id) {
+  if (!Array.isArray(state.fApiKeys)) return;
+  const item = state.fApiKeys.find(x => x.id === id);
+  if (!item) return;
+  if (!confirm('Remove ' + (item.name || id) + ' key?')) return;
+  state.fApiKeys = state.fApiKeys.filter(x => x.id !== id);
+  markDirty();
+  renderApiKeys();
+  toast('Provider key removed');
 }
 
 function downloadEmbModel() {
