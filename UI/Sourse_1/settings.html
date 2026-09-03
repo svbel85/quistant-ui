@@ -1416,16 +1416,6 @@ body {
           </div>
         </div>
 
-        <div class="info" id="modeSubInfo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          <div>All models and providers are <b>managed by Quistan</b>. You don't pick the model  -  Quistan chooses the best fit per request. Simpler, no setup, predictable quota. Switch to BYOK if you want full control.</div>
-        </div>
-
-        <div class="info info--warn" id="modeByokInfo" style="display:none">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <div>You bring your own API keys. Quistan only routes requests  -  <b>you pay the providers directly</b> and choose Fast and Heavy models yourself. Quistan does not cover usage costs.</div>
-        </div>
-
 <div id="modeSubExtras">
           <div class="field" data-help="subPlan">
             <div id="planCard" style="display:flex;align-items:center;gap:14px;padding:16px;background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border:1px solid var(--accent);border-radius:var(--radius-md)"></div>
@@ -3185,12 +3175,12 @@ function applyModeVisibility() {
   const isByok = state.fMode === 'byok';
   toggle('aiManagedSection', !isByok);
   toggle('aiByokSection', isByok);
-  toggle('modeSubInfo', !isByok);
-  toggle('modeByokInfo', isByok);
   toggle('modeSubExtras', !isByok);
   toggle('planPill', !isByok);
   toggle('sttManaged', !isByok);
   toggle('sttByok', isByok);
+  const hint = document.getElementById('planHint');
+  if (hint) hint.textContent = isByok ? 'direct keys' : 'managed by Quistan';
 }
 
 function applySttModeVisibility() {

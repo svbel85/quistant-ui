@@ -80,8 +80,8 @@
           <div class="acc-card__name" id="accName">Sarah Chen</div>
           <div class="acc-card__email" id="accEmail">sarah.chen@quistan.com</div>
           <div class="acc-card__meta">
-            <span class="pill pill--live" id="accPlanPill"><span class="d"></span>Standard plan · Active</span>
-            <span class="pill pill--info" style="margin-left:6px"><span class="d"></span>Auto-renew</span>
+            <span class="pill pill--live" id="accPlanPill"><span class="d"></span>ACTIVE  -  CLOUD HOURS</span>
+            <span class="pill pill--info" id="accRenewPill" style="margin-left:6px;display:none"><span class="d"></span>Auto-renew</span>
           </div>
         </div>
         <button class="topbar__btn" onclick="manageAccount()">
@@ -92,65 +92,24 @@
       </div>
 
       <div class="section">
-        <div class="section__head">Plan & Mode <span class="section__hint">how you use Quistan</span></div>
+        <div class="section__head">Plan <span class="section__hint" id="planHint">managed by Quistan</span></div>
+
         <div class="field">
-          <div class="field__label">
-            <span>Mode</span>
-            <span class="pill pill--info" id="planPill"><span class="d"></span>Subscription</span>
-          </div>
           <div class="seg" id="segMode">
-            <button class="seg__btn is-on" data-val="subscription">Subscription  -  managed by Quistan</button>
-            <button class="seg__btn" data-val="byok">BYOK  -  bring your own keys</button>
+            <button class="seg__btn" data-val="subscription">Managed  -  Quistan AI</button>
+            <button class="seg__btn" data-val="byok">BYOK  -  Custom Keys</button>
           </div>
         </div>
 
-        <div id="signedOutStub" style="display:none">
-          <div class="info info--accent" style="align-items:flex-start;gap:12px">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <div style="flex:1">
-              <div style="font-weight:600;color:var(--text);margin-bottom:4px">Subscription is locked</div>
-              Sign in to view your plan, hours pool, billing period and the device list. Without an account you can still use Quistan in <b>BYOK mode</b> above &mdash; bring your own OpenAI / Anthropic / OpenRouter keys and pay providers directly.
-            </div>
-          </div>
-          <div class="btn-row" style="margin-top:10px">
-            <button class="topbar__btn topbar__btn--primary" onclick="signIn()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-              Sign in to Quistan
-            </button>
-          </div>
+        <div class="field">
+          <div id="planCard" class="plan-card"></div>
         </div>
 
-<div id="modeSubExtras">
-          <div class="field" data-help="subPlan">
-            <div id="planCard" class="plan-card"></div>
-          </div>
+        <div id="planHours" class="field" style="display:none"></div>
 
-          <div id="planHours" class="field" data-help="usageHours">
-            <div class="field__label">
-              <span>Hours pool</span>
-              <span class="field__hint">remaining  /  used</span>
-            </div>
-            <div class="usage">
-              <div class="usage__head"><b>31 h remaining</b><span>used 6 of 37 h</span></div>
-              <div class="usage__bar"><div class="usage__bar-fill" style="width:16%"></div></div>
-            </div>
-          </div>
+        <div id="byokStatus" class="field" style="display:none"></div>
 
-          <div class="field" data-help="manageSub">
-            <div class="btn-row">
-              <button class="topbar__btn topbar__btn--primary" onclick="manageSub()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                Manage subscription
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.65;margin-left:4px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              </button>
-              <button class="topbar__btn" onclick="switchPlan()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
-                Switch plan
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.65;margin-left:4px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
+        <div id="byokTrialStatus" class="field" style="display:none"></div>
       </div>
 
       <div class="section" id="devicesSection">

@@ -108,17 +108,6 @@
 
       <div class="section">
         <div class="section__head">Experimental <span class="section__hint">may break things</span></div>
-        <div class="info info--warn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <div>Experimental features may be unstable, change without notice, or break existing functionality.</div>
-        </div>
-        <div class="field" style="margin-top:14px">
-          <label class="switch">
-            <input type="checkbox" id="fExpGpu">
-            <span class="switch__track"><span class="switch__thumb"></span></span>
-            <span class="switch__label">GPU acceleration for local Whisper</span>
-          </label>
-        </div>
         <div class="field">
           <label class="switch">
             <input type="checkbox" id="fExpMem">
@@ -137,11 +126,7 @@
 
       <div class="section">
         <div class="section__head">Import / Export <span class="section__hint">portable config</span></div>
-        <div class="info">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <div>Export includes all settings, floating window configs, shortcuts, KB sources. <b>API keys are NOT included</b>  -  re-enter them after import.</div>
-        </div>
-<div class="field" style="margin-top:12px" data-help="configIO">
+        <div class="field" data-help="configIO">
           <div class="btn-row">
             <button class="topbar__btn" onclick="exportConfig()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -152,6 +137,7 @@
               Import from JSON
             </button>
           </div>
+          <div class="field__hint" style="margin-top:8px;color:var(--muted)">API keys are excluded from export.</div>
         </div>
       </div>
 
@@ -162,28 +148,21 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             Reset everything
           </div>
-          <div class="dz__desc">By default this clears <b>settings, floating windows, knowledge source configs, shortcuts and caches</b>. Dialog history and the SQLite database (<code>default.db</code>) are <b>kept</b>. Enable the option below to wipe them as well. This cannot be undone.</div>
+          <div class="dz__desc">Clears configuration, cached data and knowledge sources.</div>
           <div class="field">
             <label class="switch switch--danger">
               <input type="checkbox" id="fWipeHistory">
               <span class="switch__track"><span class="switch__thumb"></span></span>
-              <span class="switch__label" style="color:var(--danger)">Also wipe all dialog history</span>
+              <span class="switch__label" style="color:var(--danger)">Also wipe dialog history</span>
             </label>
           </div>
-          <div class="field" id="fWipeDbWrap" style="display:none">
-            <label class="switch switch--danger">
-              <input type="checkbox" id="fWipeDb">
-              <span class="switch__track"><span class="switch__thumb"></span></span>
-              <span class="switch__label" style="color:var(--danger)">Also delete the local SQLite database file (<code>default.db</code>)</span>
-            </label>
-          </div>
-<div class="field" data-help="factoryReset">
-          <div class="btn-row">
-            <button class="topbar__btn topbar__btn--danger" onclick="openFactoryResetModal()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              Factory reset
-            </button>
-</div>
+          <div class="field" data-help="factoryReset">
+            <div class="btn-row">
+              <button class="topbar__btn topbar__btn--danger" onclick="openFactoryResetModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Factory reset
+              </button>
+            </div>
           </div>
         </div>
       </div>

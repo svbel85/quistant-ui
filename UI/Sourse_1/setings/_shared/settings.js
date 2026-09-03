@@ -2,8 +2,8 @@
 const CATEGORIES = [
   { id: 'general',   name: 'General',     icon: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>' },
   { id: 'account',   name: 'Account',     icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
-  { id: 'ai',        name: 'AI & Models', icon: '<path d="M12 2a4 4 0 0 0-4 4v2a4 4 0 0 0-4 4v2a4 4 0 0 0 4 4v0a4 4 0 0 0 4 4 4 4 0 0 0 4-4v0a4 4 0 0 0 4-4v-2a4 4 0 0 0-4-4V6a4 4 0 0 0-4-4z"/>' },
-  { id: 'byok',      name: 'BYOK',        icon: '<circle cx="8" cy="15" r="4"/><line x1="10.85" y1="12.15" x2="19" y2="4"/><line x1="18" y1="5" x2="20" y2="7"/><line x1="15" y1="8" x2="17" y2="10"/>', requiresFlag: 'fByok' },
+  { id: 'ai',        name: 'AI & Models', icon: '<path d="M12 2a4 4 0 0 0-4 4v2a4 4 0 0 0-4 4v2a4 4 0 0 0 4 4v0a4 4 0 0 0 4 4 4 4 0 0 0 4-4v0a4 4 0 0 0 4-4v-2a4 4 0 0 0-4-4V6a4 4 0 0 0-4-4z"/>', requiresFlag: s => s.fMode === 'subscription' },
+  { id: 'byok',      name: 'BYOK',        icon: '<circle cx="8" cy="15" r="4"/><line x1="10.85" y1="12.15" x2="19" y2="4"/><line x1="18" y1="5" x2="20" y2="7"/><line x1="15" y1="8" x2="17" y2="10"/>', requiresFlag: s => s.fMode === 'byok' },
   { id: 'embeddings',name: 'Memory', icon: '<circle cx="4" cy="4" r="1.5"/><circle cx="12" cy="4" r="1.5"/><circle cx="20" cy="4" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="20" cy="12" r="1.5"/><circle cx="4" cy="20" r="1.5"/><circle cx="12" cy="20" r="1.5"/><circle cx="20" cy="20" r="1.5"/>' },
   { id: 'audio',     name: 'Audio',       icon: '<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
   { id: 'capture',   name: 'Capture',     icon: '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>' },
@@ -12,6 +12,33 @@ const CATEGORIES = [
   { id: 'update',    name: 'Updates',     icon: '<path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/>' },
   { id: 'advanced',  name: 'Advanced',    icon: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>' },
 ];
+
+// -- STT model catalog (local Whisper / Parakeet files) --
+const STT_MODELS = {
+  'whisper-multi-base':   { name: 'Multi (base)',     size: '~150 MB', bundled: true,  defaultInstalled: true,  desc: '99 languages  -  CPU-friendly, included in installer' },
+  'whisper-multi-turbo':  { name: 'Multi (turbo)',    size: '~800 MB', bundled: false, defaultInstalled: false, desc: 'large-v3-turbo quality  -  ~2× faster than large' },
+  'whisper-large-v3':     { name: 'Multi (large) V3', size: '~1.5 GB', bundled: false, defaultInstalled: false, desc: 'Best accuracy across all languages, slowest' },
+  'parakeet-v3':          { name: 'Parakeet V3',      size: '~1.1 GB', bundled: false, defaultInstalled: false, desc: 'English only  -  real-time on CPU, NVIDIA-optimized' },
+};
+const STT_FOLDER = '%LocalAppData%\\Quistan\\models\\stt';
+
+// -- LLM provider presets (for Add Provider modal) --
+const PROVIDER_PRESETS = {
+  openai:     { kind: 'cloud', name: 'OpenAI',     url: 'https://api.openai.com/v1',                                                                                    needsKey: true,  models: 'gpt-4o, gpt-4o-mini, gpt-4-turbo, o1, o1-mini' },
+  anthropic:  { kind: 'cloud', name: 'Anthropic',  url: 'https://api.anthropic.com',                                                                                     needsKey: true,  models: 'claude-sonnet-4.5, claude-opus, claude-haiku-4' },
+  openrouter: { kind: 'cloud', name: 'OpenRouter', url: 'https://openrouter.ai/api/v1',                                                                                  needsKey: true,  models: 'auto-discover via /models' },
+  ollama:     { kind: 'local', name: 'Ollama',     url: 'http://localhost:11434/v1',                                                                                    needsKey: false, models: 'auto-discover from running Ollama' },
+  lmstudio:   { kind: 'local', name: 'LM Studio',  url: 'http://localhost:1234/v1',                                                                                     needsKey: false, models: 'auto-discover from loaded models' },
+  vllm:       { kind: 'local', name: 'vLLM',       url: 'http://localhost:8000/v1',                                                                                     needsKey: false, models: 'auto-discover from /v1/models' },
+  custom:     { kind: 'local', name: '',           url: '',                                                                                                             needsKey: false, models: '' },
+};
+
+// -- STT provider presets (for Add STT Provider modal) --
+const STT_PROVIDER_PRESETS = {
+  openai: { name: 'OpenAI Whisper',   url: 'https://api.openai.com/v1',             needsKey: true,  model: 'whisper-1',          kind: 'cloud' },
+  groq:   { name: 'Groq Whisper',     url: 'https://api.groq.com/openai/v1',       needsKey: true,  model: 'whisper-large-v3-turbo', kind: 'cloud' },
+  ollama: { name: 'Ollama / Custom',  url: 'http://localhost:11434/v1',            needsKey: false, model: 'whisper',             kind: 'local' },
+};
 
 // -- HELP TEXT (hover tooltip for every setting) --
 const HELP = {
@@ -35,9 +62,6 @@ const HELP = {
   fTrayIcon: 'ON = a small Quistan icon stays in the Windows notification area. <b>Required</b> if you use Start minimized or Stay in tray - it\'s how you reach the menu when the main window is closed.',
 
   fStartMode: 'What happens when Quistan launches. <b>Pre-flight</b> = show the start dialog (pick what to do). <b>Resume</b> = open the last dialog you were in. <b>Stay in tray</b> = stay hidden until summoned. <b>Pick Resume</b> for daily use; <b>Pre-flight</b> if each session is a new context. <b>Note:</b> if <b>Start minimized</b> is ON above, it wins &mdash; Quistan always goes to tray regardless of this choice.',
-
-  // ===== Account =====
-  fMode: 'Who pays the AI providers. <b>Subscription</b> = Quistan gives you all models under one monthly bill; you do not pick which model runs per request - Quistan does. <b>BYOK</b> = you paste API keys from OpenAI/Anthropic/OpenRouter and pay providers directly; you also pick Fast and Heavy models yourself. <b>Default Subscription</b> for most users; switch to BYOK if you want full control or run local models.',
 
   // ===== AI & Models =====
   fModelFast: 'The small, cheap, fast model used for quick on-the-fly hints (entity names, dialog turn detection, short rephrasing). <b>How to choose:</b> any "mini" class - gpt-4o-mini, claude-haiku, gemini-flash. <b>What it affects:</b> response latency for everyday turns and your API bill.',
@@ -64,7 +88,7 @@ const HELP = {
   fWorkers: 'How many chunks Quistan embeds in parallel during reindex. <b>Drag right</b> if you have many CPU cores and want faster reindex; <b>drag left</b> if reindex makes the UI sluggish.',
 
   // ===== Embeddings & Vector Store =====
-  fEmbModel: 'Which local embedding model turns your text into vectors. <b>bge-small</b> (384d) is bundled and tiny - default for most. <b>bge-base</b> (768d) is twice the size and noticeably better retrieval. <b>bge-large</b> (1024d) is the best retrieval quality but 335 MB. <b>nomic</b> and <b>mxbai</b> are downloadable top-tier models - need internet on first use. <b>Custom</b> = any ONNX/HuggingFace model you point at. <b>Important:</b> switching the model changes vector dimensions and requires a full reindex.',
+  fEmbModel: 'Which local embedding model turns your text into vectors. <b>bge-small / base / large</b> are bundled and English-only. <b>paraphrase-multilingual-MiniLM-L12-v2</b> (384d, ~50 MB, downloadable) covers 50+ languages including Russian - good default for non-English KBs. <b>bge-m3</b> (1024d, ~2.2 GB, downloadable) is the top multilingual model. <b>nomic</b> and <b>mxbai</b> are downloadable English top-tier. <b>Custom</b> = any ONNX / HuggingFace model. <b>Important:</b> switching the model changes vector dimensions and forces a full reindex.',
 
   embModel: 'Read-only info card showing the currently active embedding model: its name, file path, dimensions and load status. Use the picker above to switch.',
 
@@ -161,8 +185,6 @@ const HELP = {
 
   'segStartMode': 'What shows at launch. <b>Pre-flight</b> = start dialog. <b>Resume</b> = last dialog. <b>Stay in tray</b> = hidden.',
 
-  'segMode': 'Subscription = Quistan handles all AI under one bill. BYOK = you pay providers directly.',
-
   'segVad': 'Voice-Activity Detection sensitivity. Low = catch everything (breaths). Medium = balanced. High = strict (skip noise).',
 
   'segSttMode': 'Pick the STT backend in BYOK mode. Local model = bundled Whisper, offline, free. Cloud API = Deepgram or OpenAI Whisper. Ollama = your own OpenAI-compatible STT server. Not visible in Subscription mode (Quistan handles it).',
@@ -185,6 +207,16 @@ const HELP = {
   testKeys: 'Send a tiny ping through every enabled API key and show latency + quota. <b>Use after</b> pasting a new key.',
 
   reindexAll: 'Rebuild the entire vector index from scratch. <b>Use</b> after switching embedding model, after KB restructure, when retrieval is broken. Slow on big KBs.',
+
+  recreateIndex: 'Hard wipe of the on-disk vector store (<code>./data/vectors</code>) followed by a clean reindex. <b>Use when:</b> a Reindex crashes on a corrupted SQLite file, the active embedding model has dimensions that don\'t match the existing index, or ChromaDB refuses to open after a crash / power loss. <b>Requires typing WIPE</b> to confirm - this erases every stored vector and starts over.',
+
+  fRagTopK: 'How many of the best-matching chunks from the Memory index to pull for each user message. <b>4</b> = fast, focused, works for simple lookups. <b>8</b> = good default for chat. <b>16</b> = richer context, useful when answers need to cross-reference several docs. <b>32</b> = research mode: pulls a lot of text, slower and more expensive. Higher values increase prompt size so you may have to raise the <b>Max context size</b> below too.',
+
+  fRagSim: 'Minimum cosine similarity (0-100%) for a chunk to be included. <b>0%</b> = return everything matched by Top-K. <b>65%</b> = good default, drops obvious noise. <b>85%</b> = only highly relevant chunks, expect short answers. <b>Drag right</b> to fight hallucinations, <b>drag left</b> to recover rare facts. Always applied <i>after</i> Top-K.',
+
+  fRagCtx: 'Hard cap on how many tokens of retrieved context are stuffed into the model prompt. <b>2 000</b> = light context, fast. <b>4 000</b> = balanced. <b>8 000</b> = rich context, needs a model with a large window. <b>16 000</b> = research / long-doc mode. If the model truncates from the front, lower this value.',
+
+  fRagCite: 'ON = every answer that used retrieved context ends with a list of source documents and the relevant passages. <b>Why ON:</b> verifiable answers, no hallucinations about what was in your KB. <b>Why OFF:</b> cleaner chat-style answers, slightly shorter replies. Costs one extra generation step.',
 
   dbMaintenance: 'SQLite housekeeping. <b>Vacuum</b> reclaims space; <b>Integrity check</b> runs PRAGMA; <b>Migrations</b> applies schema changes; <b>Rebuild indexes</b> refreshes FTS.',
 
@@ -258,8 +290,6 @@ const DEV = {
   fTrayIcon: '<b>Краткое:</b> Иконка в трее.<br><br><b>Зачем:</b> Доступ к меню без открытого главного окна. Обязательно при fStartMinimized.<br><b>Связано:</b> Tray balloon (уведомления), системное меню.<br><b>Размещение:</b> Startup & System.',
 
   fStartMode: '<b>Краткое:</b> Что показывать при запуске (Pre-flight/Resume/Tray).<br><br><b>Зачем:</b> Разные UX: настройка новой сессии vs продолжение прошлой vs скрытый режим.<br><b>Связано:</b> segStartMode, fStartMinimized.<br><b>Размещение:</b> Startup & System.',
-
-  fMode: '<b>Краткое:</b> Subscription или BYOK.<br><br><b>Зачем:</b> Главный роутер AI-запросов. Меняет UI в AI & Models.<br><b>Связано:</b> segMode, applyModeVisibility(), вкладка BYOK (BYOK-настройки вынесены отдельно).<br><b>Размещение:</b> Account — это контракт пользователя.',
 
   manageSub: '<b>Краткое:</b> Открыть биллинг-портал.<br><br><b>Зачем:</b> Смена плана, инвойсы, пауза.<br><b>Связано:</b> Внешний billing URL, квота usage.<br><b>Размещение:</b> Account — рядом с usage-барами.',
 
@@ -520,38 +550,32 @@ const DEFAULTS = {
   theme: 'obsidian', bg: 'texture',
   fScale: 100, fOpacity: 100,
   fAutoStart: false, fStartMinimized: true, fTrayIcon: true, fStartMode: 'preflight',
-  fMode: 'subscription', fPlan: 'standard', fPlanUsed: 12, fPlanRollover: 18, fPlanEnds: 'Sep 16, 2026', fPlanRange: 'Sep 1 - Sep 16, 2026', fPlanResetsIn: '14 days', fRegion: '', fHwid: 'a7f3-9c2b-4e81-...',
+  fMode: 'subscription', fPlan: 'standard', fPlanUsed: 12, fPlanRollover: 18, fPlanEnds: 'Sep 16, 2026', fPlanRange: 'Sep 1 - Sep 16, 2026', fPlanResetsIn: '14 days', fByokDaysLeft: 18, fByokEndsOn: 'Sep 20, 2026', fRegion: '', fHwid: 'a7f3-9c2b-4e81-...',
   fSignedIn: true,
   fTemp: 'balanced', fMaxTok: 3, fStream: true,
   fModelFast: 'gpt-4o-mini', fModelHeavy: 'gpt-4o',
-  fKeyOpenAI: 'sk-proj-' + '*'.repeat(35),
-  fKeyAnthropic: '', fKeyOpenRouter: '',
+  fSttModel: 'whisper-multi-base', fSttLang: 'auto',
+  fSttDevice: 'cpu', fSttGpuDetect: 'NVIDIA RTX 4070 \u00b7 12 GB',
+  fSttInstalled: { 'whisper-multi-base': true },
+  fSttProviders: [
+    { id: 'stt_openai_demo', preset: 'openai', name: 'OpenAI Whisper API',  url: 'https://api.openai.com/v1',           key: 'sk-' + '*'.repeat(40),                   model: 'whisper-1',                enabled: true },
+    { id: 'stt_ollama_demo', preset: 'ollama', name: 'Ollama STT',          url: 'http://localhost:11434/v1',          key: '',                                        model: 'whisper',                  enabled: true },
+  ],
+  fSttTab: 'api',
   fApiKeys: [
-    { id: 'openai',     name: 'OpenAI',        key: 'sk-proj-' + '*'.repeat(35), baseUrl: 'https://api.openai.com/v1',           enabled: true  },
-    { id: 'anthropic',  name: 'Anthropic',     key: '',                            baseUrl: 'https://api.anthropic.com',           enabled: true  },
-    { id: 'openrouter', name: 'OpenRouter',    key: '',                            baseUrl: 'https://openrouter.ai/api/v1',        enabled: true  },
-    { id: 'gemini',     name: 'Google Gemini', key: '',                            baseUrl: 'https://generativelanguage.googleapis.com/v1beta', enabled: false },
-    { id: 'mistral',    name: 'Mistral',       key: '',                            baseUrl: 'https://api.mistral.ai/v1',            enabled: false },
-    { id: 'groq',       name: 'Groq',          key: '',                            baseUrl: 'https://api.groq.com/openai/v1',       enabled: false },
-    { id: 'xai',        name: 'xAI (Grok)',    key: '',                            baseUrl: 'https://api.x.ai/v1',                  enabled: false },
-    { id: 'deepseek',   name: 'DeepSeek',      key: '',                            baseUrl: 'https://api.deepseek.com/v1',          enabled: false },
-    { id: 'cohere',     name: 'Cohere',        key: '',                            baseUrl: 'https://api.cohere.ai/v1',             enabled: false },
-    { id: 'together',   name: 'Together AI',   key: '',                            baseUrl: 'https://api.together.xyz/v1',          enabled: false },
-    { id: 'fireworks',  name: 'Fireworks AI',  key: '',                            baseUrl: 'https://api.fireworks.ai/inference/v1',enabled: false },
-    { id: 'perplexity', name: 'Perplexity',    key: '',                            baseUrl: 'https://api.perplexity.ai',            enabled: false },
-    { id: 'ollama',     name: 'Ollama (local)',key: '',                            baseUrl: 'http://localhost:11434/v1',            enabled: false },
-    { id: 'lmstudio',   name: 'LM Studio',     key: '',                            baseUrl: 'http://localhost:1234/v1',             enabled: false },
-    { id: 'custom',     name: 'Custom endpoint',key:'',                            baseUrl: '',                                     enabled: false },
+    { id: 'openai_demo', preset: 'openai',  name: 'OpenAI',                 key: 'sk-proj-' + '*'.repeat(35), baseUrl: 'https://api.openai.com/v1',     models: 'gpt-4o, gpt-4o-mini',            enabled: true  },
+    { id: 'ollama_demo', preset: 'ollama',  name: 'Ollama (localhost:11434)', key: '',                           baseUrl: 'http://localhost:11434/v1',     models: 'llama-3.3-70b, qwen2.5-7b',       enabled: true  },
   ],
   fReindexWatch: true, fReindexVerify: false,
   fChunk: 384, fOverlap: 40, fWorkers: '2',
+  fRagTopK: '8', fRagSim: 65, fRagCtx: '4000', fRagCite: true,
   fEmbModel: 'bge-small-en-v1.5', fEmbCustomPath: '', fEmbDevice: 'cpu', fEmbGpu: false, fEmbFp16: true,
   // -- hidden audio defaults (auto-tuned by Quistan, no UI) --
   fGain: 100, fSysGain: 100, fNoiseSup: true, fAec: true, fAgc: false, fVad: 'mid',
   fSttMode: 'local', fSttApiKey: '', fSttOllamaUrl: 'http://localhost:11434',
   fWda: true, fHideFrame: true, fHideSelf: true,
   fCompress: true, fJpeg: 70,
-  fSavePng: true, fPngKeep: '200', fPngAge: '30',
+  fSavePng: false, fPngAge: '30',
   hotkey_open: 'Ctrl+Shift+Q', hotkey_pause: 'Ctrl+Shift+Space', hotkey_region: 'Ctrl+Shift+A',
   hotkey_snap: 'Ctrl+Shift+S', hotkey_refresh: 'Ctrl+R', hotkey_solo: 'Ctrl+Shift+M', hotkey_send: 'Ctrl+Enter',
 
@@ -561,14 +585,17 @@ const DEFAULTS = {
   fLogLevel: 'warn', fLogToFile: true,
   fExpGpu: false, fExpMem: false, fExpMulti: false,
   fWipeHistory: false,
-  fByok: false,
 };
 
 // -- sidebar ------------------------------------------
 function renderSidebar() {
   const list = document.getElementById('catList');
   if (!list) return;
-  const visible = CATEGORIES.filter(c => !c.requiresFlag || !!state[c.requiresFlag]);
+  const visible = CATEGORIES.filter(c => {
+    if (!c.requiresFlag) return true;
+    if (typeof c.requiresFlag === 'function') return !!c.requiresFlag(state);
+    return !!state[c.requiresFlag];
+  });
   list.innerHTML = visible.map(c => `
     <div class="cat ${c.id === activeCat ? 'is-on' : ''}" data-cat="${c.id}">
       <span class="cat__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${c.icon}</svg></span>
@@ -578,6 +605,30 @@ function renderSidebar() {
   list.querySelectorAll('.cat').forEach(el => {
     el.addEventListener('click', () => switchCat(el.dataset.cat));
   });
+  if (activeCat && !visible.some(c => c.id === activeCat)) {
+    const gated = CATEGORIES.find(c => c.id === activeCat);
+    if (gated && gated.requiresFlag) {
+      if (gated.id === 'byok' && state.fMode !== 'byok') {
+        state.fMode = 'byok';
+        markDirty();
+        if (typeof applyModeVisibility === 'function') applyModeVisibility();
+        renderSidebar();
+        return;
+      }
+      if (gated.id === 'ai' && state.fMode !== 'subscription') {
+        state.fMode = 'subscription';
+        markDirty();
+        if (typeof applyModeVisibility === 'function') applyModeVisibility();
+        renderSidebar();
+        return;
+      }
+    }
+    const fallback = visible[0] ? visible[0].id : 'general';
+    activeCat = fallback;
+    if (document.body && document.body.dataset.page && document.body.dataset.page !== fallback) {
+      window.location.href = fallback + '.html';
+    }
+  }
 }
 function pageForCat(id) { return (id + '.html'); }
 
@@ -678,12 +729,14 @@ function applyModeVisibility() {
   const isByok = state.fMode === 'byok';
   const signed = !!state.fSignedIn;
   toggle('aiManagedSection', !isByok);
-  toggle('modeSubInfo', !isByok && signed);
-  toggle('modeByokInfo', isByok);
   toggle('planPill', !isByok);
   toggle('sttManaged', !isByok);
   toggle('sttByok', isByok);
+  const hint = document.getElementById('planHint');
+  if (hint) hint.textContent = isByok ? 'direct keys' : 'managed by Quistan';
+  renderPlan();
   paintSignedIn();
+  renderSidebar();
 }
 function paintSignedIn() {
   const signed = !!state.fSignedIn;
@@ -710,7 +763,10 @@ function paintCompressState() {
 }
 
 function paintPngRetention() {
-  toggle('pngOffNote', !state.fSavePng);
+  const on = !!state.fSavePng;
+  toggle('pngOffNote', !on);
+  toggle('pngRetentionGroup', on);
+  toggle('pngAdvanced', on);
 }
 
 function getPngCachePath() {
@@ -752,18 +808,32 @@ function runPngPurge(reason) {
   const sizeEl = document.getElementById('pngCacheSize');
   const lastEl = document.getElementById('pngCacheLastPurge');
   if (!countEl || !sizeEl) return;
+  const ageMap = { '7': 500, '30': 2000, '90': 5000, '365': 20000 };
+  const keep = ageMap[state.fPngAge] || 2000;
   const current = parseInt((countEl.textContent || '0').replace(/\D/g, ''), 10) || 0;
-  const keep = parseInt(state.fPngKeep, 10) || 200;
   const purged = Math.max(0, current - keep);
   const after = current - purged;
   countEl.textContent = after;
   sizeEl.textContent = formatBytes(after * 3.2 * 1024 * 1024);
   if (purged > 0) {
-    lastEl.textContent = 'just now';
+    if (lastEl) lastEl.textContent = 'just now';
     if (reason) toast('Purged ' + purged + ' old PNG' + (purged === 1 ? '' : 's') + ' to match ' + reason, 'warn');
   } else if (reason) {
     toast('Cache already within limit (' + after + ' / ' + keep + ')');
   }
+}
+
+function paintRagPreview() {
+  const topK = parseInt(state.fRagTopK, 10) || 8;
+  const sim  = parseInt(state.fRagSim, 10)  || 0;
+  const ctx  = parseInt(state.fRagCtx, 10)  || 4000;
+  const cite = !!state.fRagCite;
+  const chunksEl = document.getElementById('ragPreviewChunks');
+  const tokensEl = document.getElementById('ragPreviewTokens');
+  const citeEl   = document.getElementById('ragPreviewCite');
+  if (chunksEl) chunksEl.textContent = topK + ' chunks (sim \u2265 ' + sim + '%)';
+  if (tokensEl) tokensEl.textContent = '~' + ctx.toLocaleString('en-US') + ' tokens';
+  if (citeEl)   citeEl.textContent   = cite ? 'on' : 'off';
 }
 
 function applyStartupInterdeps() {
@@ -828,12 +898,13 @@ function bindFields() {
     fLogToFile:'fLogToFile', fExpGpu:'fExpGpu', fExpMem:'fExpMem', fExpMulti:'fExpMulti',
     fWipeHistory:'fWipeHistory',
     fEmbGpu:'fEmbGpu', fEmbFp16:'fEmbFp16',
+    fRagCite:'fRagCite',
   };
   Object.entries(swMap).forEach(([id,key]) => {
     const el = document.getElementById(id);
     if (!el) return;
     el.checked = !!state[key];
-    el.addEventListener('change', () => { state[key] = el.checked; markDirty(); if (key === 'fDbConnected') updateDbConnPill(); if (key === 'fAutoStart') applyStartupInterdeps(); if (key === 'fCompress') paintCompressState(); if (key === 'fSavePng') paintPngRetention(); if (key === 'fWipeHistory') updateWipeDbVisibility(); if (key === 'fLogToFile') syncLogsButtons(); });
+    el.addEventListener('change', () => { state[key] = el.checked; markDirty(); if (key === 'fDbConnected') updateDbConnPill(); if (key === 'fAutoStart') applyStartupInterdeps(); if (key === 'fCompress') paintCompressState(); if (key === 'fSavePng') paintPngRetention(); if (key === 'fWipeHistory') updateWipeDbVisibility(); if (key === 'fLogToFile') syncLogsButtons(); if (key === 'fRagCite') paintRagPreview(); if (key === 'fEmbGpu') paintEmbDevice(); });
   });
 
   applyStartupInterdeps();
@@ -851,6 +922,7 @@ function bindFields() {
     fJpeg:     { fmt: v => v + '%',            key: 'fJpeg' },
     fChunk:    { fmt: v => v + ' tok',         key: 'fChunk' },
     fOverlap:  { fmt: v => v + ' tok',         key: 'fOverlap' },
+    fRagSim:   { fmt: v => v + '%',            key: 'fRagSim',  after: paintRagPreview },
   };
   Object.entries(rangeMap).forEach(([id,cfg]) => {
     const inp = document.getElementById(id);
@@ -864,6 +936,7 @@ function bindFields() {
       markDirty();
       if (cfg.key === 'fScale') applyScale();
       if (cfg.key === 'fOpacity') applyOpacity();
+      if (cfg.after) cfg.after();
     });
   });
 
@@ -905,8 +978,13 @@ function bindFields() {
   paintSegSingle('segBackup','fBackupInterval');
 paintSegSingle('segWorkers','fWorkers');
   paintSegSingle('segLog','fLogLevel');
-  paintSegSingle('segPngKeep','fPngKeep', () => runPngPurge('Keep last = ' + state.fPngKeep));
-  paintSegSingle('segPngAge','fPngAge',  () => runPngPurge('Auto-purge = ' + (state.fPngAge === 'never' ? 'Never' : state.fPngAge + 'd')));
+  const pngAgeSel = document.getElementById('fPngAge');
+  if (pngAgeSel) {
+    pngAgeSel.value = String(state.fPngAge || '30');
+    pngAgeSel.onchange = () => { state.fPngAge = pngAgeSel.value; markDirty(); runPngPurge('Auto-purge = ' + pngAgeSel.value + 'd'); };
+  }
+  paintSegSingle('segRagTopK','fRagTopK', paintRagPreview);
+  paintSegSingle('segRagCtx', 'fRagCtx',  paintRagPreview);
   paintSegSingle('segEmbDevice','fEmbDevice', paintEmbDevice);
   paintSegSingle('segTemp','fTemp');
   paintMaxTok();
@@ -914,8 +992,17 @@ paintSegSingle('segWorkers','fWorkers');
   applySttModeVisibility();
   paintSignedIn();
   paintEmbModelInfo();
+  paintRagPreview();
   paintEmbDevice();
   renderApiKeys();
+  paintSttModels();
+  paintSttProviders();
+  paintSttTab();
+  paintSegSingle('segSttLang','fSttLang');
+  paintSegSingle('segSttDevice','fSttDevice');
+  paintSttDevice();
+  bindProviderKind();
+  bindSttTab();
   renderPlan();
   paintDeviceLimit();
   bindHotkeys();
@@ -1327,6 +1414,10 @@ function signIn()         {
 function manageSub()      { toast('Opening subscription manager  -  ' + PLANS[state.fPlan].name + ' (' + getRegion().toUpperCase() + ')'); }
 function manageAccount()  { window.open('https://quistan.com/account', '_blank', 'noopener'); }
 function switchPlan()     { toast('Opening plan picker  -  5 plans available'); }
+function addHours()       { toast('Opening hour packages  -  10 h / 50 h available'); }
+function manageLicense()  { window.open('https://quistan.com/account/license', '_blank', 'noopener'); }
+function manageSubscription() { window.open('https://quistan.com/account/billing', '_blank', 'noopener'); }
+function switchKeys()     { window.open('https://quistan.com/account/keys', '_blank', 'noopener'); }
 function signOutDevice(id)    { if (confirm('Sign out from this device? It will stop working on the next launch.')) toast('Device signed out  -  sign in again to restore', 'warn'); }
 function signOutAll()         { if (confirm('Sign out from ALL other devices? Only this PC will stay signed in.')) toast('All other devices signed out', 'warn'); }
 function openDevicesCabinet() { window.open('https://quistan.com/account/devices', '_blank', 'noopener'); }
@@ -1426,6 +1517,19 @@ function openWindows()    {
 function openKb()         {
   if (window.parent && window.parent !== window) window.parent.postMessage({ type:'open-kb-picker' }, '*');
   else window.open('../kb_picker.html', '_blank');
+}
+function openKnowledge()  { openKb(); }
+function addRagSource()   { openKb(); }
+function connectRagSource(id) {
+  const el = document.querySelector('[data-source="' + id + '"]');
+  if (!el) { toast('Unknown source: ' + id, 'warn'); return; }
+  el.classList.add('is-on');
+  const status = el.querySelector('.provider__status');
+  if (status) { status.className = 'provider__status is-on'; status.textContent = 'connecting'; }
+  const btn = el.querySelector('.topbar__btn');
+  if (btn) btn.remove();
+  toast('Connecting ' + id + '  -  opening setup');
+  setTimeout(() => { openKb(); }, 250);
 }
 function setBtnLoading(btn, on, label) {
   if (!btn) return;
@@ -1531,96 +1635,102 @@ function fmtLimit(n) { return n < 0 ? 'UNLIMITED' : n; }
 
 function renderPlan() {
   const plan = PLANS[state.fPlan] || PLANS.standard;
-  const region = getRegion();
-  const price = fmtMoney(plan, region);
-  const isFree = plan[region].price === 0;
-  const isUnlimited = plan.hours < 0;
   const monthlyAllowance = plan.hours;
   const used = state.fPlanUsed || 0;
   const rollover = state.fPlanRollover || 0;
-  const total = isUnlimited ? -1 : (monthlyAllowance + rollover);
+  const total = monthlyAllowance + rollover;
+  const isByokMode = state.fMode === 'byok';
+  const isManaged = !isByokMode;
+  const byokDaysLeft = state.fByokDaysLeft != null ? state.fByokDaysLeft : 18;
+  const byokEndsOn = state.fByokEndsOn || 'Sep 20, 2026';
 
-  // Plan card (compact: name + price + pill + period/limits grid)
+  // Plan card - always ACTIVE
   const card = document.getElementById('planCard');
   if (card) {
-    const rolloverPill = isUnlimited
-      ? '<span class="pill pill--info"><span class="d"></span>Always unlimited</span>'
-      : plan.rollover
-        ? '<span class="pill pill--info"><span class="d"></span>Unused hours carry over</span>'
-        : '<span class="pill pill--warn"><span class="d"></span>No rollover</span>';
-    const periodEndsText = isUnlimited ? 'Active until cancelled' : (state.fPlanEnds || 'Sep 16, 2026');
-    const periodResetsText = isUnlimited ? 'Never' : (state.fPlanResetsIn || '14 days');
-    const limitsText = fmtLimit(plan.windows) + ' windows  /  ' + fmtLimit(plan.folders) + ' folders';
-
-    card.innerHTML = `
-      <div class="plan-card__head">
-        <div class="plan-card__avatar">${plan.initial || plan.name[0]}</div>
-        <div class="plan-card__body">
-          <div class="plan-card__name">${plan.name}</div>
-          <div class="plan-card__price">${price}  ·  ${plan.periodLabel}${plan.rollover ? '  ·  rollover' : ''}</div>
-          <div class="plan-card__blurb">${plan.blurb}</div>
-        </div>
-        <span class="pill pill--live"><span class="d"></span>${isFree ? 'Free' : 'Active'}</span>
-      </div>
-      <dl class="plan-card__grid">
-        <div class="plan-card__cell"><dt>Next renewal</dt><dd>${periodEndsText}</dd></div>
-        <div class="plan-card__cell"><dt>Resets in</dt><dd>${periodResetsText}</dd></div>
-        <div class="plan-card__cell"><dt>Limits</dt><dd>${limitsText}</dd></div>
-        <div class="plan-card__cell"><dt>Rollover</dt><dd>${rolloverPill}</dd></div>
-      </dl>`;
-  }
-
-  const accPlanPill = document.getElementById('accPlanPill');
-  if (accPlanPill) accPlanPill.innerHTML = '<span class="d"></span>' + plan.name + ' plan · ' + (isFree ? 'Free' : 'Active');
-
-  // Period kv
-  const periodEnds = document.getElementById('planPeriodEnds');
-  const periodRange = document.getElementById('planPeriodRange');
-  const periodResets = document.getElementById('planPeriodResets');
-  const rolloverEl = document.getElementById('planRollover');
-  if (periodEnds)  periodEnds.textContent  = isUnlimited ? 'Active until cancelled' : (state.fPlanEnds || 'Sep 16, 2026');
-  if (periodRange) periodRange.textContent = isUnlimited ? 'Auto-renew monthly'     : (state.fPlanRange || 'Sep 1 - Sep 30, 2026');
-  if (periodResets)periodResets.textContent= isUnlimited ? 'Never'                  : (state.fPlanResetsIn || '14 days');
-  if (rolloverEl) {
-    if (isUnlimited) {
-      rolloverEl.outerHTML = '<span class="pill pill--info"><span class="d"></span>Always unlimited</span>';
-    } else if (plan.rollover) {
-      rolloverEl.outerHTML = '<span class="pill pill--info"><span class="d"></span>Unused hours carry over</span>';
+    if (isByokMode) {
+      card.innerHTML = `
+        <div class="plan-card__head">
+          <div class="plan-card__avatar">Y</div>
+          <div class="plan-card__body">
+            <div class="plan-card__name">BYOK Subscription</div>
+            <div class="plan-card__price">BRING YOUR OWN API KEYS</div>
+            <div class="plan-card__blurb">Unlimited meeting time and floating windows with custom API keys.</div>
+          </div>
+          <span class="pill pill--live"><span class="d"></span>Active</span>
+        </div>`;
     } else {
-      rolloverEl.outerHTML = '<span class="pill pill--warn"><span class="d"></span>No rollover  -  hours expire</span>';
+      card.innerHTML = `
+        <div class="plan-card__head">
+          <div class="plan-card__avatar">${plan.initial || plan.name[0]}</div>
+          <div class="plan-card__body">
+            <div class="plan-card__name">Cloud AI Balance</div>
+            <div class="plan-card__price">${plan.name} package</div>
+            <div class="plan-card__blurb">Direct voice streaming via Quistan cloud infrastructure.</div>
+          </div>
+          <span class="pill pill--live"><span class="d"></span>Active</span>
+        </div>`;
     }
   }
 
-  // Limits
-  const limWin = document.getElementById('planLimitWindows');
-  const limFol = document.getElementById('planLimitFolders');
-  if (limWin) limWin.textContent = fmtLimit(plan.windows);
-  if (limFol) limFol.textContent = fmtLimit(plan.folders);
+  const accPlanPill = document.getElementById('accPlanPill');
+  if (accPlanPill) {
+    accPlanPill.innerHTML = '<span class="d"></span>ACTIVE  -  ' + (isByokMode ? 'BYOK LICENSE' : 'CLOUD HOURS');
+  }
 
-  // Hours usage (simplified: remaining / used + bar; no formula)
   const hoursBlock = document.getElementById('planHours');
-  if (hoursBlock) {
-    if (isUnlimited) {
-      hoursBlock.innerHTML = `
-        <div class="field__label">
-          <span>Hours pool</span>
-          <span class="field__hint">unlimited</span>
-        </div>
-        <div class="info">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="9 12 12 15 22 6"/></svg>
-          <div><b>UNLIMITED hours</b>. You bring your own API keys &mdash; Quistan does not meter or bill your usage.</div>
-        </div>`;
-    } else {
+  const trialBlock = document.getElementById('byokTrialStatus');
+  const licenseBlock = document.getElementById('byokStatus');
+
+  if (isManaged) {
+    if (hoursBlock) {
+      hoursBlock.style.display = '';
       const pct = total > 0 ? Math.min(100, Math.round(used / total * 100)) : 0;
       const remaining = Math.max(0, total - used);
       hoursBlock.innerHTML = `
         <div class="field__label">
-          <span>Hours pool</span>
-          <span class="field__hint">remaining  /  used</span>
+          <span>Hours balance</span>
+          <span class="field__hint">remaining</span>
         </div>
         <div class="usage">
           <div class="usage__head"><b>${remaining} h remaining</b><span>used ${used} of ${total} h</span></div>
           <div class="usage__bar"><div class="usage__bar-fill" style="width:${pct}%"></div></div>
+        </div>
+        <div class="btn-row" style="margin-top:14px">
+          <button class="topbar__btn topbar__btn--primary" onclick="addHours()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add hours
+          </button>
+          <button class="topbar__btn" onclick="manageAccount()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.66V19a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v1.66"/></svg>
+            Manage account
+          </button>
+        </div>`;
+    }
+    if (trialBlock) trialBlock.style.display = 'none';
+    if (licenseBlock) licenseBlock.style.display = 'none';
+  } else {
+    // BYOK mode - subscription period block instead of hours
+    if (hoursBlock) hoursBlock.style.display = 'none';
+    if (trialBlock) trialBlock.style.display = 'none';
+    if (licenseBlock) {
+      licenseBlock.style.display = '';
+      licenseBlock.innerHTML = `
+        <div class="field__label">
+          <span>Subscription period</span>
+          <span class="field__hint">remaining</span>
+        </div>
+        <div class="usage" style="padding:14px 16px">
+          <div class="usage__head"><b>${byokDaysLeft} days remaining</b><span>renews on ${byokEndsOn}</span></div>
+        </div>
+        <div class="btn-row" style="margin-top:14px">
+          <button class="topbar__btn topbar__btn--primary" onclick="manageSubscription()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Manage subscription
+          </button>
+          <button class="topbar__btn" onclick="switchKeys()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            Switch keys
+          </button>
         </div>`;
     }
   }
@@ -1628,12 +1738,14 @@ function renderPlan() {
 
 // -- embeddings: model picker, device picker, gpu detect -
 const EMB_MODELS = {
-  'bge-small-en-v1.5':     { name: 'bge-small-en-v1.5',     dim: 384,  size: '~33 MB',   bundled: true,  path: 'C:\\Program Files\\Quistan\\models\\bge-small-en-v1.5' },
-  'bge-base-en-v1.5':      { name: 'bge-base-en-v1.5',      dim: 768,  size: '~110 MB',  bundled: true,  path: 'C:\\Program Files\\Quistan\\models\\bge-base-en-v1.5' },
-  'bge-large-en-v1.5':     { name: 'bge-large-en-v1.5',     dim: 1024, size: '~335 MB',  bundled: true,  path: 'C:\\Program Files\\Quistan\\models\\bge-large-en-v1.5' },
-  'nomic-embed-text-v1.5': { name: 'nomic-embed-text-v1.5', dim: 768,  size: '~270 MB',  bundled: false, path: '%USERPROFILE%\\.cache\\quistan\\nomic-embed-text-v1.5' },
-  'mxbai-embed-large-v1':  { name: 'mxbai-embed-large-v1',  dim: 1024, size: '~670 MB',  bundled: false, path: '%USERPROFILE%\\.cache\\quistan\\mxbai-embed-large-v1' },
-  'custom':                { name: 'Custom model',          dim: 0,    size: 'unknown',  bundled: false, path: '' },
+  'bge-small-en-v1.5':                 { name: 'bge-small-en-v1.5',                 dim: 384,  size: '~33 MB',    bundled: true,  langs: 'English',        path: 'C:\\Program Files\\Quistan\\models\\bge-small-en-v1.5' },
+  'bge-base-en-v1.5':                  { name: 'bge-base-en-v1.5',                  dim: 768,  size: '~110 MB',   bundled: true,  langs: 'English',        path: 'C:\\Program Files\\Quistan\\models\\bge-base-en-v1.5' },
+  'bge-large-en-v1.5':                 { name: 'bge-large-en-v1.5',                 dim: 1024, size: '~335 MB',   bundled: true,  langs: 'English',        path: 'C:\\Program Files\\Quistan\\models\\bge-large-en-v1.5' },
+  'paraphrase-multilingual-MiniLM-L12-v2': { name: 'paraphrase-multilingual-MiniLM-L12-v2', dim: 384,  size: '~50 MB',    bundled: false, langs: '50+ languages',  path: '%USERPROFILE%\\.cache\\quistan\\paraphrase-multilingual-MiniLM-L12-v2' },
+  'bge-m3':                            { name: 'bge-m3',                            dim: 1024, size: '~2.2 GB',   bundled: false, langs: '100+ languages', path: '%USERPROFILE%\\.cache\\quistan\\bge-m3' },
+  'nomic-embed-text-v1.5':             { name: 'nomic-embed-text-v1.5',             dim: 768,  size: '~270 MB',   bundled: false, langs: 'English',        path: '%USERPROFILE%\\.cache\\quistan\\nomic-embed-text-v1.5' },
+  'mxbai-embed-large-v1':              { name: 'mxbai-embed-large-v1',              dim: 1024, size: '~670 MB',   bundled: false, langs: 'English',        path: '%USERPROFILE%\\.cache\\quistan\\mxbai-embed-large-v1' },
+  'custom':                            { name: 'Custom model',                      dim: 0,    size: 'unknown',   bundled: false, langs: 'depends on model', path: '' },
 };
 
 function paintEmbModelInfo() {
@@ -1647,8 +1759,10 @@ function paintEmbModelInfo() {
   const pathEl = document.getElementById('embKvPath');
   const dimEl  = document.getElementById('embKvDim');
   const sizeEl = document.getElementById('embKvSize');
+  const pathRowEl = document.getElementById('embModelPath');
   if (nameEl) nameEl.textContent = info.name + (info.bundled ? '  -  bundled' : (isCustom ? '' : '  -  downloadable'));
   if (pathEl) pathEl.textContent = path;
+  if (pathRowEl) pathRowEl.textContent = path || '(no path)';
   if (dimEl)  dimEl.textContent  = info.dim || 'depends on model';
   if (sizeEl) sizeEl.textContent = info.size;
   const pill = document.getElementById('embStatusPill');
@@ -1672,6 +1786,7 @@ function paintEmbModelInfo() {
 function paintEmbDevice() {
   const dev = state.fEmbDevice || 'cpu';
   const gpuEnabled = !!state.fEmbGpu;
+  const gpuFound = !!state.__gpuFound;
   const segEl = document.getElementById('segEmbDevice');
   if (segEl) {
     segEl.querySelectorAll('.seg__btn').forEach(b => b.classList.toggle('is-on', b.dataset.val === dev));
@@ -1699,6 +1814,20 @@ function paintEmbDevice() {
       if (inp) inp.checked = false;
       state.fEmbFp16 = false;
     }
+  }
+  const gpuSwitch = document.getElementById('fEmbGpu');
+  const gpuHint   = document.getElementById('gpuDetectHint');
+  const missingHint = document.getElementById('gpuMissingHint');
+  if (!gpuFound) {
+    if (gpuSwitch) gpuSwitch.disabled = true;
+    if (gpuSwitch) gpuSwitch.checked = false;
+    state.fEmbGpu = false;
+    if (gpuHint) gpuHint.textContent = '\u00b7 not available \u2014 no GPU detected';
+    if (missingHint) missingHint.style.display = '';
+  } else {
+    if (gpuSwitch) gpuSwitch.disabled = false;
+    if (gpuHint) gpuHint.textContent = '\u00b7 auto-picks CUDA or DirectML when on';
+    if (missingHint) missingHint.style.display = 'none';
   }
 }
 
@@ -1738,84 +1867,473 @@ function renderApiKeys() {
   const list = document.getElementById('apiKeysList');
   if (!list) return;
   if (!Array.isArray(state.fApiKeys)) state.fApiKeys = [];
+  if (!state.fApiKeys.length) {
+    list.innerHTML = `
+      <div class="providers__empty">
+        No providers added yet. Click <b>+ Add Provider</b> to connect OpenAI, Anthropic, OpenRouter or a local Ollama.
+      </div>`;
+    paintModelDropdowns();
+    return;
+  }
   list.innerHTML = state.fApiKeys.map(k => {
-    const masked = _apiKeyMask(k.key || '');
-    const has = !!k.key;
     const on = !!k.enabled;
-    let statusText, statusCls;
-    if (!on)         { statusText = 'Disabled'; statusCls = 'is-warn'; }
-    else if (has)    { statusText = 'Active';   statusCls = 'is-on';   }
-    else             { statusText = 'Empty';    statusCls = 'is-off';  }
+    const has = !!k.key;
+    const preset = PROVIDER_PRESETS[k.id];
+    const isLocal = preset ? preset.kind === 'local' : (/localhost|127\.0\.0\.1/.test(k.baseUrl || ''));
+    const models = (k.models || '').split(',').map(s => s.trim()).filter(Boolean);
+    const statusText = !on ? 'Disabled' : (has || isLocal) ? 'Connected' : 'No key';
+    const statusCls  = !on ? 'is-warn' : (has || isLocal) ? 'is-on' : 'is-off';
+    const logoSvg = isLocal
+      ? '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'
+      : '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>';
     return `
-      <div class="api-key-row ${on ? 'is-on' : 'is-off'}" data-id="${k.id}">
-        <div class="api-key-row__head">
-          <input class="api-key-row__name" type="text" data-field="name" value="${(k.name || '').replace(/"/g,'&quot;')}" placeholder="Provider name">
-          <span class="api-key-row__preset">${k.id}</span>
-          <span class="api-key-row__status ${statusCls}">${statusText}</span>
-          <button class="api-key-row__del" title="Remove this key" data-act="del">&#10005;</button>
+      <div class="provider ${on ? 'is-on' : ''}" data-prov="${k.id}">
+        <div class="provider__logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${logoSvg}</svg></div>
+        <div class="provider__body">
+          <div class="provider__name">${(k.name || k.id).replace(/</g,'&lt;')}</div>
+          <div class="provider__hint">${(k.baseUrl || '').replace(/</g,'&lt;')}${' \u00b7 ' + models.length + ' models'}</div>
         </div>
-        <div class="input--suffix">
-          <input class="input" type="password" data-field="key" value="${(k.key || '').replace(/"/g,'&quot;')}" placeholder="paste API key here" autocomplete="off">
-          <span class="suf" style="cursor:pointer" data-act="peek" title="Show / hide">${has ? masked : ''}</span>
-        </div>
-        <div class="api-key-row__inputs">
-          <input class="input" type="text" data-field="baseUrl" value="${(k.baseUrl || '').replace(/"/g,'&quot;')}" placeholder="https://api.example.com/v1">
-          <input class="input" type="text" data-field="models" value="${(k.models || '').replace(/"/g,'&quot;')}" placeholder="model whitelist (comma-separated, optional)">
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted-2)">
-          <label class="switch" style="font-size:11px">
-            <input type="checkbox" data-field="enabled" ${on ? 'checked' : ''}>
-            <span class="switch__track" style="width:26px;height:14px"><span class="switch__thumb" style="width:11px;height:11px"></span></span>
-            <span class="switch__label">Enabled</span>
-          </label>
-        </div>
-      </div>
-    `;
+        <span class="provider__status ${statusCls}">${statusText}</span>
+        <button class="topbar__btn" style="height:24px;padding:0 10px;font-size:11px" data-act="edit" title="Edit provider">Edit</button>
+        <button class="topbar__btn topbar__btn--danger" style="height:24px;padding:0 10px;font-size:11px" data-act="del" title="Remove provider">\u2715</button>
+      </div>`;
   }).join('');
-  list.querySelectorAll('.api-key-row').forEach(row => {
-    const id = row.dataset.id;
+  list.querySelectorAll('.provider').forEach(row => {
+    const id = row.dataset.prov;
     const item = state.fApiKeys.find(x => x.id === id);
     if (!item) return;
-    row.querySelectorAll('[data-field]').forEach(inp => {
-      inp.addEventListener('input', () => {
-        const f = inp.dataset.field;
-        let v = inp.type === 'checkbox' ? inp.checked : inp.value;
-        if (f === 'enabled') v = !!v;
-        item[f] = v;
-        markDirty();
-        if (f === 'enabled') renderApiKeys();
-      });
-    });
+    row.querySelector('[data-act="edit"]').addEventListener('click', () => editProvider(id));
     row.querySelector('[data-act="del"]').addEventListener('click', () => removeApiKey(id));
-    const peek = row.querySelector('[data-act="peek"]');
-    const keyInp = row.querySelector('[data-field="key"]');
-    if (peek && keyInp) {
-      peek.addEventListener('click', () => {
-        if (keyInp.type === 'password') { keyInp.type = 'text'; peek.textContent = item.key || ''; }
-        else { keyInp.type = 'password'; peek.textContent = _apiKeyMask(item.key || ''); }
-      });
-    }
   });
-}
-function addApiKey() {
-  if (!Array.isArray(state.fApiKeys)) state.fApiKeys = [];
-  const id = 'custom_' + Date.now().toString(36);
-  state.fApiKeys.push({ id, name: 'New provider', key: '', baseUrl: '', models: '', enabled: false });
-  markDirty();
-  renderApiKeys();
-  const last = document.querySelector('.api-key-row:last-child .api-key-row__name');
-  if (last) { last.focus(); last.select(); }
-  toast('New provider key added  -  fill name, key, baseUrl');
+  paintModelDropdowns();
 }
 function removeApiKey(id) {
   if (!Array.isArray(state.fApiKeys)) return;
   const item = state.fApiKeys.find(x => x.id === id);
   if (!item) return;
-  if (!confirm('Remove ' + (item.name || id) + ' key?')) return;
+  if (!confirm('Remove provider "' + (item.name || id) + '"?\nIts models will disappear from the Fast / Heavy dropdowns.')) return;
   state.fApiKeys = state.fApiKeys.filter(x => x.id !== id);
   markDirty();
   renderApiKeys();
-  toast('Provider key removed');
+  toast('Provider removed');
+}
+
+function paintModelDropdowns() {
+  const fastSel = document.getElementById('fModelFast');
+  const heavySel = document.getElementById('fModelHeavy');
+  if (!fastSel || !heavySel) return;
+  const providers = (state.fApiKeys || []).filter(k => k.enabled);
+  const groups = providers.map(p => {
+    const models = (p.models || '').split(',').map(s => s.trim()).filter(Boolean);
+    const opts = models.map(m => `<option value="${m}">${m}  -  ${(p.name || p.id).replace(/</g,'&lt;')}</option>`).join('');
+    return `<optgroup label="${(p.name || p.id).replace(/</g,'&lt;')}">${opts}</optgroup>`;
+  }).join('');
+  const builtin = `
+    <optgroup label="Built-in fallback">
+      <option value="gpt-4o-mini">gpt-4o-mini</option>
+      <option value="gpt-4o">gpt-4o</option>
+      <option value="claude-sonnet">claude-sonnet-4.5</option>
+      <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+      <option value="llama-3.3-70b">llama-3.3-70b</option>
+    </optgroup>`;
+  const emptyHint = providers.length
+    ? ''
+    : '<option value="" disabled>Add a provider below to see models</option>';
+  fastSel.innerHTML = emptyHint + (groups || builtin);
+  heavySel.innerHTML = emptyHint + (groups || builtin);
+  if ([...fastSel.options].some(o => o.value === state.fModelFast)) fastSel.value = state.fModelFast;
+  if ([...heavySel.options].some(o => o.value === state.fModelHeavy)) heavySel.value = state.fModelHeavy;
+  fastSel.onchange = () => { state.fModelFast = fastSel.value; markDirty(); };
+  heavySel.onchange = () => { state.fModelHeavy = heavySel.value; markDirty(); };
+}
+
+function paintSttModels() {
+  const list = document.getElementById('sttModelsList');
+  if (!list) return;
+  if (!state.fSttInstalled || typeof state.fSttInstalled !== 'object') {
+    state.fSttInstalled = {};
+    Object.entries(STT_MODELS).forEach(([id, m]) => { if (m.defaultInstalled) state.fSttInstalled[id] = true; });
+  }
+  if (!Array.isArray(state.fSttProviders)) state.fSttProviders = [];
+  const cur = state.fSttModel || 'whisper-multi-base';
+  const sel = document.getElementById('fSttModel');
+  if (sel) {
+    const tab = state.fSttTab || 'local';
+    const localOpts = Object.entries(STT_MODELS)
+      .filter(([id, m]) => state.fSttInstalled[id])
+      .map(([id, m]) => `<option value="${id}">${m.name}  \u00b7  Ready</option>`).join('');
+    const remoteOpts = state.fSttProviders
+      .filter(p => p.enabled)
+      .map(p => `<option value="${p.id}">${p.name || p.preset}  -  ${p.model || ''}</option>`).join('');
+    let html = '';
+    if (tab === 'local' && localOpts) html += `<optgroup label="Local (Offline)">${localOpts}</optgroup>`;
+    if (tab === 'api'  && remoteOpts) html += `<optgroup label="Remote / API">${remoteOpts}</optgroup>`;
+    if (!html) {
+      html = tab === 'api'
+        ? '<option value="" disabled>No API providers connected  -  add one below</option>'
+        : '<option value="" disabled>No local models installed  -  download below</option>';
+    }
+    sel.innerHTML = html;
+    if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
+    sel.onchange = () => { state.fSttModel = sel.value; markDirty(); };
+  }
+  const pathEl = document.getElementById('sttFolderPath');
+  if (pathEl) pathEl.textContent = STT_FOLDER;
+list.innerHTML = Object.entries(STT_MODELS).map(([id, m]) => {
+    const installed = !!state.fSttInstalled[id];
+    const isCur = id === cur;
+    const logoSvg = installed
+      ? '<polyline points="20 6 9 17 4 12"/>'
+      : '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>';
+    const nameExtras = m.bundled && installed ? '  \u00b7  <span class="pill pill--info" style="font-size:9.5px;padding:1px 6px;vertical-align:1px"><span class="d"></span>Bundled</span>' : '';
+    const deletable = installed && !m.bundled;
+    const action = installed
+      ? (isCur && deletable
+          ? '<span class="pill pill--live" style="margin-right:6px"><span class="d"></span>Downloaded</span><button class="topbar__btn topbar__btn--danger" style="height:24px;padding:0 10px;font-size:11px;display:inline-flex;align-items:center;gap:4px" data-act="del" title="Delete model file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V1-6h6v6"/></svg></button>'
+          : isCur
+            ? '<span class="pill pill--live"><span class="d"></span>Downloaded</span>'
+            : '<button class="topbar__btn" style="height:24px;padding:0 10px;font-size:11px;margin-right:4px" data-act="use">Use</button>' + (deletable ? '<button class="topbar__btn topbar__btn--danger" style="height:24px;padding:0 10px;font-size:11px;display:inline-flex;align-items:center;gap:4px" data-act="del" title="Delete model file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V1-6h6v6"/></svg></button>' : ''))
+      : '<button class="topbar__btn topbar__btn--primary" style="height:24px;padding:0 10px;font-size:11px" data-act="dl">Download \u00b7 ' + m.size + '</button>';
+    return `
+      <div class="provider ${installed ? 'is-on' : ''}" data-stt="${id}">
+        <div class="provider__logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${logoSvg}</svg></div>
+        <div class="provider__body">
+          <div class="provider__name">${m.name}${nameExtras}</div>
+          <div class="provider__hint">${m.desc}  \u00b7  ${m.size}</div>
+        </div>
+        ${action}
+      </div>`;
+  }).join('');
+  list.querySelectorAll('.provider').forEach(row => {
+    const id = row.dataset.stt;
+    row.querySelectorAll('[data-act]').forEach(act => {
+      const which = act.dataset.act;
+      if (which === 'dl') act.addEventListener('click', () => downloadSttModel(id));
+      else if (which === 'del') act.addEventListener('click', () => deleteSttModel(id));
+      else if (which === 'use') act.addEventListener('click', () => useSttModel(id));
+    });
+  });
+}
+
+function paintSttProviders() {
+  const list = document.getElementById('sttProvidersList');
+  if (!list) return;
+  if (!Array.isArray(state.fSttProviders)) state.fSttProviders = [];
+  const empty = document.getElementById('sttProvidersEmpty');
+  if (!state.fSttProviders.length) {
+    if (empty) empty.style.display = '';
+    list.querySelectorAll('.provider[data-stt-prov]').forEach(n => n.remove());
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  list.querySelectorAll('.provider[data-stt-prov]').forEach(n => n.remove());
+  state.fSttProviders.forEach(p => {
+    const on = !!p.enabled;
+    const has = !!p.key;
+    const isLocal = p.preset === 'ollama' || /localhost|127\.0\.0\.1/.test(p.url || '');
+    const statusText = !on ? 'Disabled' : (has || isLocal) ? 'Connected' : 'No key';
+    const statusCls  = !on ? 'is-warn' : (has || isLocal) ? 'is-on' : 'is-off';
+    const logoSvg = isLocal
+      ? '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'
+      : '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>';
+    const node = document.createElement('div');
+    node.className = 'provider ' + (on ? 'is-on' : '');
+    node.dataset.sttProv = p.id;
+    node.innerHTML = `
+      <div class="provider__logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${logoSvg}</svg></div>
+      <div class="provider__body">
+        <div class="provider__name">${(p.name || p.id).replace(/</g,'&lt;')}</div>
+        <div class="provider__hint">${(p.url || '').replace(/</g,'&lt;')}${' \u00b7  ' + (p.model || '')}</div>
+      </div>
+      <span class="provider__status ${statusCls}">${statusText}</span>
+      <button class="topbar__btn" style="height:24px;padding:0 10px;font-size:11px" data-act="edit">Edit</button>
+      <button class="topbar__btn topbar__btn--danger" style="height:24px;padding:0 10px;font-size:11px" data-act="del">\u2715</button>`;
+    list.appendChild(node);
+    node.querySelector('[data-act="edit"]').addEventListener('click', () => editSttProvider(p.id));
+    node.querySelector('[data-act="del"]').addEventListener('click', () => removeSttProvider(p.id));
+  });
+}
+
+function paintSttTab() {
+  const tab = state.fSttTab || 'local';
+  document.querySelectorAll('[data-stt-tab]').forEach(el => {
+    el.style.display = (el.dataset.sttTab === tab) ? '' : 'none';
+  });
+  document.querySelectorAll('#segSttTab .seg__btn').forEach(b => {
+    b.classList.toggle('is-on', b.dataset.val === tab);
+  });
+}
+function paintSttDevice() {
+  const dev = state.fSttDevice || 'cpu';
+  const segEl = document.getElementById('segSttDevice');
+  if (segEl) {
+    segEl.querySelectorAll('.seg__btn').forEach(b => b.classList.toggle('is-on', b.dataset.val === dev));
+  }
+  const txt = document.getElementById('sttGpuDetectText');
+  const pill = document.getElementById('sttGpuDetectPill');
+  const detected = state.fSttGpuDetect || '';
+  if (pill && txt) {
+    if (detected) {
+      pill.className = 'pill pill--live';
+      txt.textContent = detected;
+    } else {
+      pill.className = 'pill pill--off';
+      txt.textContent = 'No GPU detected';
+    }
+  }
+}
+function downloadSttModel(id) {
+  const m = STT_MODELS[id]; if (!m) return;
+  toast('Downloading ' + m.name + '  -  ' + m.size + ' into ' + STT_FOLDER);
+  let pct = 0;
+  const tick = setInterval(() => {
+    pct += 5 + Math.random() * 12;
+    if (pct >= 100) {
+      clearInterval(tick);
+      state.fSttInstalled[id] = true;
+      markDirty();
+      paintSttModels();
+      toast(m.name + ' ready to use');
+      return;
+    }
+    toast('Downloading ' + m.name + '  -  ' + Math.round(pct) + '%', 'progress');
+  }, 320);
+}
+function deleteSttModel(id) {
+  const m = STT_MODELS[id]; if (!m) return;
+  if (!confirm('Delete ' + m.name + ' (' + m.size + ') from disk?\nYou can re-download anytime.')) return;
+  delete state.fSttInstalled[id];
+  if (state.fSttModel === id) state.fSttModel = Object.keys(state.fSttInstalled)[0] || 'whisper-multi-base';
+  markDirty();
+  paintSttModels();
+  toast(m.name + ' removed');
+}
+function useSttModel(id) {
+  state.fSttModel = id;
+  markDirty();
+  paintSttModels();
+  toast(STT_MODELS[id].name + ' is now active');
+}
+function openSttFolder() {
+  toast('Opening ' + STT_FOLDER + '  -  backend integration Phase 6');
+}
+
+function useSttProvider(id) {
+  state.fSttModel = id;
+  markDirty();
+  paintSttModels();
+  const p = (state.fSttProviders || []).find(x => x.id === id);
+  toast((p ? p.name : id) + ' is now active for STT');
+}
+function removeSttProvider(id) {
+  if (!Array.isArray(state.fSttProviders)) return;
+  const p = state.fSttProviders.find(x => x.id === id);
+  if (!p) return;
+  if (!confirm('Remove STT provider "' + (p.name || id) + '"?\nIts model will disappear from the dropdown.')) return;
+  state.fSttProviders = state.fSttProviders.filter(x => x.id !== id);
+  if (state.fSttModel === id) state.fSttModel = 'whisper-multi-base';
+  markDirty();
+  paintSttProviders();
+  paintSttModels();
+  toast('STT provider removed');
+}
+function editSttProvider(id) {
+  const p = (state.fSttProviders || []).find(x => x.id === id);
+  if (!p) return;
+  openAddSttProviderModal(p);
+}
+
+// -- Add STT Provider modal ------------------------------------
+function openAddSttProviderModal(existing) {
+  const m = document.getElementById('addSttProviderModal');
+  if (m) m.classList.add('is-on');
+  document.getElementById('newSttPreset').value = (existing && existing.preset) || 'openai';
+  document.getElementById('newSttUrl').value    = (existing && existing.url)    || '';
+  document.getElementById('newSttKey').value    = (existing && existing.key)    || '';
+  document.getElementById('newSttModel').value  = (existing && existing.model)  || '';
+  document.getElementById('newSttName').value   = (existing && existing.name)   || '';
+  const r = document.getElementById('newSttTestResult');
+  if (r) { r.style.display = 'none'; r.innerHTML = ''; }
+  if (existing) document.getElementById('addSttProviderModal').dataset.editing = existing.id;
+  else delete document.getElementById('addSttProviderModal').dataset.editing;
+  applySttProviderPreset();
+}
+function closeAddSttProviderModal() {
+  const m = document.getElementById('addSttProviderModal');
+  if (m) m.classList.remove('is-on');
+  delete m.dataset.editing;
+}
+function applySttProviderPreset() {
+  const sel = document.getElementById('newSttPreset');
+  if (!sel) return;
+  const p = STT_PROVIDER_PRESETS[sel.value];
+  if (!p) return;
+  const url    = document.getElementById('newSttUrl');
+  const key    = document.getElementById('newSttKey');
+  const model  = document.getElementById('newSttModel');
+  const name   = document.getElementById('newSttName');
+  const keyField = document.getElementById('newSttKeyField');
+  if (url && !url.value) url.value = p.url;
+  if (model && !model.value) model.value = p.model;
+  if (name && !name.value) name.value = p.name;
+  if (keyField) keyField.style.display = p.needsKey ? '' : 'none';
+  if (!p.needsKey && key) key.value = '';
+}
+function testNewSttProvider() {
+  const url   = document.getElementById('newSttUrl').value.trim();
+  const key   = document.getElementById('newSttKey').value.trim();
+  const model = document.getElementById('newSttModel').value.trim();
+  const r = document.getElementById('newSttTestResult');
+  if (!url || !model) { r.style.display = ''; r.className = 'info info--warn'; r.innerHTML = 'Endpoint URL and Model name are required'; return; }
+  r.style.display = '';
+  r.className = 'info';
+  r.innerHTML = 'Pinging <code>' + url.replace(/</g,'&lt;') + '/audio/transcriptions</code> with <code>' + model + '</code> \u2026';
+  setTimeout(() => {
+    const ok = !!key || /localhost|127\.0\.0\.1/.test(url);
+    if (ok) {
+      r.className = 'info';
+      r.innerHTML = '\u2713 Connected. STT endpoint reachable. Model <code>' + model + '</code> will be available.';
+    } else {
+      r.className = 'info info--warn';
+      r.innerHTML = '\u2717 Auth failed. Check the API key.';
+    }
+  }, 700);
+}
+function saveNewSttProvider() {
+  const url   = document.getElementById('newSttUrl').value.trim();
+  const key   = document.getElementById('newSttKey').value.trim();
+  const model = document.getElementById('newSttModel').value.trim();
+  const name  = document.getElementById('newSttName').value.trim() || (model || 'STT provider');
+  const preset = document.getElementById('newSttPreset').value;
+  if (!url || !model) { toast('Endpoint URL and Model name are required', 'warn'); return; }
+  if (!Array.isArray(state.fSttProviders)) state.fSttProviders = [];
+  const modal = document.getElementById('addSttProviderModal');
+  const editing = modal && modal.dataset.editing;
+  if (editing) {
+    const item = state.fSttProviders.find(x => x.id === editing);
+    if (item) { item.preset = preset; item.name = name; item.url = url; item.key = key; item.model = model; item.enabled = true; }
+  } else {
+    const id = 'stt_' + preset + '_' + Date.now().toString(36);
+    state.fSttProviders.push({ id, preset, name, url, key, model, enabled: true });
+    state.fSttModel = id;
+  }
+  markDirty();
+  paintSttProviders();
+  paintSttModels();
+  closeAddSttProviderModal();
+  toast((editing ? 'Updated' : 'Added') + ' STT provider "' + name + '"  -  available in Speech-to-Text dropdown');
+}
+
+// -- Add provider modal ------------------------------------
+function openAddProviderModal() {
+  const m = document.getElementById('addProviderModal');
+  if (m) m.classList.add('is-on');
+  document.getElementById('newProvName').value = '';
+  document.getElementById('newProvKey').value = '';
+  document.getElementById('newProvModels').value = '';
+  const r = document.getElementById('newProvTestResult');
+  if (r) { r.style.display = 'none'; r.innerHTML = ''; }
+  applyProviderPreset();
+}
+function bindProviderKind() {
+  const el = document.getElementById('segProviderKind');
+  if (!el) return;
+  el.querySelectorAll('.seg__btn').forEach(b => {
+    b.onclick = () => {
+      el.querySelectorAll('.seg__btn').forEach(x => x.classList.toggle('is-on', x === b));
+      applyProviderKind();
+    };
+  });
+}
+function bindSttTab() {
+  const el = document.getElementById('segSttTab');
+  if (!el) return;
+  el.querySelectorAll('.seg__btn').forEach(b => {
+    b.onclick = () => {
+      state.fSttTab = b.dataset.val;
+      markDirty();
+      paintSttTab();
+      paintSttModels();
+    };
+  });
+}
+function closeAddProviderModal() {
+  const m = document.getElementById('addProviderModal');
+  if (m) m.classList.remove('is-on');
+}
+function applyProviderKind() {
+  const kind = (document.querySelector('#segProviderKind .is-on') || {}).dataset?.val || 'cloud';
+  document.querySelectorAll('#newProvPreset optgroup').forEach(g => {
+    const show = (kind === 'cloud' && g.id === 'provCloudGroup') || (kind === 'local' && g.id === 'provLocalGroup');
+    g.disabled = !show;
+  });
+  const sel = document.getElementById('newProvPreset');
+  if (sel.selectedOptions[0] && sel.selectedOptions[0].parentElement.disabled) sel.value = kind === 'cloud' ? 'openai' : 'ollama';
+  applyProviderPreset();
+}
+function applyProviderPreset() {
+  const sel = document.getElementById('newProvPreset');
+  if (!sel) return;
+  const id = sel.value;
+  const p = PROVIDER_PRESETS[id];
+  if (!p) return;
+  const name = document.getElementById('newProvName');
+  const url  = document.getElementById('newProvUrl');
+  const key  = document.getElementById('newProvKey');
+  const mod  = document.getElementById('newProvModels');
+  const keyField = document.getElementById('newProvKeyField');
+  if (name && !name.value) name.value = p.name;
+  if (url)  url.value = p.url;
+  if (mod && !mod.value) mod.value = p.models;
+  if (keyField) keyField.style.display = p.needsKey ? '' : 'none';
+  if (!p.needsKey && key) key.value = '';
+}
+function testNewProvider() {
+  const url = document.getElementById('newProvUrl').value.trim();
+  const key = document.getElementById('newProvKey').value.trim();
+  const r = document.getElementById('newProvTestResult');
+  if (!url) { r.style.display = ''; r.className = 'info info--warn'; r.innerHTML = 'Base URL is required'; return; }
+  r.style.display = '';
+  r.className = 'info';
+  r.innerHTML = 'Pinging <code>' + url.replace(/</g,'&lt;') + '/models</code> ...';
+  setTimeout(() => {
+    const ok = !!key || /localhost|127\.0\.0\.1/.test(url);
+    if (ok) {
+      const discovered = ['llama-3.1-8b', 'mistral-7b', 'qwen2.5-7b'];
+      r.className = 'info';
+      r.innerHTML = '\u2713 Connected. Discovered ' + discovered.length + ' models: <code>' + discovered.join(', ') + '</code>';
+      const m = document.getElementById('newProvModels');
+      if (m && !m.value) m.value = discovered.join(', ');
+    } else {
+      r.className = 'info info--warn';
+      r.innerHTML = '\u2717 Auth failed. Check API key.';
+    }
+  }, 700);
+}
+function saveNewProvider() {
+  const name = document.getElementById('newProvName').value.trim() || 'Provider';
+  const url  = document.getElementById('newProvUrl').value.trim();
+  const key  = document.getElementById('newProvKey').value.trim();
+  const mods = document.getElementById('newProvModels').value.trim();
+  if (!url) { toast('Base URL is required', 'warn'); return; }
+  const id = (document.getElementById('newProvPreset').value || 'custom') + '_' + Date.now().toString(36);
+  if (!Array.isArray(state.fApiKeys)) state.fApiKeys = [];
+  state.fApiKeys.push({ id, preset: document.getElementById('newProvPreset').value, name, key, baseUrl: url, models: mods, enabled: true });
+  markDirty();
+  renderApiKeys();
+  closeAddProviderModal();
+  toast('Provider "' + name + '" saved  -  models added to Fast / Heavy');
+}
+function editProvider(id) {
+  const item = (state.fApiKeys || []).find(x => x.id === id);
+  if (!item) return;
+  openAddProviderModal();
+  document.getElementById('newProvName').value = item.name || '';
+  document.getElementById('newProvKey').value = item.key || '';
+  document.getElementById('newProvUrl').value = item.baseUrl || '';
+  document.getElementById('newProvModels').value = item.models || '';
+  if (item.preset) document.getElementById('newProvPreset').value = item.preset;
+  applyProviderPreset();
 }
 
 function downloadEmbModel() {
@@ -1826,6 +2344,18 @@ function downloadEmbModel() {
 }
 
 function pickEmbModel() { toast('Native folder picker  -  backend integration Phase 6'); }
+function copyEmbModelPath() {
+  const el = document.getElementById('embModelPath');
+  const path = el ? el.textContent : '';
+  if (!path) return;
+  navigator.clipboard?.writeText(path);
+  toast('Model path copied');
+}
+function openEmbModelFolder() {
+  const id = state.fEmbModel || 'bge-small-en-v1.5';
+  if (id === 'custom' && !state.fEmbCustomPath) { toast('Pick a custom model folder first', 'warn'); return; }
+  toast('Opening model folder');
+}
 
 function detectGpu() {
   const name = document.getElementById('gpuKvName');
@@ -1834,21 +2364,85 @@ function detectGpu() {
   const cuda = document.getElementById('gpuKvCuda');
   const pill = document.getElementById('gpuDetectPill');
   const txt  = document.getElementById('gpuDetectText');
+  const sumPill = document.getElementById('gpuSummaryPill');
+  const sumTxt  = document.getElementById('gpuSummaryText');
+  const missing = document.getElementById('gpuMissingHint');
+  const benBtn  = document.getElementById('benchmarkEmbBtn');
+  const benLbl  = document.getElementById('benchmarkEmbLabel');
   if (name) name.textContent = 'Scanning';
+  if (pill) { pill.className = 'pill pill--info'; pill.innerHTML = '<span class="d"></span>Scanning'; }
+  if (txt)  txt.textContent  = 'Scanning';
   setTimeout(() => {
-    if (name) name.textContent = 'NVIDIA GeForce RTX 4070';
-    if (drv)  drv.textContent  = '551.23  -  CUDA 12.4';
-    if (vram) vram.textContent = '12 GB GDDR6X';
-    if (cuda) cuda.textContent = '5888';
-    if (pill) { pill.className = 'pill pill--live'; pill.innerHTML = '<span class="d"></span>Detected'; }
-    if (txt)  txt.textContent = 'RTX 4070';
-  }, 600);
-  toast('Detecting GPU');
+    const found = !!state.__gpuFound;
+    if (found) {
+      if (name) name.textContent = 'NVIDIA GeForce RTX 4070';
+      if (drv)  drv.textContent  = 'Game Ready 552.22';
+      if (vram) vram.textContent = '12 GB';
+      if (cuda) cuda.textContent = '5888 cores';
+      if (pill) { pill.className = 'pill pill--live'; pill.innerHTML = '<span class="d"></span>CUDA ready'; }
+      if (txt)  txt.textContent  = 'CUDA ready';
+      if (sumPill) { sumPill.className = 'pill pill--live'; sumPill.innerHTML = '<span class="d"></span>CUDA ready'; }
+      if (sumTxt)  sumTxt.textContent  = 'CUDA ready';
+      if (missing) missing.style.display = 'none';
+      if (benBtn)  benBtn.disabled = false;
+      if (benLbl)  benLbl.textContent = 'Benchmark GPU';
+      state.fEmbDevice = 'cuda';
+    } else {
+      if (name) name.textContent = 'None detected';
+      if (drv)  drv.textContent  = '-';
+      if (vram) vram.textContent = '-';
+      if (cuda) cuda.textContent = '-';
+      if (pill) { pill.className = 'pill pill--off'; pill.innerHTML = '<span class="d"></span>None'; }
+      if (txt)  txt.textContent  = 'None';
+      if (sumPill) { sumPill.className = 'pill pill--off'; sumPill.innerHTML = '<span class="d"></span>None'; }
+      if (sumTxt)  sumTxt.textContent  = 'None';
+      if (missing) missing.style.display = '';
+      if (benBtn)  benBtn.disabled = true;
+      if (benLbl)  benLbl.textContent = 'Benchmark CPU';
+      state.fEmbDevice = 'cpu';
+      state.fEmbGpu = false;
+      const gpuSwitch = document.getElementById('fEmbGpu');
+      if (gpuSwitch) { gpuSwitch.checked = false; gpuSwitch.disabled = true; }
+    }
+    markDirty();
+    paintEmbDevice();
+    toast('Detecting GPU');
+  }, 1200);
 }
 
-function benchmarkEmb() { toast('Benchmark running  -  100 chunks  -  measuring ms/chunk'); }
+function benchmarkEmb() {
+  const dev = (state.fEmbGpu && state.fEmbDevice !== 'cpu') ? 'GPU' : 'CPU';
+  toast('Benchmark ' + dev + '  -  100 chunks  -  measuring ms/chunk');
+}
 function optimizeVectors() { toast('Optimizing vector index  -  IVF-PQ recompute'); }
 function openVectorsFolder() { toast('Opening vector store folder'); }
+
+function recreateVectorDb() {
+  const vectors = document.getElementById('vecTotalCount');
+  const n = vectors ? (vectors.textContent || '').replace(/[^\d]/g, '') : '';
+  const body =
+    '<p>This will <b>permanently delete</b> the entire vector store on disk (<code>./data/vectors</code>) and rebuild it from scratch.</p>' +
+    '<p style="margin:6px 0 10px;padding-left:14px;border-left:2px solid var(--danger);color:var(--text)">' +
+      (n ? 'Vectors to be erased: <b>' + n + '</b><br>' : '') +
+      'Collections: default, work, archive<br>' +
+      'Settings, KB sources and dialog history: <b>kept</b>' +
+    '</p>' +
+    '<p>Use this when <b>Reindex</b> itself crashes on a corrupted SQLite file or when the active embedding model has incompatible dimensions and the existing index refuses to load.</p>';
+  confirmModal({
+    title: 'Recreate vector database',
+    body: body,
+    danger: true,
+    token: 'WIPE',
+    confirmLabel: 'Wipe and rebuild'
+  }).then(ok => {
+    if (!ok) return;
+    if (vectors) vectors.textContent = '0';
+    const disk = document.getElementById('vecDiskSize');
+    if (disk) disk.textContent = '0 B';
+    toast('Vector store wiped  -  rebuilding from sources', 'warn');
+    setTimeout(() => reindexAll(), 600);
+  });
+}
 
 // -- init --------------------------------------------
 state = load();
